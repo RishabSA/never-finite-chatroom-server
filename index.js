@@ -148,7 +148,7 @@ function start() {
       (message, createdAtDisplay, uid, mediaPath, isMedia, callback) => {
         try {
           const user = getUser(socket.id);
-          console.log(user);
+          console.log(uid);
 
           io.to(user.room).emit("message", {
             user: user.name,
