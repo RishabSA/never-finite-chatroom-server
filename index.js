@@ -1,9 +1,14 @@
-// After making changes, run these commands in cli
-// $ git add .
-// $ git commit -am "make it better"
-// $ git push heroku master
-
 const throng = require("throng");
+const Sentry = require("@sentry/node");
+const Tracing = require("@sentry/tracing");
+Sentry.init({
+  dsn: "https://a4dd9c4ee323453d9c42b34cb8d99e5a@o1101045.ingest.sentry.io/6134347",
+
+  // Set tracesSampleRate to 1.0 to capture 100%
+  // of transactions for performance monitoring.
+  // We recommend adjusting this value in production
+  tracesSampleRate: 1.0,
+});
 
 const WORKERS = process.env.WEB_CONCURRENCY || 1;
 
@@ -47,6 +52,7 @@ function start() {
     try {
       return CryptoJS.AES.encrypt(text, passphrase).toString();
     } catch (e) {
+      Sentry.captureException(e);
       console.log("Could not encrypt", e);
     }
   };
@@ -57,6 +63,7 @@ function start() {
       const originalText = bytes.toString(CryptoJS.enc.Utf8);
       return originalText;
     } catch (e) {
+      Sentry.captureException(e);
       console.log("Could not decrypt", e);
     }
   };
@@ -142,6 +149,7 @@ function start() {
 
         callback();
       } catch (e) {
+        Sentry.captureException(e);
         console.log("Could not join", e);
       }
     });
@@ -166,6 +174,7 @@ function start() {
 
           callback();
         } catch (e) {
+          Sentry.captureException(e);
           console.log("Could not send message", e);
         }
       }
@@ -180,6 +189,7 @@ function start() {
           uid: uid,
         });
       } catch (e) {
+        Sentry.captureException(e);
         console.log("Could not delete message", e);
       }
     });
@@ -195,6 +205,7 @@ function start() {
           newCreatedAtDisplay: newCreatedAtDisplay,
         });
       } catch (e) {
+        Sentry.captureException(e);
         console.log("Could not edit message", e);
       }
     });
@@ -244,6 +255,7 @@ function start() {
           });
         }
       } catch (e) {
+        Sentry.captureException(e);
         console.log("Could not join", e);
       }
     });
