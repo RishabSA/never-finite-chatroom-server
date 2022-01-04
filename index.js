@@ -111,7 +111,10 @@ function start() {
 
         let uid = uuidv4();
 
-        if (error) return callback(error);
+        if (error) {
+          console.log("An unexpected error occurred:", error);
+          return callback(error);
+        }
 
         socket.join(user.room);
 
