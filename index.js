@@ -167,8 +167,8 @@ function start() {
             text: isMedia ? "" : message,
             media: isMedia ? message : "",
             mediaPath: mediaPath,
-            createdAtDisplay: createdAtDisplay,
-            uid: uid,
+            createdAtDisplay,
+            uid,
             isEdited: false,
           });
 
