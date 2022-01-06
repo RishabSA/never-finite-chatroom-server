@@ -127,7 +127,7 @@ function start() {
 
         socket.emit("message", {
           user: "Admin",
-          text: encrypt(`${user.name}, welcome to the ${user.room} chat room.`),
+          text: encrypt(`${user.name}, welcome to the chat room.`),
           photoURL:
             "https://neverfinite.com/wp-content/uploads/2021/10/cropped-LogoOnly512x512png-4.png",
           createdAtDisplay: formatted_date,
