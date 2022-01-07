@@ -79,7 +79,7 @@ function start() {
     socket.on("join", ({ name, room, photoURL, email }, callback) => {
       try {
         for (let key in getUsersInRoom(room)) {
-          if (getUsersInRoom(room)[key].name === name) {
+          if (getUsersInRoom(room)[key].email === email) {
             removeUser(getUsersInRoom(room)[key].id);
           }
         }
@@ -91,7 +91,6 @@ function start() {
           photoURL,
           email,
         });
-        console.log(user.name, room);
 
         let today = new Date();
         let shortMonths = [
@@ -141,7 +140,7 @@ function start() {
           createdAtDisplay: formatted_date,
           uid: uid,
         });
-
+        
         io.to(user.room).emit("roomData", {
           room: user.room,
           users: getUsersInRoom(user.room),
@@ -159,7 +158,6 @@ function start() {
       (message, createdAtDisplay, uid, mediaPath, isMedia, callback) => {
         try {
           const user = getUser(socket.id);
-          console.log(uid);
 
           io.to(user.room).emit("message", {
             user: user.name,
@@ -182,7 +180,6 @@ function start() {
 
     socket.on("deleteMessage", (uid) => {
       try {
-        console.log("Message to delete:", uid);
         const user = getUser(socket.id);
 
         io.to(user.room).emit("delete", {
@@ -196,7 +193,6 @@ function start() {
 
     socket.on("editMessage", (uid, newMessage, newCreatedAtDisplay) => {
       try {
-        console.log("Message to edit:", uid, newMessage, newCreatedAtDisplay);
         const user = getUser(socket.id);
 
         io.to(user.room).emit("edit", {
