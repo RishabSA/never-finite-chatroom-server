@@ -2,7 +2,7 @@ const users = [];
 
 const addUser = ({ id, name, room, photoURL, email }) => {
   name = name;
-  room = room.trim().toLowerCase();
+  room = room;
   photoURL = photoURL;
   email = email;
 

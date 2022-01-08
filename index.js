@@ -132,7 +132,7 @@ function start() {
           createdAtDisplay: formatted_date,
           uid: uid,
         });
-        socket.broadcast.to(user.room.trim().toLowerCase()).emit("message", {
+        socket.broadcast.to(user.room).emit("message", {
           user: "Admin",
           text: encrypt(`${user.name}, has joined!`),
           photoURL:
