@@ -57,17 +57,6 @@ function start() {
     }
   };
 
-  const decrypt = (ciphertext) => {
-    try {
-      const bytes = CryptoJS.AES.decrypt(ciphertext, passphrase);
-      const originalText = bytes.toString(CryptoJS.enc.Utf8);
-      return originalText;
-    } catch (e) {
-      Sentry.captureException(e);
-      console.log("Could not decrypt", e);
-    }
-  };
-
   function appendLeadingZeroes(n) {
     if (n <= 9) {
       return "0" + n;
