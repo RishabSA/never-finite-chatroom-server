@@ -81,6 +81,16 @@ function start() {
           email,
         });
 
+        if (error) {
+          console.log(
+            "An unexpected error has occurred while adding the user to the room!",
+            error
+          );
+          return callback(error);
+        }
+
+        console.log("User has joined!", user);
+
         let today = new Date();
         let shortMonths = [
           "Jan",
@@ -106,11 +116,6 @@ function start() {
 
         let uid = uuidv4();
 
-        if (error) {
-          console.log("An unexpected error occurred:", error);
-          return callback(error);
-        }
-
         socket.join(user.room);
 
         socket.emit("message", {
@@ -129,7 +134,7 @@ function start() {
           createdAtDisplay: formatted_date,
           uid: uid,
         });
-        
+
         io.to(user.room).emit("roomData", {
           room: user.room,
           users: getUsersInRoom(user.room),
@@ -138,7 +143,7 @@ function start() {
         callback();
       } catch (e) {
         Sentry.captureException(e);
-        console.log("Could not join", e);
+        console.log("Could not join the room!", e);
       }
     });
 
@@ -162,7 +167,7 @@ function start() {
           callback();
         } catch (e) {
           Sentry.captureException(e);
-          console.log("Could not send message", e);
+          console.log("Could not send message!", e);
         }
       }
     );
@@ -176,7 +181,7 @@ function start() {
         });
       } catch (e) {
         Sentry.captureException(e);
-        console.log("Could not delete message", e);
+        console.log("Could not delete message!", e);
       }
     });
 
@@ -191,14 +196,14 @@ function start() {
         });
       } catch (e) {
         Sentry.captureException(e);
-        console.log("Could not edit message", e);
+        console.log("Could not edit message!", e);
       }
     });
 
     socket.on("disconnected", () => {
       try {
-        console.log("User has left!!!");
         const user = removeUser(socket.id);
+        console.log("User has left!", user);
 
         let today = new Date();
         let shortMonths = [
@@ -241,7 +246,7 @@ function start() {
         }
       } catch (e) {
         Sentry.captureException(e);
-        console.log("Could not join", e);
+        console.log("Could not join!", e);
       }
     });
   });
