@@ -172,7 +172,7 @@ function start() {
             if (decrypt(message).startsWith("!anonymous ")) {
               io.to(user.room).emit("message", {
                 user: "anonymous",
-                photoURL: "anonymous",
+                photoURL: "https://neverfinite.com/wp-content/uploads/2022/01/anonymousIcon.png",
                 text: message,
                 media: "",
                 mediaPath: "",
