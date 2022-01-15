@@ -57,6 +57,17 @@ function start() {
     }
   };
 
+  const decrypt = (ciphertext) => {
+    try {
+      const bytes = CryptoJS.AES.decrypt(ciphertext, passphrase);
+      const originalText = bytes.toString(CryptoJS.enc.Utf8);
+      return originalText;
+    } catch (error) {
+      Sentry.captureException(e);
+      console.log("Could not decrypt", e);
+    }
+  };
+
   function appendLeadingZeroes(n) {
     if (n <= 9) {
       return "0" + n;
@@ -152,28 +163,23 @@ function start() {
       (message, createdAtDisplay, uid, mediaPath, isMedia, callback) => {
         try {
           const user = getUser(socket.id);
-          console.log(message);
-          console.log(message.startsWith("!"));
+          console.log(decrypt(message));
+          console.log(decrypt(message.startsWith("!")));
 
-          if (message.startsWith("!")) {
+          if (decrypt(message.startsWith("!"))) {
             console.log("Run command:", message);
 
-            switch (message) {
-              case "!anonymous":
-                io.to(user.room).emit("message", {
-                  user: "anonymous",
-                  photoURL: "anonymous",
-                  text: message.substring(1),
-                  media: "",
-                  mediaPath: "",
-                  createdAtDisplay,
-                  uid,
-                  isEdited: false,
-                });
-                break;
-
-              default:
-                break;
+            if (decrypt(message).startsWith("!anonymous ")) {
+              io.to(user.room).emit("message", {
+                user: "anonymous",
+                photoURL: "anonymous",
+                text: message,
+                media: "",
+                mediaPath: "",
+                createdAtDisplay,
+                uid,
+                isEdited: false,
+              });
             }
           } else {
             io.to(user.room).emit("message", {
