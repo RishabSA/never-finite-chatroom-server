@@ -164,7 +164,7 @@ function start() {
         try {
           const user = getUser(socket.id);
           console.log(decrypt(message));
-          console.log(decrypt(message.startsWith("!")));
+          console.log(decrypt(message).startsWith("!"));
 
           if (decrypt(message.startsWith("!"))) {
             console.log("Run command:", message);
