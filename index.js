@@ -166,7 +166,7 @@ function start() {
           console.log(decrypt(message));
           console.log(decrypt(message).startsWith("!"));
 
-          if (decrypt(message.startsWith("!"))) {
+          if (decrypt(message).startsWith("!")) {
             console.log("Run command:", message);
 
             if (decrypt(message).startsWith("!anonymous ")) {
