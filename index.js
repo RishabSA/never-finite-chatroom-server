@@ -161,9 +161,9 @@ function start() {
                 io.to(user.room).emit("message", {
                   user: "anonymous",
                   photoURL: "anonymous",
-                  text: isMedia ? "" : message,
-                  media: isMedia ? message : "",
-                  mediaPath: mediaPath,
+                  text: message.substring(1),
+                  media: "",
+                  mediaPath: "",
                   createdAtDisplay,
                   uid,
                   isEdited: false,
