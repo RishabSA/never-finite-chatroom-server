@@ -152,6 +152,8 @@ function start() {
       (message, createdAtDisplay, uid, mediaPath, isMedia, callback) => {
         try {
           const user = getUser(socket.id);
+          console.log(message);
+          console.log(message.startsWith("!"));
 
           if (message.startsWith("!")) {
             console.log("Run command:", message);
