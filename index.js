@@ -153,16 +153,38 @@ function start() {
         try {
           const user = getUser(socket.id);
 
-          io.to(user.room).emit("message", {
-            user: user.user,
-            photoURL: user.photoURL,
-            text: isMedia ? "" : message,
-            media: isMedia ? message : "",
-            mediaPath: mediaPath,
-            createdAtDisplay,
-            uid,
-            isEdited: false,
-          });
+          if (message.startsWith("!")) {
+            console.log("Run command:", message);
+
+            switch (message) {
+              case "!anonymous":
+                io.to(user.room).emit("message", {
+                  user: "anonymous",
+                  photoURL: "anonymous",
+                  text: isMedia ? "" : message,
+                  media: isMedia ? message : "",
+                  mediaPath: mediaPath,
+                  createdAtDisplay,
+                  uid,
+                  isEdited: false,
+                });
+                break;
+
+              default:
+                break;
+            }
+          } else {
+            io.to(user.room).emit("message", {
+              user: user.user,
+              photoURL: user.photoURL,
+              text: isMedia ? "" : message,
+              media: isMedia ? message : "",
+              mediaPath: mediaPath,
+              createdAtDisplay,
+              uid,
+              isEdited: false,
+            });
+          }
 
           callback();
         } catch (e) {
