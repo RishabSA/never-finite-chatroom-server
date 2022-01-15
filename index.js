@@ -120,7 +120,7 @@ function start() {
 
         socket.emit("message", {
           user: "Admin",
-          text: encrypt(`${user.name}, welcome to the chat room.`),
+          text: encrypt(`${user.user}, welcome to the chat room.`),
           photoURL:
             "https://neverfinite.com/wp-content/uploads/2021/10/cropped-LogoOnly512x512png-4.png",
           createdAtDisplay: formatted_date,
@@ -128,7 +128,7 @@ function start() {
         });
         socket.broadcast.to(user.room).emit("message", {
           user: "Admin",
-          text: encrypt(`${user.name}, has joined!`),
+          text: encrypt(`${user.user}, has joined!`),
           photoURL:
             "https://neverfinite.com/wp-content/uploads/2021/10/cropped-LogoOnly512x512png-4.png",
           createdAtDisplay: formatted_date,
@@ -154,7 +154,7 @@ function start() {
           const user = getUser(socket.id);
 
           io.to(user.room).emit("message", {
-            user: user.name,
+            user: user.user,
             photoURL: user.photoURL,
             text: isMedia ? "" : message,
             media: isMedia ? message : "",
@@ -233,7 +233,7 @@ function start() {
         if (user) {
           io.to(user.room).emit("message", {
             user: "Admin",
-            text: encrypt(`${user.name} has left.`),
+            text: encrypt(`${user.user} has left.`),
             photoURL:
               "https://neverfinite.com/wp-content/uploads/2021/10/cropped-LogoOnly512x512png-4.png",
             createdAtDisplay: formatted_date,

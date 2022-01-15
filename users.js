@@ -12,7 +12,7 @@ const addUser = ({ id, name, room, photoURL, email }) => {
 
   if (existingUser) return { error: "Account is taken" };
 
-  const user = { id, name, room, photoURL, email };
+  const user = { id, user: name, room, photoURL, email };
 
   users.push(user);
 
