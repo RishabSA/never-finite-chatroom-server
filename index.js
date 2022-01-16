@@ -168,19 +168,7 @@ function start() {
 
           if (decrypt(message).startsWith("!")) {
             console.log("Run command:", message);
-
-            // if (decrypt(message).startsWith("!anonymous ")) {
-            //   io.to(user.room).emit("message", {
-            //     user: "anonymous",
-            //     photoURL: "https://neverfinite.com/wp-content/uploads/2022/01/anonymousIcon.png",
-            //     text: message,
-            //     media: "",
-            //     mediaPath: "",
-            //     createdAtDisplay,
-            //     uid,
-            //     isEdited: false,
-            //   });
-            // }
+            
           } else {
             io.to(user.room).emit("message", {
               user: user.user,
