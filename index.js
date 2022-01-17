@@ -168,7 +168,6 @@ function start() {
 
           if (decrypt(message).startsWith("!")) {
             console.log("Run command:", message);
-            
           } else {
             io.to(user.room).emit("message", {
               user: user.user,
@@ -215,6 +214,23 @@ function start() {
       } catch (e) {
         Sentry.captureException(e);
         console.log("Could not edit message!", e);
+      }
+    });
+
+    socket.on("disconnected", () => {
+      try {
+        const user = removeUser(socket.id);
+        console.log("User has left!", user);
+
+        if (user) {
+          io.to(user.room).emit("roomData", {
+            room: user.room,
+            users: getUsersInRoom(user.room),
+          });
+        }
+      } catch (e) {
+        Sentry.captureException(e);
+        console.log("Could not join!", e);
       }
     });
   });
