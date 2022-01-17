@@ -267,55 +267,55 @@ function start() {
         console.log("Could not join!", e);
       }
     });
-    socket.on("disconnect", () => {
-      try {
-        const user = removeUser(socket.id);
-        console.log("User has left!", user);
+    // socket.on("disconnect", () => {
+    //   try {
+    //     const user = removeUser(socket.id);
+    //     console.log("User has left!", user);
 
-        let today = new Date();
-        let shortMonths = [
-          "Jan",
-          "Feb",
-          "Mar",
-          "Apr",
-          "May",
-          "Jun",
-          "Jul",
-          "Aug",
-          "Sep",
-          "Oct",
-          "Nov",
-          "Dec",
-        ];
+    //     let today = new Date();
+    //     let shortMonths = [
+    //       "Jan",
+    //       "Feb",
+    //       "Mar",
+    //       "Apr",
+    //       "May",
+    //       "Jun",
+    //       "Jul",
+    //       "Aug",
+    //       "Sep",
+    //       "Oct",
+    //       "Nov",
+    //       "Dec",
+    //     ];
 
-        let formatted_date =
-          shortMonths[today.getMonth()] +
-          " " +
-          appendLeadingZeroes(today.getDate()) +
-          ", " +
-          today.getFullYear();
+    //     let formatted_date =
+    //       shortMonths[today.getMonth()] +
+    //       " " +
+    //       appendLeadingZeroes(today.getDate()) +
+    //       ", " +
+    //       today.getFullYear();
 
-        let uid = uuidv4();
+    //     let uid = uuidv4();
 
-        if (user) {
-          io.to(user.room).emit("message", {
-            user: "Admin",
-            text: encrypt(`${user.user} has left.`),
-            photoURL:
-              "https://neverfinite.com/wp-content/uploads/2021/10/cropped-LogoOnly512x512png-4.png",
-            createdAtDisplay: formatted_date,
-            uid: uid,
-          });
-          io.to(user.room).emit("roomData", {
-            room: user.room,
-            users: getUsersInRoom(user.room),
-          });
-        }
-      } catch (e) {
-        Sentry.captureException(e);
-        console.log("Could not join!", e);
-      }
-    });
+    //     if (user) {
+    //       io.to(user.room).emit("message", {
+    //         user: "Admin",
+    //         text: encrypt(`${user.user} has left.`),
+    //         photoURL:
+    //           "https://neverfinite.com/wp-content/uploads/2021/10/cropped-LogoOnly512x512png-4.png",
+    //         createdAtDisplay: formatted_date,
+    //         uid: uid,
+    //       });
+    //       io.to(user.room).emit("roomData", {
+    //         room: user.room,
+    //         users: getUsersInRoom(user.room),
+    //       });
+    //     }
+    //   } catch (e) {
+    //     Sentry.captureException(e);
+    //     console.log("Could not join!", e);
+    //   }
+    // });
   });
 
   server.listen(PORT, () => console.log(`Server has started on port ${PORT}`));
