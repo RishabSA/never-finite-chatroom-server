@@ -62,7 +62,7 @@ function start() {
       const bytes = CryptoJS.AES.decrypt(ciphertext, passphrase);
       const originalText = bytes.toString(CryptoJS.enc.Utf8);
       return originalText;
-    } catch (error) {
+    } catch (e) {
       Sentry.captureException(e);
       console.log("Could not decrypt", e);
     }
