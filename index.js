@@ -220,7 +220,7 @@ function start() {
       }
     });
 
-    socket.on("disconnect", () => {
+    socket.on("disconnected", () => {
       try {
         const user = removeUser(socket.id);
         console.log("User has left!", user);
