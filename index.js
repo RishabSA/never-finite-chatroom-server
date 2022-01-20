@@ -163,11 +163,11 @@ function start() {
       (message, createdAtDisplay, uid, mediaPath, isMedia, callback) => {
         try {
           const user = getUser(socket.id);
-          if (message) {
+          if (message && !isMedia) {
             console.log(decrypt(message));
           }
 
-          if (message && decrypt(message).startsWith("!")) {
+          if (message && !isMedia && decrypt(message).startsWith("!")) {
             console.log("Run command:", message);
           } else {
             io.to(user.room).emit("message", {
