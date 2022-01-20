@@ -220,6 +220,19 @@ function start() {
       }
     });
 
+    socket.on("typingMessage", () => {
+      try {
+        const user = getUser(socket.id);
+
+        io.to(user.room).emit("typing", {
+          text: `${user.user} is typing`,
+        });
+      } catch (e) {
+        Sentry.captureException(e);
+        console.log("Could not edit message!", e);
+      }
+    });
+
     socket.on("disconnected", () => {
       try {
         const user = removeUser(socket.id);
