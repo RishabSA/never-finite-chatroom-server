@@ -39,6 +39,8 @@ function start() {
   const io = socketio(server, {
     cors: {
       origin: "*",
+      pingInterval: 1000 * 60 * 5,
+      pingTimeout: 1000 * 60 * 3,
     },
   });
 
