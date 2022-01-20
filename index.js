@@ -165,7 +165,6 @@ function start() {
           const user = getUser(socket.id);
           if (message) {
             console.log(decrypt(message));
-            console.log(decrypt(message).startsWith("!"));
           }
 
           if (message && decrypt(message).startsWith("!")) {
