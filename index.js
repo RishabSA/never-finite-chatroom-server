@@ -225,7 +225,21 @@ function start() {
         const user = getUser(socket.id);
 
         io.to(user.room).emit("typing", {
+          user: user.user,
           text: `${user.user} is typing`,
+        });
+      } catch (e) {
+        Sentry.captureException(e);
+        console.log("Could not edit message!", e);
+      }
+    });
+
+    socket.on("stoppedTypingMessage", () => {
+      try {
+        const user = getUser(socket.id);
+
+        io.to(user.room).emit("stoppedTyping", {
+          user: user.user,
         });
       } catch (e) {
         Sentry.captureException(e);
