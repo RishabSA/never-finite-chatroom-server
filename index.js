@@ -78,7 +78,10 @@ function start() {
   io.on("connection", (socket) => {
     socket.on(
       "join",
-      ({ name, room, photoURL, email, firstTimeInRoom }, callback) => {
+      (
+        { name, room, photoURL, email, firstTimeInRoom, newlyCreatedRoom },
+        callback
+      ) => {
         try {
           for (let key in getUsersInRoom(room)) {
             if (getUsersInRoom(room)[key].email === email) {
@@ -130,6 +133,17 @@ function start() {
           let uid = uuidv4();
 
           socket.join(user.room);
+
+          if (newlyCreatedRoom) {
+            socket.emit("message", {
+              user: "Admin",
+              text: encrypt(`${user.user} has created the room, '${user.room}'`),
+              photoURL:
+                "https://neverfinite.com/wp-content/uploads/2021/10/cropped-LogoOnly512x512png-4.png",
+              createdAtDisplay: formatted_date,
+              uid: uid,
+            });
+          }
 
           socket.broadcast.to(user.room).emit("message", {
             user: "Admin",
