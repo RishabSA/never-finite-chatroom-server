@@ -137,7 +137,7 @@ function start() {
           if (newlyCreatedRoom) {
             socket.emit("message", {
               user: "Admin",
-              text: encrypt(`${user.user} has created the room, '${user.room}'`),
+              text: encrypt(`${user.user} has created the room, "${user.room}"`),
               photoURL:
                 "https://neverfinite.com/wp-content/uploads/2021/10/cropped-LogoOnly512x512png-4.png",
               createdAtDisplay: formatted_date,
