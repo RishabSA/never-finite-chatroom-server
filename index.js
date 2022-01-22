@@ -182,20 +182,16 @@ function start() {
             console.log(decrypt(message));
           }
 
-          if (message && !isMedia && decrypt(message).startsWith("!")) {
-            console.log("Run command:", message);
-          } else {
-            io.to(user.room).emit("message", {
-              user: user.user,
-              photoURL: user.photoURL,
-              text: isMedia ? "" : message,
-              media: isMedia ? message : "",
-              mediaPath: mediaPath,
-              createdAtDisplay,
-              uid,
-              isEdited: false,
-            });
-          }
+          io.to(user.room).emit("message", {
+            user: user.user,
+            photoURL: user.photoURL,
+            text: isMedia ? "" : message,
+            media: isMedia ? message : "",
+            mediaPath: mediaPath,
+            createdAtDisplay,
+            uid,
+            isEdited: false,
+          });
 
           callback();
         } catch (e) {
