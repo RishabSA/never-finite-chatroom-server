@@ -235,7 +235,7 @@ function start() {
       try {
         const user = getUser(socket.id);
 
-        io.to(user.room).emit("typing", {
+        socket.broadcast.to(user.room).emit("typing", {
           user: user.user,
           text: `${user.user} is typing`,
         });
