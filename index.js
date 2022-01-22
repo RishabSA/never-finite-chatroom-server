@@ -39,8 +39,6 @@ function start() {
   const io = socketio(server, {
     cors: {
       origin: "*",
-      pingInterval: 1000 * 60 * 5,
-      pingTimeout: 1000 * 60 * 3,
     },
   });
 
@@ -78,87 +76,86 @@ function start() {
   }
 
   io.on("connection", (socket) => {
-    socket.on("join", ({ name, room, photoURL, email }, callback) => {
-      try {
-        for (let key in getUsersInRoom(room)) {
-          if (getUsersInRoom(room)[key].email === email) {
-            removeUser(getUsersInRoom(room)[key].id);
+    socket.on(
+      "join",
+      ({ name, room, photoURL, email, firstTimeInRoom }, callback) => {
+        try {
+          for (let key in getUsersInRoom(room)) {
+            if (getUsersInRoom(room)[key].email === email) {
+              removeUser(getUsersInRoom(room)[key].id);
+            }
           }
+
+          const { error, user } = addUser({
+            id: socket.id,
+            name,
+            room,
+            photoURL,
+            email,
+          });
+
+          if (error) {
+            console.log(
+              "An unexpected error has occurred while adding the user to the room!",
+              error
+            );
+            return callback(error);
+          }
+
+          console.log("User has joined!", user);
+
+          let today = new Date();
+          let shortMonths = [
+            "Jan",
+            "Feb",
+            "Mar",
+            "Apr",
+            "May",
+            "Jun",
+            "Jul",
+            "Aug",
+            "Sep",
+            "Oct",
+            "Nov",
+            "Dec",
+          ];
+
+          let formatted_date =
+            shortMonths[today.getMonth()] +
+            " " +
+            appendLeadingZeroes(today.getDate()) +
+            ", " +
+            today.getFullYear();
+
+          let uid = uuidv4();
+
+          socket.join(user.room);
+
+          socket.broadcast.to(user.room).emit("message", {
+            user: "Admin",
+            text: encrypt(
+              firstTimeInRoom
+                ? `${user.user} has joined the chat room.`
+                : `${user.user} is online.`
+            ),
+            photoURL:
+              "https://neverfinite.com/wp-content/uploads/2021/10/cropped-LogoOnly512x512png-4.png",
+            createdAtDisplay: formatted_date,
+            uid: uid,
+          });
+
+          io.to(user.room).emit("roomData", {
+            room: user.room,
+            users: getUsersInRoom(user.room),
+          });
+
+          callback();
+        } catch (e) {
+          Sentry.captureException(e);
+          console.log("Could not join the room!", e);
         }
-
-        const { error, user } = addUser({
-          id: socket.id,
-          name,
-          room,
-          photoURL,
-          email,
-        });
-
-        if (error) {
-          console.log(
-            "An unexpected error has occurred while adding the user to the room!",
-            error
-          );
-          return callback(error);
-        }
-
-        console.log("User has joined!", user);
-
-        let today = new Date();
-        let shortMonths = [
-          "Jan",
-          "Feb",
-          "Mar",
-          "Apr",
-          "May",
-          "Jun",
-          "Jul",
-          "Aug",
-          "Sep",
-          "Oct",
-          "Nov",
-          "Dec",
-        ];
-
-        let formatted_date =
-          shortMonths[today.getMonth()] +
-          " " +
-          appendLeadingZeroes(today.getDate()) +
-          ", " +
-          today.getFullYear();
-
-        let uid = uuidv4();
-
-        socket.join(user.room);
-
-        socket.emit("message", {
-          user: "Admin",
-          text: encrypt("Welcome to the chat room."),
-          photoURL:
-            "https://neverfinite.com/wp-content/uploads/2021/10/cropped-LogoOnly512x512png-4.png",
-          createdAtDisplay: formatted_date,
-          uid: uid,
-        });
-        socket.broadcast.to(user.room).emit("message", {
-          user: "Admin",
-          text: encrypt(`${user.user}, has joined!`),
-          photoURL:
-            "https://neverfinite.com/wp-content/uploads/2021/10/cropped-LogoOnly512x512png-4.png",
-          createdAtDisplay: formatted_date,
-          uid: uid,
-        });
-
-        io.to(user.room).emit("roomData", {
-          room: user.room,
-          users: getUsersInRoom(user.room),
-        });
-
-        callback();
-      } catch (e) {
-        Sentry.captureException(e);
-        console.log("Could not join the room!", e);
       }
-    });
+    );
 
     socket.on(
       "sendMessage",
@@ -250,9 +247,43 @@ function start() {
     socket.on("disconnected", () => {
       try {
         const user = removeUser(socket.id);
-        console.log("User has left!", user);
+        console.log(`${user.user} has gone offline.`);
+
+        let today = new Date();
+        let shortMonths = [
+          "Jan",
+          "Feb",
+          "Mar",
+          "Apr",
+          "May",
+          "Jun",
+          "Jul",
+          "Aug",
+          "Sep",
+          "Oct",
+          "Nov",
+          "Dec",
+        ];
+
+        let formatted_date =
+          shortMonths[today.getMonth()] +
+          " " +
+          appendLeadingZeroes(today.getDate()) +
+          ", " +
+          today.getFullYear();
+
+        let uid = uuidv4();
 
         if (user) {
+          io.to(user.room).emit("message", {
+            user: "Admin",
+            text: encrypt(`${user.user} has gone offline.`),
+            photoURL:
+              "https://neverfinite.com/wp-content/uploads/2021/10/cropped-LogoOnly512x512png-4.png",
+            createdAtDisplay: formatted_date,
+            uid: uid,
+          });
+
           io.to(user.room).emit("roomData", {
             room: user.room,
             users: getUsersInRoom(user.room),
