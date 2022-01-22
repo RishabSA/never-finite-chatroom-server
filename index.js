@@ -242,6 +242,11 @@ function start() {
             user: user.user,
             text: `${user.user} is typing...`,
           });
+        else {
+          io.to(user.room).emit("stoppedTyping", {
+            user: user.user,
+          });
+        }
       } catch (e) {
         Sentry.captureException(e);
         console.log("Could not edit message!", e);
