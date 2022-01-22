@@ -137,7 +137,9 @@ function start() {
           if (newlyCreatedRoom) {
             socket.emit("message", {
               user: "Admin",
-              text: encrypt(`${user.user} has created the room, "${user.room}"`),
+              text: encrypt(
+                `${user.user} has created the room, "${user.room}"`
+              ),
               photoURL:
                 "https://neverfinite.com/wp-content/uploads/2021/10/cropped-LogoOnly512x512png-4.png",
               createdAtDisplay: formatted_date,
@@ -231,14 +233,15 @@ function start() {
       }
     });
 
-    socket.on("typingMessage", () => {
+    socket.on("typingMessage", ({ message }) => {
       try {
         const user = getUser(socket.id);
 
-        socket.broadcast.to(user.room).emit("typing", {
-          user: user.user,
-          text: `${user.user} is typing...`,
-        });
+        if (message !== "")
+          socket.broadcast.to(user.room).emit("typing", {
+            user: user.user,
+            text: `${user.user} is typing...`,
+          });
       } catch (e) {
         Sentry.captureException(e);
         console.log("Could not edit message!", e);
