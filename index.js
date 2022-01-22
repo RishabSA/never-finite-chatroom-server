@@ -237,7 +237,7 @@ function start() {
 
         socket.broadcast.to(user.room).emit("typing", {
           user: user.user,
-          text: `${user.user} is typing`,
+          text: `${user.user} is typing...`,
         });
       } catch (e) {
         Sentry.captureException(e);
