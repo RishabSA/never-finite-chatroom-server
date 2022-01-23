@@ -262,10 +262,10 @@ function start() {
       }
     });
 
-    socket.on("disconnect", () => {
+    socket.on("disconnect", (reason) => {
       try {
         const user = removeUser(socket.id);
-        console.log(`${user.user} has gone offline.`);
+        console.log(`${user.user} has gone offline. Reason: ${reason}`);
 
         let today = new Date();
         let shortMonths = [
