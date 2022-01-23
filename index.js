@@ -261,57 +261,6 @@ function start() {
         console.log("Could not edit message!", e);
       }
     });
-
-    socket.on("disconnect", (reason) => {
-      try {
-        const user = removeUser(socket.id);
-        console.log(`${user.user} has gone offline. Reason: ${reason}`);
-
-        let today = new Date();
-        let shortMonths = [
-          "Jan",
-          "Feb",
-          "Mar",
-          "Apr",
-          "May",
-          "Jun",
-          "Jul",
-          "Aug",
-          "Sep",
-          "Oct",
-          "Nov",
-          "Dec",
-        ];
-
-        let formatted_date =
-          shortMonths[today.getMonth()] +
-          " " +
-          appendLeadingZeroes(today.getDate()) +
-          ", " +
-          today.getFullYear();
-
-        let uid = uuidv4();
-
-        if (user) {
-          io.to(user.room).emit("message", {
-            user: "Admin",
-            text: encrypt(`${user.user} has gone offline.`),
-            photoURL:
-              "https://neverfinite.com/wp-content/uploads/2021/10/cropped-LogoOnly512x512png-4.png",
-            createdAtDisplay: formatted_date,
-            uid: uid,
-          });
-
-          io.to(user.room).emit("roomData", {
-            room: user.room,
-            users: getUsersInRoom(user.room),
-          });
-        }
-      } catch (e) {
-        Sentry.captureException(e);
-        console.log("Could not join!", e);
-      }
-    });
     
     socket.on("disconnected", (reason) => {
       try {
