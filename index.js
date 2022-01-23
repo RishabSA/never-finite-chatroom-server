@@ -40,6 +40,8 @@ function start() {
     cors: {
       origin: "*",
     },
+    allowUpgrades: false,
+    pingTimeout: 30000,
   });
 
   app.use(router);
