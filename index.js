@@ -40,6 +40,7 @@ function start() {
     cors: {
       origin: "*",
     },
+    transports: ["websocket"],
     allowUpgrades: false,
     pingTimeout: 30000,
   });
