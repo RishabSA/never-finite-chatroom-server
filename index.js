@@ -262,7 +262,7 @@ function start() {
       }
     });
 
-    socket.on("disconnected", () => {
+    socket.on("disconnect", () => {
       try {
         const user = removeUser(socket.id);
         console.log(`${user.user} has gone offline.`);
