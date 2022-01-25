@@ -130,7 +130,7 @@ function start() {
             ", " +
             today.getFullYear();
 
-          let uid = uuidv4();
+          const uid = uuidv4();
 
           socket.join(user.room);
 
@@ -290,7 +290,7 @@ function start() {
           ", " +
           today.getFullYear();
 
-        let uid = uuidv4();
+        const uid = uuidv4();
 
         if (user) {
           io.to(user.room).emit("message", {
