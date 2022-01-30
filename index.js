@@ -16,7 +16,7 @@ Sentry.init({
 });
 
 const uri =
-  "mongodb+srv://never-finite-chatroom-admin:4RjGzhTbbcepwPGe@never-finite-chatroom.mpem8.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
+  "mongodb+srv://never-finite-chatroom-admin:4RjGzhTbbcepwPGe@never-finite-chatroom.mpem8.mongodb.net/chatroom?retryWrites=true&w=majority";
 
 const client = new MongoClient(uri);
 
