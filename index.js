@@ -497,6 +497,8 @@ io.on("connection", (socket) => {
 
         socket.join(user.room);
 
+        const createdAt = Date.now();
+
         if (newlyCreatedRoom) {
           socket.emit("message", {
             user: "Admin",
@@ -504,7 +506,8 @@ io.on("connection", (socket) => {
             photoURL:
               "https://neverfinite.com/wp-content/uploads/2021/10/cropped-LogoOnly512x512png-4.png",
             createdAtDisplay: formatted_date,
-            uid: uid,
+            createdAt,
+            uid: uid + createdAt,
           });
         }
 
@@ -518,7 +521,8 @@ io.on("connection", (socket) => {
           photoURL:
             "https://neverfinite.com/wp-content/uploads/2021/10/cropped-LogoOnly512x512png-4.png",
           createdAtDisplay: formatted_date,
-          uid: uid,
+          uid: uid + createdAt,
+          createdAt,
         });
 
         io.to(user.room).emit("roomData", {
@@ -765,13 +769,16 @@ io.on("connection", (socket) => {
       const uid = uuidv4();
 
       if (user) {
+        const createdAt = Date.now();
+
         io.to(user.room).emit("message", {
           user: "Admin",
           text: encrypt(`${user.user} has gone offline.`),
           photoURL:
             "https://neverfinite.com/wp-content/uploads/2021/10/cropped-LogoOnly512x512png-4.png",
           createdAtDisplay: formatted_date,
-          uid: uid,
+          uid: uid + createdAt,
+          createdAt,
         });
 
         io.to(user.room).emit("roomData", {
