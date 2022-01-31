@@ -184,7 +184,7 @@ io.on("connection", (socket) => {
         }
       );
 
-      let newUsers = [...user.users];
+      let newUsers = [...room.users];
 
       if (roomResult.users) {
         let index = "";
