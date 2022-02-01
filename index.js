@@ -126,23 +126,6 @@ router.get("/messages", async (req, res) => {
   }
 });
 
-router.get("/messages/:uid", async (req, res) => {
-  try {
-    const result = await findOneItemByObject(client, "chatroom", "messages", {
-      uid: req.params.uid,
-    });
-
-    if (!result)
-      return res
-        .status(404)
-        .send(`The message with the uid '${req.params.uid}' was not found`);
-
-    res.send(result);
-  } catch (e) {
-    res.status(500).send({ message: e.message });
-  }
-});
-
 router.get("/messages/:room", async (req, res) => {
   try {
     const result = await findMultipleItemsByObject(
