@@ -50,6 +50,25 @@ router.get("/users", async (req, res) => {
       {}
     );
 
+    if (!result) return res.status(404).send("No users found");
+
+    res.send(result);
+  } catch (e) {
+    res.status(500).send({ message: e.message });
+  }
+});
+
+router.get("/users/:email", async (req, res) => {
+  try {
+    const result = await findOneItemByObject(client, "chatroom", "users", {
+      email: req.params.email,
+    });
+
+    if (!result)
+      return res
+        .status(404)
+        .send(`The user with the email '${req.params.email}' was not found`);
+
     res.send(result);
   } catch (e) {
     res.status(500).send({ message: e.message });
@@ -65,6 +84,25 @@ router.get("/rooms", async (req, res) => {
       {}
     );
 
+    if (!result) return res.status(404).send("No rooms found");
+
+    res.send(result);
+  } catch (e) {
+    res.status(500).send({ message: e.message });
+  }
+});
+
+router.get("/rooms/:room", async (req, res) => {
+  try {
+    const result = await findOneItemByObject(client, "chatroom", "rooms", {
+      room: req.params.room,
+    });
+
+    if (!result)
+      return res
+        .status(404)
+        .send(`The room with the name '${req.params.room}' was not found`);
+
     res.send(result);
   } catch (e) {
     res.status(500).send({ message: e.message });
@@ -79,6 +117,47 @@ router.get("/messages", async (req, res) => {
       "messages",
       {}
     );
+
+    if (!result) return res.status(404).send("No messages found");
+
+    res.send(result);
+  } catch (e) {
+    res.status(500).send({ message: e.message });
+  }
+});
+
+router.get("/messages/:uid", async (req, res) => {
+  try {
+    const result = await findOneItemByObject(client, "chatroom", "messages", {
+      uid: req.params.uid,
+    });
+
+    if (!result)
+      return res
+        .status(404)
+        .send(`The message with the uid '${req.params.uid}' was not found`);
+
+    res.send(result);
+  } catch (e) {
+    res.status(500).send({ message: e.message });
+  }
+});
+
+router.get("/messages/:room", async (req, res) => {
+  try {
+    const result = await findMultipleItemsByObject(
+      client,
+      "chatroom",
+      "messages",
+      {
+        room: req.params.room,
+      }
+    );
+
+    if (!result)
+      return res
+        .status(404)
+        .send(`No messages in the room, '${req.params.room}' were found`);
 
     res.send(result);
   } catch (e) {
