@@ -174,6 +174,8 @@ io.on("connection", (socket) => {
       if (!result) {
         await create(client, "chatroom", "users", user);
       }
+
+      socket.emit("userInfo");
     } catch (e) {
       logger.log(e);
       console.log("Could not get online!", e);
