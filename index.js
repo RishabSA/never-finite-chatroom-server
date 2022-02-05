@@ -779,7 +779,7 @@ io.on("connection", (socket) => {
     }
   });
 
-  socket.on("leftRoom", ({ lastTimeOnline }) => {
+  socket.on("leftRoom", async ({ lastTimeOnline }) => {
     try {
       const user = removeUser(socket.id);
       console.log(`${user.user} has gone offline.`);
