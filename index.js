@@ -779,10 +779,10 @@ io.on("connection", (socket) => {
     }
   });
 
-  socket.on("leftRoom", (reason) => {
+  socket.on("leftRoom", ({ lastTimeOnline }) => {
     try {
       const user = removeUser(socket.id);
-      console.log(`${user.user} has gone offline. Reason: ${reason}`);
+      console.log(`${user.user} has gone offline.`);
 
       let today = new Date();
       let shortMonths = [
@@ -826,6 +826,32 @@ io.on("connection", (socket) => {
           room: user.room,
           users: getUsersInRoom(user.room),
         });
+
+        const userInDB = await findOneItemByObject(
+          client,
+          "chatroom",
+          "users",
+          { email: user.email.toLowerCase().trim() }
+        );
+
+        const newRooms = [...userInDB.rooms];
+
+        for (let i = 0; i < newRooms.length; i++) {
+          if (newRooms[i].room === user.room.toLowerCase().trim()) {
+            newRooms[i].lastTimeOnline = lastTimeOnline;
+          }
+        }
+
+        // Update the last time online in DB
+        await updateObjectByObject(
+          client,
+          "chatroom",
+          "users",
+          {
+            email: user.email.toLowerCase().trim(),
+          },
+          { rooms: newRooms }
+        );
       }
     } catch (e) {
       logger.log(e);
