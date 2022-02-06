@@ -858,6 +858,86 @@ io.on("connection", (socket) => {
       console.log("Could not leave room.", e);
     }
   });
+
+  socket.on("disconnect", async ({ lastTimeOnline }) => {
+    try {
+      const user = removeUser(socket.id);
+      console.log(`${user.user} has gone offline.`);
+
+      let today = new Date();
+      let shortMonths = [
+        "Jan",
+        "Feb",
+        "Mar",
+        "Apr",
+        "May",
+        "Jun",
+        "Jul",
+        "Aug",
+        "Sep",
+        "Oct",
+        "Nov",
+        "Dec",
+      ];
+
+      let formatted_date =
+        shortMonths[today.getMonth()] +
+        " " +
+        appendLeadingZeroes(today.getDate()) +
+        ", " +
+        today.getFullYear();
+
+      const uid = uuidv4();
+
+      if (user) {
+        const createdAt = Date.now();
+
+        io.to(user.room).emit("message", {
+          user: "Admin",
+          text: encrypt(`${user.user} has gone offline.`),
+          photoURL:
+            "https://neverfinite.com/wp-content/uploads/2021/10/cropped-LogoOnly512x512png-4.png",
+          createdAtDisplay: formatted_date,
+          uid: uid + createdAt,
+          createdAt,
+        });
+
+        io.to(user.room).emit("roomData", {
+          room: user.room,
+          users: getUsersInRoom(user.room),
+        });
+
+        const userInDB = await findOneItemByObject(
+          client,
+          "chatroom",
+          "users",
+          { email: user.email.toLowerCase().trim() }
+        );
+
+        const newRooms = [...userInDB.rooms];
+
+        for (let i = 0; i < newRooms.length; i++) {
+          if (newRooms[i].room === user.room.toLowerCase().trim()) {
+            newRooms[i].lastTimeOnline = lastTimeOnline;
+          }
+        }
+
+        // Update the last time online in DB
+        await updateObjectByObject(
+          client,
+          "chatroom",
+          "users",
+          {
+            email: user.email.toLowerCase().trim(),
+          },
+          { rooms: newRooms }
+        );
+      }
+    } catch (e) {
+      logger.log(e);
+      console.log("Could not leave room.", e);
+    }
+  });
 });
 
 server.listen(PORT, async () => {
