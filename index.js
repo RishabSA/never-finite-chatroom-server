@@ -862,7 +862,7 @@ io.on("connection", (socket) => {
   socket.on("disconnect", async ({ lastTimeOnline }) => {
     try {
       const user = removeUser(socket.id);
-      console.log(`${user.user} has gone offline.`);
+      console.log(`${user} has gone offline.`);
 
       let today = new Date();
       let shortMonths = [
