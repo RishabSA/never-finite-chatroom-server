@@ -25,8 +25,26 @@ const removeUser = (id) => {
   if (index !== -1) return users.splice(index, 1)[0];
 };
 
+const removeUserByEmail = (email) => {
+  const index = users.findIndex(
+    (user) => user.email.toLowerCase().trim() === email.toLowerCase().trim()
+  );
+  console.log(index);
+
+  if (index !== -1) return users.splice(index, 1)[0];
+};
+
 const getUser = (id) => users.find((user) => user.id === id);
 
-const getUsersInRoom = (room) => users.filter((user) => user.room === room);
+const getUserByEmail = (email) => users.find((user) => user.email.toLowerCase().trim() === email.toLowerCase().trim());
 
-module.exports = { addUser, removeUser, getUser, getUsersInRoom };
+const getUsersInRoom = (room) => users.filter((user) => user.room.toLowerCase().trim() === room.toLowerCase().trim());
+
+module.exports = {
+  addUser,
+  removeUser,
+  getUser,
+  getUserByEmail,
+  getUsersInRoom,
+  removeUserByEmail,
+};

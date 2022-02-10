@@ -3,10 +3,14 @@ const express = require("express");
 require("express-async-errors");
 const socketio = require("socket.io");
 const http = require("http");
-const { v4: uuidv4 } = require("uuid");
 const logger = require("./services/logService");
-const { encrypt, decrypt } = require("./utils/Cryptography");
-const { addUser, removeUser, getUser, getUsersInRoom } = require("./users");
+const { decrypt } = require("./utils/Cryptography");
+const {
+  addUser,
+  getUserByEmail,
+  getUsersInRoom,
+  removeUserByEmail,
+} = require("./users");
 const {
   findOneItemByObject,
   findMultipleItemsByObject,
@@ -310,23 +314,20 @@ io.on("connection", (socket) => {
   });
 
   socket.on(
-    "join",
-    async ({ name, room, photoURL, email, newlyCreatedRoom, isPrivate }) => {
+    "joinRoom",
+    async ({ name, room, photoURL, email, isPrivate, lastTimeOnline }) => {
       try {
         let shouldAddRoomToUser = true;
         let shouldAddRoom = true;
         let shouldAddUserToRoom = true;
 
-        const userInDB = await findOneItemByObject(
-          client,
-          "chatroom",
-          "users",
-          {
-            email,
-          }
-        );
+        console.log("join room:", email);
 
-        if (userInDB.rooms) {
+        let userInDB = await findOneItemByObject(client, "chatroom", "users", {
+          email: email.toLowerCase().trim(),
+        });
+
+        if (userInDB && userInDB.rooms) {
           userInDB.rooms.forEach((loopedRoom) => {
             if (
               loopedRoom.room.toLowerCase().trim() === room.toLowerCase().trim()
@@ -370,7 +371,11 @@ io.on("connection", (socket) => {
           });
         }
 
-        if (shouldAddRoomToUser) {
+        userInDB = await findOneItemByObject(client, "chatroom", "users", {
+          email: email.toLowerCase().trim(),
+        });
+
+        if (shouldAddRoomToUser && userInDB) {
           let newRoomsInUser = userInDB.rooms
             ? [
                 ...userInDB.rooms,
@@ -415,25 +420,31 @@ io.on("connection", (socket) => {
             }
           );
 
-          if (roomInDBNew.users) {
-            newUsersInRoom = [
-              ...roomInDBNew.users,
-              {
-                user: name,
-                photoURL,
-                email: email.trim().toLowerCase(),
-                accountStatus: userInDB.accountStatus,
-              },
-            ];
-          } else {
-            newUsersInRoom = [
-              {
-                user: name,
-                photoURL,
-                email: email.trim().toLowerCase(),
-                accountStatus: userInDB.accountStatus,
-              },
-            ];
+          userInDB = await findOneItemByObject(client, "chatroom", "users", {
+            email: email.toLowerCase().trim(),
+          });
+
+          if (userInDB) {
+            if (roomInDBNew.users) {
+              newUsersInRoom = [
+                ...roomInDBNew.users,
+                {
+                  user: name,
+                  photoURL,
+                  email: email.trim().toLowerCase(),
+                  accountStatus: userInDB.accountStatus,
+                },
+              ];
+            } else {
+              newUsersInRoom = [
+                {
+                  user: name,
+                  photoURL,
+                  email: email.trim().toLowerCase(),
+                  accountStatus: userInDB.accountStatus,
+                },
+              ];
+            }
           }
 
           updateObjectByObject(
@@ -487,9 +498,15 @@ io.on("connection", (socket) => {
           );
         }
 
-        for (let key in getUsersInRoom(room)) {
-          if (getUsersInRoom(room)[key].email === email) {
-            removeUser(getUsersInRoom(room)[key].id);
+        console.log(getUsersInRoom(room.toLowerCase().trim()));
+        console.log(email.toLowerCase().trim());
+        for (let key in getUsersInRoom(room.toLowerCase().trim())) {
+          if (
+            getUsersInRoom(room.toLowerCase().trim())
+              [key].email.toLowerCase()
+              .trim() === email.toLowerCase().trim()
+          ) {
+            removeUserByEmail(getUsersInRoom(room)[key].email);
           }
         }
 
@@ -506,70 +523,54 @@ io.on("connection", (socket) => {
             "An unexpected error has occurred while adding the user to the room!",
             error
           );
-          return callback(error);
+          return;
         }
 
         console.log("User has joined!", user);
 
-        let today = new Date();
-        let shortMonths = [
-          "Jan",
-          "Feb",
-          "Mar",
-          "Apr",
-          "May",
-          "Jun",
-          "Jul",
-          "Aug",
-          "Sep",
-          "Oct",
-          "Nov",
-          "Dec",
-        ];
-
-        let formatted_date =
-          shortMonths[today.getMonth()] +
-          " " +
-          appendLeadingZeroes(today.getDate()) +
-          ", " +
-          today.getFullYear();
-
-        const uid = uuidv4();
-
         socket.join(user.room);
-
-        const createdAt = Date.now();
-
-        if (newlyCreatedRoom) {
-          socket.emit("message", {
-            user: "Admin",
-            text: encrypt(`${user.user} has created the room, "${user.room}"`),
-            photoURL:
-              "https://neverfinite.com/wp-content/uploads/2021/10/cropped-LogoOnly512x512png-4.png",
-            createdAtDisplay: formatted_date,
-            createdAt,
-            uid: uid + createdAt,
-          });
-        }
-
-        socket.broadcast.to(user.room).emit("message", {
-          user: "Admin",
-          text: encrypt(
-            shouldAddRoomToUser
-              ? `${user.user} has joined the chat room.`
-              : `${user.user} is online.`
-          ),
-          photoURL:
-            "https://neverfinite.com/wp-content/uploads/2021/10/cropped-LogoOnly512x512png-4.png",
-          createdAtDisplay: formatted_date,
-          uid: uid + createdAt,
-          createdAt,
-        });
 
         io.to(user.room).emit("roomData", {
           room: user.room,
           users: getUsersInRoom(user.room),
         });
+
+        userInDB = await findOneItemByObject(client, "chatroom", "users", {
+          email: email.toLowerCase().trim(),
+        });
+
+        if (userInDB && userInDB.rooms) {
+          const newRooms = [...userInDB.rooms];
+
+          for (let i = 0; i < newRooms.length; i++) {
+            if (newRooms[i].room === user.room.toLowerCase().trim()) {
+              newRooms[i].lastTimeOnline = lastTimeOnline;
+            }
+          }
+
+          // Update the last time online in DB
+          await updateObjectByObject(
+            client,
+            "chatroom",
+            "users",
+            {
+              email: user.email.toLowerCase().trim(),
+            },
+            { rooms: newRooms }
+          );
+        }
+
+        userInDB = await findOneItemByObject(client, "chatroom", "users", {
+          email: email.toLowerCase().trim(),
+        });
+
+        if (userInDB) {
+          const roomsToSendToClient = [...userInDB.rooms];
+
+          socket.emit("rooms", {
+            rooms: roomsToSendToClient,
+          });
+        }
       } catch (e) {
         logger.log(e);
         console.log("Could not join the room!", e);
@@ -591,7 +592,7 @@ io.on("connection", (socket) => {
       callback
     ) => {
       try {
-        const user = getUser(socket.id);
+        const user = getUserByEmail(email.toLowerCase().trim());
         if (message && !isMedia) {
           console.log(decrypt(message));
         }
@@ -634,9 +635,9 @@ io.on("connection", (socket) => {
     }
   );
 
-  socket.on("deleteMessage", async (uid) => {
+  socket.on("deleteMessage", async (uid, email) => {
     try {
-      const user = getUser(socket.id);
+      const user = getUserByEmail(email);
 
       await deleteByObject(client, "chatroom", "messages", {
         uid,
@@ -651,34 +652,37 @@ io.on("connection", (socket) => {
     }
   });
 
-  socket.on("editMessage", async (uid, newMessage, newCreatedAtDisplay) => {
-    try {
-      const user = getUser(socket.id);
+  socket.on(
+    "editMessage",
+    async (uid, newMessage, newCreatedAtDisplay, email) => {
+      try {
+        const user = getUserByEmail(email);
 
-      await updateObjectByObject(
-        client,
-        "chatroom",
-        "messages",
-        {
+        await updateObjectByObject(
+          client,
+          "chatroom",
+          "messages",
+          {
+            uid,
+          },
+          {
+            text: newMessage,
+            createdAtDisplay: newCreatedAtDisplay,
+            isEdited: true,
+          }
+        );
+
+        io.to(user.room).emit("edit", {
           uid,
-        },
-        {
-          text: newMessage,
-          createdAtDisplay: newCreatedAtDisplay,
-          isEdited: true,
-        }
-      );
-
-      io.to(user.room).emit("edit", {
-        uid,
-        newMessage,
-        newCreatedAtDisplay,
-      });
-    } catch (e) {
-      logger.log(e);
-      console.log("Could not edit message!", e);
+          newMessage,
+          newCreatedAtDisplay,
+        });
+      } catch (e) {
+        logger.log(e);
+        console.log("Could not edit message!", e);
+      }
     }
-  });
+  );
 
   socket.on("newAccountStatus", async ({ email, accountStatus }) => {
     try {
@@ -738,9 +742,9 @@ io.on("connection", (socket) => {
     }
   });
 
-  socket.on("typingMessage", ({ message }) => {
+  socket.on("typingMessage", ({ email, message }) => {
     try {
-      const user = getUser(socket.id);
+      const user = getUserByEmail(email);
 
       if (message !== "")
         socket.broadcast.to(user.room).emit("typing", {
@@ -758,9 +762,9 @@ io.on("connection", (socket) => {
     }
   });
 
-  socket.on("stoppedTypingMessage", () => {
+  socket.on("stoppedTypingMessage", ({ email }) => {
     try {
-      const user = getUser(socket.id);
+      const user = getUserByEmail(email);
 
       io.to(user.room).emit("stoppedTyping", {
         user: user.user,
@@ -779,48 +783,12 @@ io.on("connection", (socket) => {
     }
   });
 
-  socket.on("leftRoom", async ({ lastTimeOnline }) => {
+  socket.on("leftRoom", async ({ lastTimeOnline, email }) => {
     try {
-      const user = removeUser(socket.id);
-      console.log(`${user.user} has gone offline.`);
-
-      let today = new Date();
-      let shortMonths = [
-        "Jan",
-        "Feb",
-        "Mar",
-        "Apr",
-        "May",
-        "Jun",
-        "Jul",
-        "Aug",
-        "Sep",
-        "Oct",
-        "Nov",
-        "Dec",
-      ];
-
-      let formatted_date =
-        shortMonths[today.getMonth()] +
-        " " +
-        appendLeadingZeroes(today.getDate()) +
-        ", " +
-        today.getFullYear();
-
-      const uid = uuidv4();
+      const user = removeUserByEmail(email.toLowerCase().trim());
 
       if (user) {
-        const createdAt = Date.now();
-
-        io.to(user.room).emit("message", {
-          user: "Admin",
-          text: encrypt(`${user.user} has gone offline.`),
-          photoURL:
-            "https://neverfinite.com/wp-content/uploads/2021/10/cropped-LogoOnly512x512png-4.png",
-          createdAtDisplay: formatted_date,
-          uid: uid + createdAt,
-          createdAt,
-        });
+        console.log(`${user.user} has gone offline.`);
 
         io.to(user.room).emit("roomData", {
           room: user.room,
@@ -834,24 +802,26 @@ io.on("connection", (socket) => {
           { email: user.email.toLowerCase().trim() }
         );
 
-        const newRooms = [...userInDB.rooms];
+        if (userInDB) {
+          const newRooms = [...userInDB.rooms];
 
-        for (let i = 0; i < newRooms.length; i++) {
-          if (newRooms[i].room === user.room.toLowerCase().trim()) {
-            newRooms[i].lastTimeOnline = lastTimeOnline;
+          for (let i = 0; i < newRooms.length; i++) {
+            if (newRooms[i].room === user.room.toLowerCase().trim()) {
+              newRooms[i].lastTimeOnline = lastTimeOnline;
+            }
           }
-        }
 
-        // Update the last time online in DB
-        await updateObjectByObject(
-          client,
-          "chatroom",
-          "users",
-          {
-            email: user.email.toLowerCase().trim(),
-          },
-          { rooms: newRooms }
-        );
+          // Update the last time online in DB
+          await updateObjectByObject(
+            client,
+            "chatroom",
+            "users",
+            {
+              email: user.email.toLowerCase().trim(),
+            },
+            { rooms: newRooms }
+          );
+        }
       }
     } catch (e) {
       logger.log(e);
