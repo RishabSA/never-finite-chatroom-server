@@ -783,8 +783,39 @@ io.on("connection", (socket) => {
     }
   });
 
-  socket.on("disconnected", () => {
+  socket.on("disconnected", ({ lastTimeOnline, email }) => {
     try {
+      const user = removeUserByEmail(email.toLowerCase().trim());
+
+      if (user) {
+        console.log(`${user.user} has disconnected.`);
+
+        const userInDB = await findOneItemByObject(
+          client,
+          "chatroom",
+          "users",
+          { email: email.toLowerCase().trim() }
+        );
+
+        if (userInDB) {
+          const newRooms = [...userInDB.rooms];
+
+          for (let i = 0; i < newRooms.length; i++) {
+            newRooms[i].lastTimeOnline = lastTimeOnline;
+          }
+
+          // Update the last time online in DB
+          await updateObjectByObject(
+            client,
+            "chatroom",
+            "users",
+            {
+              email: user.email.toLowerCase().trim(),
+            },
+            { rooms: newRooms }
+          );
+        }
+      }
     } catch (e) {
       logger.log(e);
       console.log("Could not disconnect.", e);
@@ -807,7 +838,7 @@ io.on("connection", (socket) => {
           client,
           "chatroom",
           "users",
-          { email: user.email.toLowerCase().trim() }
+          { email: email.toLowerCase().trim() }
         );
 
         if (userInDB) {
