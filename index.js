@@ -316,102 +316,50 @@ io.on("connection", (socket) => {
   socket.on(
     "joinRoom",
     async ({ name, room, photoURL, email, isPrivate, lastTimeOnline }) => {
-      try {
-        let shouldAddRoomToUser = true;
-        let shouldAddRoom = true;
-        let shouldAddUserToRoom = true;
+      if (room) {
+        try {
+          let shouldAddRoomToUser = true;
+          let shouldAddRoom = true;
+          let shouldAddUserToRoom = true;
 
-        console.log("join room:", email);
+          console.log("join room:", email);
 
-        let userInDB = await findOneItemByObject(client, "chatroom", "users", {
-          email: email.toLowerCase().trim(),
-        });
-
-        if (userInDB && userInDB.rooms) {
-          userInDB.rooms.forEach((loopedRoom) => {
-            if (
-              loopedRoom.room.toLowerCase().trim() === room.toLowerCase().trim()
-            ) {
-              shouldAddRoomToUser = false;
-            }
-          });
-        }
-
-        const rooms = await findMultipleItemsByObject(
-          client,
-          "chatroom",
-          "rooms",
-          {}
-        );
-
-        rooms.forEach((roomLooped) => {
-          if (
-            roomLooped.room.toLowerCase().trim() === room.trim().toLowerCase()
-          ) {
-            shouldAddRoom = false;
-          }
-        });
-
-        const roomInDB = await findOneItemByObject(
-          client,
-          "chatroom",
-          "rooms",
-          {
-            room,
-          }
-        );
-
-        if (roomInDB) {
-          roomInDB.users.forEach((user) => {
-            if (
-              user.email.toLowerCase().trim() === email.toLowerCase().trim()
-            ) {
-              shouldAddUserToRoom = false;
-            }
-          });
-        }
-
-        userInDB = await findOneItemByObject(client, "chatroom", "users", {
-          email: email.toLowerCase().trim(),
-        });
-
-        if (shouldAddRoomToUser && userInDB) {
-          let newRoomsInUser = userInDB.rooms
-            ? [
-                ...userInDB.rooms,
-                {
-                  room,
-                  isPrivate,
-                },
-              ]
-            : [
-                {
-                  room,
-                  isPrivate,
-                },
-              ];
-
-          updateObjectByObject(
+          let userInDB = await findOneItemByObject(
             client,
             "chatroom",
             "users",
-            { email },
-            { rooms: newRoomsInUser }
+            {
+              email: email.toLowerCase().trim(),
+            }
           );
-        }
 
-        if (shouldAddRoom) {
-          await create(client, "chatroom", "rooms", {
-            room,
-            isPrivate,
-            users: [],
+          if (userInDB && userInDB.rooms) {
+            userInDB.rooms.forEach((loopedRoom) => {
+              if (
+                loopedRoom.room.toLowerCase().trim() ===
+                room.toLowerCase().trim()
+              ) {
+                shouldAddRoomToUser = false;
+              }
+            });
+          }
+
+          const rooms = await findMultipleItemsByObject(
+            client,
+            "chatroom",
+            "rooms",
+            {}
+          );
+
+          rooms.forEach((roomLooped) => {
+            if (
+              roomLooped.room.toLowerCase().trim() === room.trim().toLowerCase()
+            ) {
+              shouldAddRoom = false;
+            }
           });
-        }
 
-        if (shouldAddUserToRoom) {
-          let newUsersInRoom = [];
-
-          const roomInDBNew = await findOneItemByObject(
+          const roomInDB = await findOneItemByObject(
             client,
             "chatroom",
             "rooms",
@@ -420,160 +368,220 @@ io.on("connection", (socket) => {
             }
           );
 
+          if (roomInDB) {
+            roomInDB.users.forEach((user) => {
+              if (
+                user.email.toLowerCase().trim() === email.toLowerCase().trim()
+              ) {
+                shouldAddUserToRoom = false;
+              }
+            });
+          }
+
+          userInDB = await findOneItemByObject(client, "chatroom", "users", {
+            email: email.toLowerCase().trim(),
+          });
+
+          if (shouldAddRoomToUser && userInDB) {
+            let newRoomsInUser = userInDB.rooms
+              ? [
+                  ...userInDB.rooms,
+                  {
+                    room,
+                    isPrivate,
+                  },
+                ]
+              : [
+                  {
+                    room,
+                    isPrivate,
+                  },
+                ];
+
+            updateObjectByObject(
+              client,
+              "chatroom",
+              "users",
+              { email },
+              { rooms: newRoomsInUser }
+            );
+          }
+
+          if (shouldAddRoom) {
+            await create(client, "chatroom", "rooms", {
+              room,
+              isPrivate,
+              users: [],
+            });
+          }
+
+          if (shouldAddUserToRoom) {
+            let newUsersInRoom = [];
+
+            const roomInDBNew = await findOneItemByObject(
+              client,
+              "chatroom",
+              "rooms",
+              {
+                room,
+              }
+            );
+
+            userInDB = await findOneItemByObject(client, "chatroom", "users", {
+              email: email.toLowerCase().trim(),
+            });
+
+            if (userInDB) {
+              if (roomInDBNew.users) {
+                newUsersInRoom = [
+                  ...roomInDBNew.users,
+                  {
+                    user: name,
+                    photoURL,
+                    email: email.trim().toLowerCase(),
+                    accountStatus: userInDB.accountStatus,
+                  },
+                ];
+              } else {
+                newUsersInRoom = [
+                  {
+                    user: name,
+                    photoURL,
+                    email: email.trim().toLowerCase(),
+                    accountStatus: userInDB.accountStatus,
+                  },
+                ];
+              }
+            }
+
+            updateObjectByObject(
+              client,
+              "chatroom",
+              "rooms",
+              { room },
+              { users: newUsersInRoom }
+            );
+          }
+
+          // Invite the user to the room if they haven't already been invited
+          let shouldInvite = true;
+
+          const roomsInDB = await findMultipleItemsByObject(
+            client,
+            "chatroom",
+            "rooms",
+            {}
+          );
+
+          roomsInDB.forEach((roomLooped) => {
+            if (
+              roomLooped.room.toLowerCase().trim() ===
+                room.toLowerCase().trim() &&
+              roomLooped.invitedUsers &&
+              roomLooped.invitedUsers.includes(email.toLowerCase().trim())
+            ) {
+              shouldInvite = false;
+            }
+          });
+
+          if (shouldInvite) {
+            const { invitedUsers } = await findOneItemByObject(
+              client,
+              "chatroom",
+              "rooms",
+              { room: room.toLowerCase().trim() }
+            );
+
+            const newInvitedUsers = invitedUsers
+              ? [...invitedUsers, email.toLowerCase().trim()]
+              : [email.toLowerCase().trim()];
+
+            await updateObjectByObject(
+              client,
+              "chatroom",
+              "rooms",
+              { room: room.toLowerCase().trim() },
+              { invitedUsers: newInvitedUsers }
+            );
+          }
+
+          console.log(getUsersInRoom(room.toLowerCase().trim()));
+          console.log(email.toLowerCase().trim());
+          for (let key in getUsersInRoom(room.toLowerCase().trim())) {
+            if (
+              getUsersInRoom(room.toLowerCase().trim())
+                [key].email.toLowerCase()
+                .trim() === email.toLowerCase().trim()
+            ) {
+              removeUserByEmail(getUsersInRoom(room)[key].email);
+            }
+          }
+
+          const { error, user } = addUser({
+            id: socket.id,
+            name,
+            room,
+            photoURL,
+            email,
+          });
+
+          if (error) {
+            console.log(
+              "An unexpected error has occurred while adding the user to the room!",
+              error
+            );
+            return;
+          }
+
+          console.log("User has joined!", user);
+
+          socket.join(user.room);
+
+          io.to(user.room).emit("roomData", {
+            room: user.room,
+            users: getUsersInRoom(user.room),
+          });
+
+          userInDB = await findOneItemByObject(client, "chatroom", "users", {
+            email: email.toLowerCase().trim(),
+          });
+
+          if (userInDB && userInDB.rooms) {
+            const newRooms = [...userInDB.rooms];
+
+            for (let i = 0; i < newRooms.length; i++) {
+              if (newRooms[i].room === user.room.toLowerCase().trim()) {
+                newRooms[i].lastTimeOnline = lastTimeOnline;
+              }
+            }
+
+            // Update the last time online in DB
+            await updateObjectByObject(
+              client,
+              "chatroom",
+              "users",
+              {
+                email: user.email.toLowerCase().trim(),
+              },
+              { rooms: newRooms }
+            );
+          }
+
           userInDB = await findOneItemByObject(client, "chatroom", "users", {
             email: email.toLowerCase().trim(),
           });
 
           if (userInDB) {
-            if (roomInDBNew.users) {
-              newUsersInRoom = [
-                ...roomInDBNew.users,
-                {
-                  user: name,
-                  photoURL,
-                  email: email.trim().toLowerCase(),
-                  accountStatus: userInDB.accountStatus,
-                },
-              ];
-            } else {
-              newUsersInRoom = [
-                {
-                  user: name,
-                  photoURL,
-                  email: email.trim().toLowerCase(),
-                  accountStatus: userInDB.accountStatus,
-                },
-              ];
-            }
+            const roomsToSendToClient = [...userInDB.rooms];
+
+            socket.emit("rooms", {
+              rooms: roomsToSendToClient,
+            });
           }
-
-          updateObjectByObject(
-            client,
-            "chatroom",
-            "rooms",
-            { room },
-            { users: newUsersInRoom }
-          );
+        } catch (e) {
+          logger.log(e);
+          console.log("Could not join the room!", e);
         }
-
-        // Invite the user to the room if they haven't already been invited
-        let shouldInvite = true;
-
-        const roomsInDB = await findMultipleItemsByObject(
-          client,
-          "chatroom",
-          "rooms",
-          {}
-        );
-
-        roomsInDB.forEach((roomLooped) => {
-          if (
-            roomLooped.room.toLowerCase().trim() ===
-              room.toLowerCase().trim() &&
-            roomLooped.invitedUsers &&
-            roomLooped.invitedUsers.includes(email.toLowerCase().trim())
-          ) {
-            shouldInvite = false;
-          }
-        });
-
-        if (shouldInvite) {
-          const { invitedUsers } = await findOneItemByObject(
-            client,
-            "chatroom",
-            "rooms",
-            { room: room.toLowerCase().trim() }
-          );
-
-          const newInvitedUsers = invitedUsers
-            ? [...invitedUsers, email.toLowerCase().trim()]
-            : [email.toLowerCase().trim()];
-
-          await updateObjectByObject(
-            client,
-            "chatroom",
-            "rooms",
-            { room: room.toLowerCase().trim() },
-            { invitedUsers: newInvitedUsers }
-          );
-        }
-
-        console.log(getUsersInRoom(room.toLowerCase().trim()));
-        console.log(email.toLowerCase().trim());
-        for (let key in getUsersInRoom(room.toLowerCase().trim())) {
-          if (
-            getUsersInRoom(room.toLowerCase().trim())
-              [key].email.toLowerCase()
-              .trim() === email.toLowerCase().trim()
-          ) {
-            removeUserByEmail(getUsersInRoom(room)[key].email);
-          }
-        }
-
-        const { error, user } = addUser({
-          id: socket.id,
-          name,
-          room,
-          photoURL,
-          email,
-        });
-
-        if (error) {
-          console.log(
-            "An unexpected error has occurred while adding the user to the room!",
-            error
-          );
-          return;
-        }
-
-        console.log("User has joined!", user);
-
-        socket.join(user.room);
-
-        io.to(user.room).emit("roomData", {
-          room: user.room,
-          users: getUsersInRoom(user.room),
-        });
-
-        userInDB = await findOneItemByObject(client, "chatroom", "users", {
-          email: email.toLowerCase().trim(),
-        });
-
-        if (userInDB && userInDB.rooms) {
-          const newRooms = [...userInDB.rooms];
-
-          for (let i = 0; i < newRooms.length; i++) {
-            if (newRooms[i].room === user.room.toLowerCase().trim()) {
-              newRooms[i].lastTimeOnline = lastTimeOnline;
-            }
-          }
-
-          // Update the last time online in DB
-          await updateObjectByObject(
-            client,
-            "chatroom",
-            "users",
-            {
-              email: user.email.toLowerCase().trim(),
-            },
-            { rooms: newRooms }
-          );
-        }
-
-        userInDB = await findOneItemByObject(client, "chatroom", "users", {
-          email: email.toLowerCase().trim(),
-        });
-
-        if (userInDB) {
-          const roomsToSendToClient = [...userInDB.rooms];
-
-          socket.emit("rooms", {
-            rooms: roomsToSendToClient,
-          });
-        }
-      } catch (e) {
-        logger.log(e);
-        console.log("Could not join the room!", e);
       }
     }
   );
