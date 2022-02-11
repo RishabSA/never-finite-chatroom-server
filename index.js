@@ -152,13 +152,6 @@ router.get("/messages/:room", async (req, res) => {
   }
 });
 
-function appendLeadingZeroes(n) {
-  if (n <= 9) {
-    return "0" + n;
-  }
-  return n;
-}
-
 io.on("connection", (socket) => {
   socket.on("userOnline", async ({ name, photoURL, email }) => {
     try {
