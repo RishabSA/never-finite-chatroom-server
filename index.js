@@ -783,7 +783,7 @@ io.on("connection", (socket) => {
     }
   });
 
-  socket.on("disconnected", ({ lastTimeOnline, email }) => {
+  socket.on("disconnected", async ({ lastTimeOnline, email }) => {
     try {
       const user = removeUserByEmail(email.toLowerCase().trim());
 
