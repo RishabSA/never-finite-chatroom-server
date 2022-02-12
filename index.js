@@ -543,9 +543,7 @@ io.on("connection", (socket) => {
             const newRooms = [...userInDB.rooms];
 
             for (let i = 0; i < newRooms.length; i++) {
-              if (newRooms[i].room === user.room.toLowerCase().trim()) {
-                newRooms[i].lastTimeOnline = lastTimeOnline;
-              }
+              newRooms[i].lastTimeOnline = lastTimeOnline;
             }
 
             // Update the last time online in DB
