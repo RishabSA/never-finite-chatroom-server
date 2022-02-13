@@ -1,6 +1,6 @@
 # Overview
 
-This is the Node.js server for NeverFinite Chatroom.
+This is the Node.js server for Never Finite Chatroom.
 
 # Setup
 
