@@ -784,10 +784,8 @@ io.on("connection", (socket) => {
 
   socket.on("disconnected", async ({ lastTimeOnline, email }) => {
     try {
-      const user = removeUserByEmail(email.toLowerCase().trim());
-
-      if (user) {
-        console.log(`${user.user} has disconnected.`);
+      if (email) {
+        console.log(`${email} has disconnected.`);
 
         const userInDB = await findOneItemByObject(
           client,
@@ -821,12 +819,12 @@ io.on("connection", (socket) => {
     }
   });
 
-  socket.on("leftRoom", async ({ lastTimeOnline, email }) => {
+  socket.on("leftRoom", async ({ lastTimeOnline, email, room }) => {
     try {
       const user = removeUserByEmail(email.toLowerCase().trim());
 
       if (user) {
-        console.log(`${user.user} has gone offline.`);
+        console.log(`${user.user} (${email}) has left the room, ${room}.`);
 
         io.to(user.room).emit("roomData", {
           room: user.room,
