@@ -113,6 +113,14 @@ router.get("/rooms/:room", async (req, res) => {
   }
 });
 
+router.get("/rooms/onlineUsers/:room", async (req, res) => {
+  try {
+    res.send(getUsersInRoom(req.params.room));
+  } catch (e) {
+    res.status(500).send({ message: e.message });
+  }
+});
+
 router.get("/messages", async (req, res) => {
   try {
     const result = await findMultipleItemsByObject(
