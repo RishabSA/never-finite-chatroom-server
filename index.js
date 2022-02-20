@@ -794,7 +794,7 @@ io.on("connection", (socket) => {
           { email: email.toLowerCase().trim() }
         );
 
-        if (userInDB) {
+        if (userInDB && user) {
           const newRooms = [...userInDB.rooms];
 
           for (let i = 0; i < newRooms.length; i++) {
