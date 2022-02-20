@@ -827,8 +827,8 @@ io.on("connection", (socket) => {
         console.log(`${user.user} (${email}) has left the room, ${room}.`);
 
         io.to(user.room).emit("roomData", {
-          room: user.room,
-          users: getUsersInRoom(user.room),
+          room: room.toLowerCase().trim(),
+          users: getUsersInRoom(room.toLowerCase().trim()),
         });
 
         const userInDB = await findOneItemByObject(
@@ -842,7 +842,7 @@ io.on("connection", (socket) => {
           const newRooms = [...userInDB.rooms];
 
           for (let i = 0; i < newRooms.length; i++) {
-            if (newRooms[i].room === user.room.toLowerCase().trim()) {
+            if (newRooms[i].room === room.toLowerCase().trim()) {
               newRooms[i].lastTimeOnline = lastTimeOnline;
             }
           }
@@ -853,7 +853,7 @@ io.on("connection", (socket) => {
             "chatroom",
             "users",
             {
-              email: user.email.toLowerCase().trim(),
+              email: email.toLowerCase().trim(),
             },
             { rooms: newRooms }
           );
