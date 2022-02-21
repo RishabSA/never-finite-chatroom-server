@@ -749,32 +749,27 @@ io.on("connection", (socket) => {
     }
   });
 
-  socket.on("typingMessage", ({ email, message }) => {
+  socket.on("startTypingMessage", ({ user, userEmail }) => {
     try {
-      const user = getUserByEmail(email);
+      const userInRoom = getUserByEmail(email);
 
-      if (message !== "")
-        socket.broadcast.to(user.room).emit("typing", {
-          user: user.user,
-          text: `${user.user} is typing...`,
-        });
-      else {
-        io.to(user.room).emit("stoppedTyping", {
-          user: user.user,
-        });
-      }
+      io.to(userInRoom.room).emit("startTypingMessage", {
+        user: user.toLowerCase().trim(),
+        userEmail: userEmail.toLowerCase().trim(),
+      });
     } catch (e) {
       logger.log(e);
       console.log("Could not edit message!", e);
     }
   });
 
-  socket.on("stoppedTypingMessage", ({ email }) => {
+  socket.on("stopTypingMessage", ({ user, userEmail }) => {
     try {
-      const user = getUserByEmail(email);
+      const userInRoom = getUserByEmail(email);
 
-      io.to(user.room).emit("stoppedTyping", {
-        user: user.user,
+      io.to(userInRoom.room).emit("startTypingMessage", {
+        user: user.toLowerCase().trim(),
+        userEmail: userEmail.toLowerCase().trim(),
       });
     } catch (e) {
       logger.log(e);
