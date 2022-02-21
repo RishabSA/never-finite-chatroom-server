@@ -751,29 +751,29 @@ io.on("connection", (socket) => {
 
   socket.on("startTypingMessage", ({ user, userEmail }) => {
     try {
-      const userInRoom = getUserByEmail(email);
+      const userInRoom = getUserByEmail(userEmail);
 
       io.to(userInRoom.room).emit("startTypingMessage", {
-        user: user.toLowerCase().trim(),
+        user,
         userEmail: userEmail.toLowerCase().trim(),
       });
     } catch (e) {
       logger.log(e);
-      console.log("Could not edit message!", e);
+      console.log("Could not start typing message!", e);
     }
   });
 
   socket.on("stopTypingMessage", ({ user, userEmail }) => {
     try {
-      const userInRoom = getUserByEmail(email);
+      const userInRoom = getUserByEmail(userEmail);
 
       io.to(userInRoom.room).emit("startTypingMessage", {
-        user: user.toLowerCase().trim(),
+        user,
         userEmail: userEmail.toLowerCase().trim(),
       });
     } catch (e) {
       logger.log(e);
-      console.log("Could not edit message!", e);
+      console.log("Could not stop typing message!", e);
     }
   });
 
