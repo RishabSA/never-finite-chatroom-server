@@ -180,6 +180,177 @@ io.on("connection", (socket) => {
         await create(client, "chatroom", "users", user);
       }
 
+      let shouldAddRoomToUser = true;
+      let shouldAddRoom = true;
+      let shouldAddUserToRoom = true;
+
+      let userInDB = await findOneItemByObject(client, "chatroom", "users", {
+        email: email.toLowerCase().trim(),
+      });
+
+      if (userInDB && userInDB.rooms) {
+        userInDB.rooms.forEach((loopedRoom) => {
+          if (
+            loopedRoom.room.toLowerCase().trim() === "public"
+          ) {
+            shouldAddRoomToUser = false;
+          }
+        });
+      }
+
+      const rooms = await findMultipleItemsByObject(
+        client,
+        "chatroom",
+        "rooms",
+        {}
+      );
+
+      rooms.forEach((roomLooped) => {
+        if (
+          roomLooped.room.toLowerCase().trim() === "public"
+        ) {
+          shouldAddRoom = false;
+        }
+      });
+
+      const roomInDB = await findOneItemByObject(client, "chatroom", "rooms", {
+        room: "public",
+      });
+
+      if (roomInDB) {
+        roomInDB.users.forEach((user) => {
+          if (user.email.toLowerCase().trim() === email.toLowerCase().trim()) {
+            shouldAddUserToRoom = false;
+          }
+        });
+      }
+
+      userInDB = await findOneItemByObject(client, "chatroom", "users", {
+        email: email.toLowerCase().trim(),
+      });
+
+      if (shouldAddRoomToUser && userInDB) {
+        let newRoomsInUser = userInDB.rooms
+          ? [
+              ...userInDB.rooms,
+              {
+                room: "public",
+                isPrivate: false,
+              },
+            ]
+          : [
+              {
+                room: "public",
+                isPrivate: false,
+              },
+            ];
+
+        updateObjectByObject(
+          client,
+          "chatroom",
+          "users",
+          { email },
+          { rooms: newRoomsInUser }
+        );
+      }
+
+      if (shouldAddRoom) {
+        await create(client, "chatroom", "rooms", {
+          room: "public",
+          isPrivate: false,
+          users: [],
+        });
+      }
+
+      if (shouldAddUserToRoom) {
+        let newUsersInRoom = [];
+
+        const roomInDBNew = await findOneItemByObject(
+          client,
+          "chatroom",
+          "rooms",
+          {
+            room: "public",
+          }
+        );
+
+        userInDB = await findOneItemByObject(client, "chatroom", "users", {
+          email: email.toLowerCase().trim(),
+        });
+
+        if (userInDB) {
+          if (roomInDBNew.users) {
+            newUsersInRoom = [
+              ...roomInDBNew.users,
+              {
+                user: name,
+                photoURL,
+                email: email.trim().toLowerCase(),
+                accountStatus: userInDB.accountStatus,
+              },
+            ];
+          } else {
+            newUsersInRoom = [
+              {
+                user: name,
+                photoURL,
+                email: email.trim().toLowerCase(),
+                accountStatus: userInDB.accountStatus,
+              },
+            ];
+          }
+        }
+
+        updateObjectByObject(
+          client,
+          "chatroom",
+          "rooms",
+          { room: "public" },
+          { users: newUsersInRoom }
+        );
+      }
+
+      // Invite the user to the room if they haven't already been invited
+      let shouldInvite = true;
+
+      const roomsInDB = await findMultipleItemsByObject(
+        client,
+        "chatroom",
+        "rooms",
+        {}
+      );
+
+      roomsInDB.forEach((roomLooped) => {
+        if (
+          roomLooped.room.toLowerCase().trim() === "public" &&
+          roomLooped.invitedUsers &&
+          roomLooped.invitedUsers.includes(email.toLowerCase().trim())
+        ) {
+          shouldInvite = false;
+        }
+      });
+
+      if (shouldInvite) {
+        const { invitedUsers } = await findOneItemByObject(
+          client,
+          "chatroom",
+          "rooms",
+          { room: "public" }
+        );
+
+        const newInvitedUsers = invitedUsers
+          ? [...invitedUsers, email.toLowerCase().trim()]
+          : [email.toLowerCase().trim()];
+
+        await updateObjectByObject(
+          client,
+          "chatroom",
+          "rooms",
+          { room: "public" },
+          { invitedUsers: newInvitedUsers }
+        );
+      }
+
       socket.emit("userInfo");
     } catch (e) {
       logger.log(e);
