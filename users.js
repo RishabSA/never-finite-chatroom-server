@@ -1,4 +1,4 @@
-const users = [];
+const usersInRooms = [];
 
 const addUser = ({ id, name, room, photoURL, email }) => {
   name = name;
@@ -6,7 +6,7 @@ const addUser = ({ id, name, room, photoURL, email }) => {
   photoURL = photoURL;
   email = email;
 
-  const existingUser = users.find(
+  const existingUser = usersInRooms.find(
     (user) => user.room === room && user.email === email
   );
 
@@ -14,31 +14,31 @@ const addUser = ({ id, name, room, photoURL, email }) => {
 
   const user = { id, user: name, room, photoURL, email };
 
-  users.push(user);
+  usersInRooms.push(user);
 
   return { user };
 };
 
 const removeUser = (id) => {
-  const index = users.findIndex((user) => user.id === id);
+  const index = usersInRooms.findIndex((user) => user.id === id);
 
-  if (index !== -1) return users.splice(index, 1)[0];
+  if (index !== -1) return usersInRooms.splice(index, 1)[0];
 };
 
 const removeUserByEmail = (email) => {
-  const index = users.findIndex(
+  const index = usersInRooms.findIndex(
     (user) => user.email.toLowerCase().trim() === email.toLowerCase().trim()
   );
   console.log(index);
 
-  if (index !== -1) return users.splice(index, 1)[0];
+  if (index !== -1) return usersInRooms.splice(index, 1)[0];
 };
 
-const getUser = (id) => users.find((user) => user.id === id);
+const getUser = (id) => usersInRooms.find((user) => user.id === id);
 
-const getUserByEmail = (email) => users.find((user) => user.email.toLowerCase().trim() === email.toLowerCase().trim());
+const getUserByEmail = (email) => usersInRooms.find((user) => user.email.toLowerCase().trim() === email.toLowerCase().trim());
 
-const getUsersInRoom = (room) => users.filter((user) => user.room.toLowerCase().trim() === room.toLowerCase().trim());
+const getUsersInRoom = (room) => usersInRooms.filter((user) => user.room.toLowerCase().trim() === room.toLowerCase().trim());
 
 module.exports = {
   addUser,
