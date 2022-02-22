@@ -749,12 +749,9 @@ io.on("connection", (socket) => {
     }
   });
 
-  socket.on("startTypingMessage", ({ user, userEmail }) => {
+  socket.on("startTypingMessage", ({ room, userEmail }) => {
     try {
-      const userInRoom = getUserByEmail(userEmail);
-
-      io.to(userInRoom.room).emit("startTypingMessage", {
-        user,
+      io.to(room).emit("startTypingMessage", {
         userEmail: userEmail.toLowerCase().trim(),
       });
     } catch (e) {
@@ -763,12 +760,9 @@ io.on("connection", (socket) => {
     }
   });
 
-  socket.on("stopTypingMessage", ({ user, userEmail }) => {
+  socket.on("stopTypingMessage", ({ room, userEmail }) => {
     try {
-      const userInRoom = getUserByEmail(userEmail);
-
-      io.to(userInRoom.room).emit("startTypingMessage", {
-        user,
+      io.to(room).emit("startTypingMessage", {
         userEmail: userEmail.toLowerCase().trim(),
       });
     } catch (e) {
