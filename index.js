@@ -762,7 +762,7 @@ io.on("connection", (socket) => {
 
   socket.on("stopTypingMessage", ({ room, userEmail }) => {
     try {
-      io.to(room).emit("startTypingMessage", {
+      io.to(room).emit("stopTypingMessage", {
         userEmail: userEmail.toLowerCase().trim(),
       });
     } catch (e) {
