@@ -589,6 +589,7 @@ io.on("connection", (socket) => {
     "sendMessage",
     async (
       room,
+      user,
       photoURL,
       email,
       message,
@@ -599,7 +600,6 @@ io.on("connection", (socket) => {
       callback
     ) => {
       try {
-        const user = getUserByEmail(email.toLowerCase().trim());
         if (message && !isMedia) {
           console.log(decrypt(message));
         }
@@ -607,7 +607,7 @@ io.on("connection", (socket) => {
         const createdAt = Date.now();
 
         await create(client, "chatroom", "messages", {
-          user: user.user,
+          user,
           room,
           photoURL,
           email,
@@ -620,8 +620,8 @@ io.on("connection", (socket) => {
           uid: uid + createdAt,
         });
 
-        io.to(user.room).emit("message", {
-          user: user.user,
+        io.to(room).emit("message", {
+          user,
           room,
           photoURL,
           email,
