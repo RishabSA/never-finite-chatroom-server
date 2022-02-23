@@ -29,7 +29,6 @@ const removeUserByEmail = (email) => {
   const index = usersInRooms.findIndex(
     (user) => user.email.toLowerCase().trim() === email.toLowerCase().trim()
   );
-  console.log(index);
 
   if (index !== -1) return usersInRooms.splice(index, 1)[0];
 };
