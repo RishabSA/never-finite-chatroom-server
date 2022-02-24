@@ -819,6 +819,16 @@ io.on("connection", (socket) => {
             { rooms: newRooms }
           );
         }
+
+        const existingUserInArray = allUsersInRoomSelector.find(
+          (userLooped) =>
+            userLooped.email.toLowerCase().trim() === email.toLowerCase().trim()
+        );
+
+        allUsersInRoomSelector.splice(
+          allUsersInRoomSelector.indexOf(existingUserInArray),
+          1
+        );
       }
     } catch (e) {
       logger.log(e);
