@@ -24,8 +24,6 @@ const uri =
 
 const client = new MongoClient(uri);
 
-const allUsersInRoomSelector = [];
-
 const PORT = process.env.PORT || 5000;
 
 logger.init();
@@ -182,23 +180,7 @@ io.on("connection", (socket) => {
         await create(client, "chatroom", "users", user);
       }
 
-      const existingUserInArray = allUsersInRoomSelector.find(
-        (userLooped) =>
-          userLooped.email.toLowerCase().trim() === email.toLowerCase().trim()
-      );
-
-      if (existingUserInArray) {
-        existingUserInArray.socket.emit("logout");
-        allUsersInRoomSelector.splice(
-          allUsersInRoomSelector.indexOf(existingUserInArray),
-          1
-        );
-        allUsersInRoomSelector.push({ ...user, socket });
-        socket.emit("userInfo");
-      } else {
-        allUsersInRoomSelector.push({ ...user, socket });
-        socket.emit("userInfo");
-      }
+      socket.emit("userInfo");
     } catch (e) {
       logger.log(e);
       console.log("Could not get online!", e);
@@ -819,16 +801,6 @@ io.on("connection", (socket) => {
             { rooms: newRooms }
           );
         }
-
-        const existingUserInArray = allUsersInRoomSelector.find(
-          (userLooped) =>
-            userLooped.email.toLowerCase().trim() === email.toLowerCase().trim()
-        );
-
-        allUsersInRoomSelector.splice(
-          allUsersInRoomSelector.indexOf(existingUserInArray),
-          1
-        );
       }
     } catch (e) {
       logger.log(e);
