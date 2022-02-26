@@ -307,24 +307,26 @@ io.on("connection", (socket) => {
             { invitedUsers: newInvitedUsers }
           );
 
-          const { invitesInUser } = await findOneItemByObject(
+          const userInDB = await findOneItemByObject(
             client,
             "chatroom",
             "users",
             { email: user.email.toLowerCase().trim() }
           );
 
-          const newInvites = invitesinUser
-            ? [...invitesinUser, room.toLowerCase().trim()]
-            : [room.toLowerCase().trim()];
+          if (userInDB) {
+            const newInvites = userInDB.invitesinUser
+              ? [...userInDB.invitesinUser, room.toLowerCase().trim()]
+              : [room.toLowerCase().trim()];
 
-          await updateObjectByObject(
-            client,
-            "chatroom",
-            "users",
-            { email: user.email.toLowerCase().trim() },
-            { invites: newInvites }
-          );
+            await updateObjectByObject(
+              client,
+              "chatroom",
+              "users",
+              { email: user.email.toLowerCase().trim() },
+              { invites: newInvites }
+            );
+          }
         }
       });
     } catch (e) {
