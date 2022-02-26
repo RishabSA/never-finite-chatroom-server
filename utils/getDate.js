@@ -1,11 +1,11 @@
-export function appendLeadingZeroes(n) {
+function appendLeadingZeroes(n) {
   if (n <= 9) {
     return "0" + n;
   }
   return n;
 }
 
-export function getDate() {
+function getDate() {
   const today = new Date();
   const shortMonths = [
     "Jan",
@@ -42,3 +42,8 @@ export function getDate() {
     AmOrPm
   );
 }
+
+module.exports = {
+  appendLeadingZeroes,
+  getDate,
+};
