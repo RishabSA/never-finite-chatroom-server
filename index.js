@@ -545,7 +545,7 @@ io.on("connection", (socket) => {
 
           const formatted_date = getDate();
 
-          if (shouldAddUserToRoom) {
+          if (shouldAddRoomToUser) {
             socket.emit("message", {
               user: "Admin",
               email: "",
