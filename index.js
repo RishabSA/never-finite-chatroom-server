@@ -266,7 +266,7 @@ io.on("connection", (socket) => {
 
   socket.on("inviteUsers", ({ room, selectedUsersToInvite }) => {
     try {
-      selectedUsersToInvite.forEach(async (user) => {
+      selectedUsersToInvite.forEach(async (email) => {
         let shouldInvite = true;
 
         const rooms = await findMultipleItemsByObject(
@@ -281,7 +281,7 @@ io.on("connection", (socket) => {
             roomLooped.room.toLowerCase().trim() ===
               room.toLowerCase().trim() &&
             roomLooped.invitedUsers &&
-            roomLooped.invitedUsers.includes(user.email.toLowerCase().trim())
+            roomLooped.invitedUsers.includes(email.toLowerCase().trim())
           ) {
             shouldInvite = false;
           }
@@ -296,8 +296,8 @@ io.on("connection", (socket) => {
           );
 
           const newInvitedUsers = invitedUsers
-            ? [...invitedUsers, user.email.toLowerCase().trim()]
-            : [user.email.toLowerCase().trim()];
+            ? [...invitedUsers, email.toLowerCase().trim()]
+            : [email.toLowerCase().trim()];
 
           await updateObjectByObject(
             client,
@@ -311,7 +311,7 @@ io.on("connection", (socket) => {
             client,
             "chatroom",
             "users",
-            { email: user.email.toLowerCase().trim() }
+            { email: email.toLowerCase().trim() }
           );
 
           if (userInDB) {
@@ -323,7 +323,7 @@ io.on("connection", (socket) => {
               client,
               "chatroom",
               "users",
-              { email: user.email.toLowerCase().trim() },
+              { email: email.toLowerCase().trim() },
               { invites: newInvites }
             );
           }
