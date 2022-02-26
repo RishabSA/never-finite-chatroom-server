@@ -296,11 +296,8 @@ io.on("connection", (socket) => {
           );
 
           const newInvitedUsers = invitedUsers
-            ? [
-                ...invitedUsers,
-                user.email.toLowerCase().trim().toLowerCase().trim(),
-              ]
-            : [user.email.toLowerCase().trim().toLowerCase().trim()];
+            ? [...invitedUsers, user.email.toLowerCase().trim()]
+            : [user.email.toLowerCase().trim()];
 
           await updateObjectByObject(
             client,
@@ -308,6 +305,25 @@ io.on("connection", (socket) => {
             "rooms",
             { room: room.toLowerCase().trim() },
             { invitedUsers: newInvitedUsers }
+          );
+
+          const { invitesInUser } = await findOneItemByObject(
+            client,
+            "chatroom",
+            "users",
+            { email: user.email.toLowerCase().trim() }
+          );
+
+          const newInvites = invitesinUser
+            ? [...invitesinUser, room.toLowerCase().trim()]
+            : [room.toLowerCase().trim()];
+
+          await updateObjectByObject(
+            client,
+            "chatroom",
+            "users",
+            { email: user.email.toLowerCase().trim() },
+            { invites: newInvites }
           );
         }
       });
