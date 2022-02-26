@@ -4,7 +4,7 @@ require("express-async-errors");
 const socketio = require("socket.io");
 const http = require("http");
 const logger = require("./services/logService");
-const { decrypt } = require("./utils/Cryptography");
+const { encrypt, decrypt } = require("./utils/Cryptography");
 const {
   addUser,
   getUserByEmail,
