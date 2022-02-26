@@ -19,6 +19,8 @@ const {
   deleteByObject,
 } = require("./services/databaseService");
 
+const { getDate } = require("./utils/getDate");
+
 const uri =
   "mongodb+srv://never-finite-chatroom-admin:4RjGzhTbbcepwPGe@never-finite-chatroom.mpem8.mongodb.net/chatroom?retryWrites=true&w=majority";
 
@@ -37,6 +39,7 @@ const io = socketio(server, {
     origin: "*",
   },
 });
+const { v4: uuidv4 } = require("uuid");
 
 require("./cors")(app);
 app.use(router);
@@ -537,6 +540,41 @@ io.on("connection", (socket) => {
           console.log("User has joined!", user);
 
           socket.join(user.room);
+
+          let uid = uuidv4();
+
+          const formatted_date = getDate();
+
+          if (shouldAddUserToRoom) {
+            socket.emit("message", {
+              user: "Admin",
+              email: "",
+              text: encrypt(`${user.name}, welcome to room ${user.room}.`),
+              photoURL:
+                "https://neverfinite.com/wp-content/uploads/2021/10/cropped-LogoOnly512x512png-4.png",
+              createdAtDisplay: formatted_date,
+              uid,
+              room,
+              createdAt: Date.now(),
+              media: "",
+              mediaPath: "",
+              isEdited: false,
+            });
+            socket.broadcast.to(user.room).emit("message", {
+              user: "Admin",
+              email: "",
+              text: encrypt(`${user.name} has joined!`),
+              photoURL:
+                "https://neverfinite.com/wp-content/uploads/2021/10/cropped-LogoOnly512x512png-4.png",
+              createdAtDisplay: formatted_date,
+              uid,
+              room,
+              createdAt: Date.now(),
+              media: "",
+              mediaPath: "",
+              isEdited: false,
+            });
+          }
 
           io.to(user.room).emit("roomData", {
             room: user.room,
