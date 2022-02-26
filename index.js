@@ -549,7 +549,7 @@ io.on("connection", (socket) => {
             socket.emit("message", {
               user: "Admin",
               email: "",
-              text: encrypt(`${user.name}, welcome to room ${user.room}.`),
+              text: encrypt("Welcome to the room!"),
               photoURL:
                 "https://neverfinite.com/wp-content/uploads/2021/10/cropped-LogoOnly512x512png-4.png",
               createdAtDisplay: formatted_date,
@@ -563,7 +563,7 @@ io.on("connection", (socket) => {
             socket.broadcast.to(user.room).emit("message", {
               user: "Admin",
               email: "",
-              text: encrypt(`${user.name} has joined!`),
+              text: encrypt(`${user.name} has joined the room!`),
               photoURL:
                 "https://neverfinite.com/wp-content/uploads/2021/10/cropped-LogoOnly512x512png-4.png",
               createdAtDisplay: formatted_date,
