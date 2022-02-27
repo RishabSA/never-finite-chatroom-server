@@ -843,10 +843,11 @@ io.on("connection", (socket) => {
     }
   });
 
-  socket.on("startTypingMessage", ({ room, userEmail }) => {
+  socket.on("startTypingMessage", ({ room, userEmail, userName }) => {
     try {
       io.to(room).emit("startTypingMessage", {
         userEmail: userEmail.toLowerCase().trim(),
+        userName,
       });
     } catch (e) {
       logger.log(e);
@@ -854,10 +855,11 @@ io.on("connection", (socket) => {
     }
   });
 
-  socket.on("stopTypingMessage", ({ room, userEmail }) => {
+  socket.on("stopTypingMessage", ({ room, userEmail, userName }) => {
     try {
       io.to(room).emit("stopTypingMessage", {
         userEmail: userEmail.toLowerCase().trim(),
+        userName,
       });
     } catch (e) {
       logger.log(e);
