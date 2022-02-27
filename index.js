@@ -335,7 +335,7 @@ io.on("connection", (socket) => {
     }
   });
   
-  socket.on("ignoreRoomInvite", ({ email, room }) => {
+  socket.on("ignoreRoomInvite", async ({ email, room }) => {
     try {
       const { invites } = await findOneItemByObject(
         client,
