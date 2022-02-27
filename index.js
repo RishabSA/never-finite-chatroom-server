@@ -334,6 +334,31 @@ io.on("connection", (socket) => {
       console.log("Could not get online!", e);
     }
   });
+  
+  socket.on("ignoreRoomInvite", ({ email, room }) => {
+    try {
+      const { invites } = await findOneItemByObject(
+        client,
+        "chatroom",
+        "users",
+        { email: email.toLowerCase().trim() }
+      );
+
+      const newRoomInvites = [...invites];
+      newRoomInvites.splice(invites.indexOf(room.toLowerCase().trim()), 1);
+
+      await updateObjectByObject(
+        client,
+        "chatroom",
+        "users",
+        { email: email.toLowerCase().trim() },
+        { invites: newRoomInvites }
+      );
+    } catch (e) {
+      logger.log(e);
+      console.log("Could not get online!", e);
+    }
+  });
 
   socket.on(
     "joinRoom",
