@@ -338,7 +338,7 @@ io.on("connection", (socket) => {
             );
 
             if (userSocketInArray) {
-              userSocketInArray.emit("inviteToRoom");
+              userSocketInArray.socket.emit("inviteToRoom");
             }
           }
         }
