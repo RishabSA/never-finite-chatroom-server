@@ -187,6 +187,8 @@ io.on("connection", (socket) => {
 
       allSockets.push({ socket, ...user });
 
+      console.log("All Sockets Array:", allSockets);
+
       socket.emit("userInfo");
     } catch (e) {
       logger.log(e);
