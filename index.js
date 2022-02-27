@@ -334,7 +334,7 @@ io.on("connection", (socket) => {
       console.log("Could not get online!", e);
     }
   });
-  
+
   socket.on("ignoreRoomInvite", async ({ email, room }) => {
     try {
       const { invites } = await findOneItemByObject(
