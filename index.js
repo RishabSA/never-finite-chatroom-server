@@ -44,6 +44,8 @@ const { v4: uuidv4 } = require("uuid");
 require("./cors")(app);
 app.use(router);
 
+const allSockets = [];
+
 router.get("/", (req, res) => {
   res.send("The server is up and running! Waiting for connections...");
 });
@@ -182,6 +184,8 @@ io.on("connection", (socket) => {
       if (!result) {
         await create(client, "chatroom", "users", user);
       }
+
+      allSockets.push({ socket, ...user });
 
       socket.emit("userInfo");
     } catch (e) {
@@ -326,6 +330,16 @@ io.on("connection", (socket) => {
               { email: email.toLowerCase().trim() },
               { invites: newInvites }
             );
+
+            const userSocketInArray = allSockets.find(
+              (socketLooped) =>
+                socketLooped.email.toLowerCase().trim() ===
+                email.toLowerCase().trim()
+            );
+
+            if (userSocketInArray) {
+              userSocketInArray.emit("inviteToRoom");
+            }
           }
         }
       });
@@ -881,6 +895,14 @@ io.on("connection", (socket) => {
             { rooms: newRooms }
           );
         }
+
+        const allSocketsEmails = allSockets.map(
+          (socketLooped) => socketLooped.email
+        );
+        allSockets.splice(
+          allSocketsEmails.indexOf(email.toLowerCase().trim()),
+          1
+        );
       }
     } catch (e) {
       logger.log(e);
