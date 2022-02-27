@@ -620,7 +620,6 @@ io.on("connection", (socket) => {
           }
 
           io.to(user.room).emit("roomData", {
-            room: user.room,
             users: getUsersInRoom(user.room),
           });
 
@@ -897,7 +896,6 @@ io.on("connection", (socket) => {
         console.log(`${user.user} (${email}) has left the room, ${room}.`);
 
         io.to(user.room).emit("roomData", {
-          room: room.toLowerCase().trim(),
           users: getUsersInRoom(room.toLowerCase().trim()),
         });
 
