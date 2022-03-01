@@ -620,7 +620,7 @@ io.on("connection", (socket) => {
             socket.broadcast.to(user.room).emit("message", {
               user: "Admin",
               email: "",
-              text: encrypt(`${user.name} has joined the room!`),
+              text: encrypt(`${user.user} has joined the room!`),
               photoURL:
                 "https://neverfinite.com/wp-content/uploads/2021/10/cropped-LogoOnly512x512png-4.png",
               createdAtDisplay: formatted_date,
