@@ -4,6 +4,7 @@ require("express-async-errors");
 const socketio = require("socket.io");
 const http = require("http");
 const logger = require("./services/logService");
+const helmet = require("helmet");
 const { encrypt, decrypt } = require("./utils/Cryptography");
 const {
   addUser,
@@ -41,6 +42,7 @@ const io = socketio(server, {
 });
 const { v4: uuidv4 } = require("uuid");
 
+app.use(helmet());
 require("./cors")(app);
 app.use(router);
 
