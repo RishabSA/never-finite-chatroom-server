@@ -910,7 +910,7 @@ io.on("connection", (socket) => {
       }
     } catch (e) {
       logger.log(e);
-      console.log("Could not disconnect.", e);
+      console.log("Could not disconnect", e);
     }
   });
 
