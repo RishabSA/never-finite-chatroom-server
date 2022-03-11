@@ -647,7 +647,11 @@ io.on("connection", (socket) => {
             const newRooms = [...userInDB.rooms];
 
             for (let i = 0; i < newRooms.length; i++) {
-              newRooms[i].lastTimeOnline = lastTimeOnline;
+              if (
+                newRooms[i].room.toLowerCase().trim() ===
+                room.toLowerCase().trim()
+              )
+                newRooms[i].lastTimeOnline = lastTimeOnline;
             }
 
             // Update the last time online in DB
@@ -656,7 +660,7 @@ io.on("connection", (socket) => {
               "chatroom",
               "users",
               {
-                email: user.email.toLowerCase().trim(),
+                email: email.toLowerCase().trim(),
               },
               { rooms: newRooms }
             );
