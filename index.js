@@ -878,32 +878,6 @@ io.on("connection", (socket) => {
       if (email) {
         console.log(`${email} has disconnected.`);
 
-        const userInDB = await findOneItemByObject(
-          client,
-          "chatroom",
-          "users",
-          { email: email.toLowerCase().trim() }
-        );
-
-        if (userInDB) {
-          const newRooms = [...userInDB.rooms];
-
-          for (let i = 0; i < newRooms.length; i++) {
-            newRooms[i].lastTimeOnline = lastTimeOnline;
-          }
-
-          // Update the last time online in DB
-          await updateObjectByObject(
-            client,
-            "chatroom",
-            "users",
-            {
-              email: email.toLowerCase().trim(),
-            },
-            { rooms: newRooms }
-          );
-        }
-
         const allSocketsEmails = allSockets.map(
           (socketLooped) => socketLooped.email
         );
@@ -940,7 +914,7 @@ io.on("connection", (socket) => {
           const newRooms = [...userInDB.rooms];
 
           for (let i = 0; i < newRooms.length; i++) {
-            if (newRooms[i].room === room.toLowerCase().trim()) {
+            if (newRooms[i].room.toLowerCase().trim() === room.toLowerCase().trim()) {
               newRooms[i].lastTimeOnline = lastTimeOnline;
             }
           }
