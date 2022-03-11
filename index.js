@@ -19,6 +19,7 @@ const {
   updateObjectByObject,
   deleteByObject,
 } = require("./services/databaseService");
+const { clientPassKey } = require("./config.json");
 
 const { getDate } = require("./utils/getDate");
 
@@ -52,116 +53,129 @@ router.get("/", (req, res) => {
   res.send("The server is up and running! Waiting for connections...");
 });
 
-router.get("/users", async (req, res) => {
+router.get("/:key/users", async (req, res) => {
   try {
-    const result = await findMultipleItemsByObject(
-      client,
-      "chatroom",
-      "users",
-      {}
-    );
+    if (req.params.key === clientPassKey) {
+      const result = await findMultipleItemsByObject(
+        client,
+        "chatroom",
+        "users",
+        {}
+      );
 
-    if (!result) return res.status(404).send("No users found");
+      if (!result) return res.status(404).send("No users found");
 
-    res.send(result);
+      res.send(result);
+    }
   } catch (e) {
     res.status(500).send({ message: e.message });
   }
 });
 
-router.get("/users/:email", async (req, res) => {
+router.get("/:key/users/:email", async (req, res) => {
   try {
-    const result = await findOneItemByObject(client, "chatroom", "users", {
-      email: req.params.email,
-    });
+    if (req.params.key === clientPassKey) {
+      const result = await findOneItemByObject(client, "chatroom", "users", {
+        email: req.params.email,
+      });
 
-    if (!result)
-      return res
-        .status(404)
-        .send(`The user with the email '${req.params.email}' was not found`);
+      if (!result)
+        return res
+          .status(404)
+          .send(`The user with the email '${req.params.email}' was not found`);
 
-    res.send(result);
+      res.send(result);
+    }
   } catch (e) {
     res.status(500).send({ message: e.message });
   }
 });
 
-router.get("/rooms", async (req, res) => {
+router.get("/:key/rooms", async (req, res) => {
   try {
-    const result = await findMultipleItemsByObject(
-      client,
-      "chatroom",
-      "rooms",
-      {}
-    );
+    if (req.params.key === clientPassKey) {
+      const result = await findMultipleItemsByObject(
+        client,
+        "chatroom",
+        "rooms",
+        {}
+      );
 
-    if (!result) return res.status(404).send("No rooms found");
+      if (!result) return res.status(404).send("No rooms found");
 
-    res.send(result);
+      res.send(result);
+    }
   } catch (e) {
     res.status(500).send({ message: e.message });
   }
 });
 
-router.get("/rooms/:room", async (req, res) => {
+router.get("/:key/rooms/:room", async (req, res) => {
   try {
-    const result = await findOneItemByObject(client, "chatroom", "rooms", {
-      room: req.params.room,
-    });
-
-    if (!result)
-      return res
-        .status(404)
-        .send(`The room with the name '${req.params.room}' was not found`);
-
-    res.send(result);
-  } catch (e) {
-    res.status(500).send({ message: e.message });
-  }
-});
-
-router.get("/rooms/onlineUsers/:room", async (req, res) => {
-  try {
-    res.send(getUsersInRoom(req.params.room));
-  } catch (e) {
-    res.status(500).send({ message: e.message });
-  }
-});
-
-router.get("/messages", async (req, res) => {
-  try {
-    const result = await findMultipleItemsByObject(
-      client,
-      "chatroom",
-      "messages",
-      {}
-    );
-
-    if (!result) return res.status(404).send("No messages found");
-
-    res.send(result);
-  } catch (e) {
-    res.status(500).send({ message: e.message });
-  }
-});
-
-router.get("/messages/:room", async (req, res) => {
-  try {
-    const result = await findMultipleItemsByObject(
-      client,
-      "chatroom",
-      "messages",
-      {
+    if (req.params.key === clientPassKey) {
+      const result = await findOneItemByObject(client, "chatroom", "rooms", {
         room: req.params.room,
-      }
-    );
+      });
 
-    if (!result)
-      return res
-        .status(404)
-        .send(`No messages in the room, '${req.params.room}' were found`);
+      if (!result)
+        return res
+          .status(404)
+          .send(`The room with the name '${req.params.room}' was not found`);
 
-    res.send(result);
+      res.send(result);
+    }
+  } catch (e) {
+    res.status(500).send({ message: e.message });
+  }
+});
+
+router.get("/:key/rooms/onlineUsers/:room", async (req, res) => {
+  try {
+    if (req.params.key === clientPassKey)
+      res.send(getUsersInRoom(req.params.room));
+  } catch (e) {
+    res.status(500).send({ message: e.message });
+  }
+});
+
+router.get("/:key/messages", async (req, res) => {
+  try {
+    if (req.params.key === clientPassKey) {
+      const result = await findMultipleItemsByObject(
+        client,
+        "chatroom",
+        "messages",
+        {}
+      );
+
+      if (!result) return res.status(404).send("No messages found");
+
+      res.send(result);
+    }
+  } catch (e) {
+    res.status(500).send({ message: e.message });
+  }
+});
+
+router.get("/:key/messages/:room", async (req, res) => {
+  try {
+    if (req.params.key === clientPassKey) {
+      const result = await findMultipleItemsByObject(
+        client,
+        "chatroom",
+        "messages",
+        {
+          room: req.params.room,
+        }
+      );
+
+      if (!result)
+        return res
+          .status(404)
+          .send(`No messages in the room, '${req.params.room}' were found`);
+
+      res.send(result);
+    }
   } catch (e) {
     res.status(500).send({ message: e.message });
   }
@@ -914,7 +928,10 @@ io.on("connection", (socket) => {
           const newRooms = [...userInDB.rooms];
 
           for (let i = 0; i < newRooms.length; i++) {
-            if (newRooms[i].room.toLowerCase().trim() === room.toLowerCase().trim()) {
+            if (
+              newRooms[i].room.toLowerCase().trim() ===
+              room.toLowerCase().trim()
+            ) {
               newRooms[i].lastTimeOnline = lastTimeOnline;
             }
           }
