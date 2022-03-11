@@ -66,6 +66,12 @@ router.get("/:key/users", async (req, res) => {
       if (!result) return res.status(404).send("No users found");
 
       res.send(result);
+    } else {
+      return res
+        .status(401)
+        .send(
+          "Imagine being you. Must suck knowing you can't see anything over here."
+        );
     }
   } catch (e) {
     res.status(500).send({ message: e.message });
@@ -85,6 +91,12 @@ router.get("/:key/users/:email", async (req, res) => {
           .send(`The user with the email '${req.params.email}' was not found`);
 
       res.send(result);
+    } else {
+      return res
+        .status(401)
+        .send(
+          "Imagine being you. Must suck knowing you can't see anything over here."
+        );
     }
   } catch (e) {
     res.status(500).send({ message: e.message });
@@ -104,6 +116,12 @@ router.get("/:key/rooms", async (req, res) => {
       if (!result) return res.status(404).send("No rooms found");
 
       res.send(result);
+    } else {
+      return res
+        .status(401)
+        .send(
+          "Imagine being you. Must suck knowing you can't see anything over here."
+        );
     }
   } catch (e) {
     res.status(500).send({ message: e.message });
@@ -123,6 +141,12 @@ router.get("/:key/rooms/:room", async (req, res) => {
           .send(`The room with the name '${req.params.room}' was not found`);
 
       res.send(result);
+    } else {
+      return res
+        .status(401)
+        .send(
+          "Imagine being you. Must suck knowing you can't see anything over here."
+        );
     }
   } catch (e) {
     res.status(500).send({ message: e.message });
@@ -131,8 +155,15 @@ router.get("/:key/rooms/:room", async (req, res) => {
 
 router.get("/:key/rooms/onlineUsers/:room", async (req, res) => {
   try {
-    if (req.params.key === clientPassKey)
+    if (req.params.key === clientPassKey) {
       res.send(getUsersInRoom(req.params.room));
+    } else {
+      return res
+        .status(401)
+        .send(
+          "Imagine being you. Must suck knowing you can't see anything over here."
+        );
+    }
   } catch (e) {
     res.status(500).send({ message: e.message });
   }
@@ -151,6 +182,12 @@ router.get("/:key/messages", async (req, res) => {
       if (!result) return res.status(404).send("No messages found");
 
       res.send(result);
+    } else {
+      return res
+        .status(401)
+        .send(
+          "Imagine being you. Must suck knowing you can't see anything over here."
+        );
     }
   } catch (e) {
     res.status(500).send({ message: e.message });
@@ -175,6 +212,12 @@ router.get("/:key/messages/:room", async (req, res) => {
           .send(`No messages in the room, '${req.params.room}' were found`);
 
       res.send(result);
+    } else {
+      return res
+        .status(401)
+        .send(
+          "Imagine being you. Must suck knowing you can't see anything over here."
+        );
     }
   } catch (e) {
     res.status(500).send({ message: e.message });
