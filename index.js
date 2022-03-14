@@ -266,6 +266,10 @@ io.on("connection", (socket) => {
           users: getUsersInRoom(room.toLowerCase().trim()),
         });
 
+        let uid = uuidv4();
+
+        const formatted_date = getDate();
+
         socket.broadcast.to(room).emit("message", {
           user: "Admin",
           email: "",
