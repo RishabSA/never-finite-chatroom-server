@@ -255,19 +255,44 @@ io.on("connection", (socket) => {
 
   socket.on("deleteRoom", async ({ email, room }) => {
     try {
-      console.log(`${email} has left the room '${room}'.`);
+      console.log(`${email} has deleted the room '${room}'.`);
 
-      const user = await findOneItemByObject(client, "chatroom", "users", {
+      const user = removeUserByEmail(email.toLowerCase().trim());
+
+      if (user) {
+        console.log(`${user.user} (${email}) has left the room, ${room}.`);
+
+        io.to(user.room).emit("roomData", {
+          users: getUsersInRoom(room.toLowerCase().trim()),
+        });
+
+        socket.broadcast.to(room).emit("message", {
+          user: "Admin",
+          email: "",
+          text: encrypt(`${user.user} has left the room.`),
+          photoURL:
+            "https://neverfinite.com/wp-content/uploads/2021/10/cropped-LogoOnly512x512png-4.png",
+          createdAtDisplay: formatted_date,
+          uid,
+          room,
+          createdAt: Date.now(),
+          media: "",
+          mediaPath: "",
+          isEdited: false,
+        });
+      }
+
+      const userInDB = await findOneItemByObject(client, "chatroom", "users", {
         email,
       });
 
-      let newRooms = [...user.rooms];
+      let newRooms = [...userInDB.rooms];
 
-      if (user.rooms) {
+      if (userInDB.rooms) {
         let index = "";
-        for (let i = 0; i < user.rooms.length; i++) {
+        for (let i = 0; i < userInDB.rooms.length; i++) {
           if (
-            user.rooms[i].room.toLowerCase().trim() ===
+            userInDB.rooms[i].room.toLowerCase().trim() ===
             room.trim().toLowerCase()
           ) {
             index = i;
