@@ -407,8 +407,8 @@ io.on("connection", (socket) => {
           );
 
           if (userInDB) {
-            const newInvites = userInDB.invitesinUser
-              ? [...userInDB.invitesinUser, room.toLowerCase().trim()]
+            const newInvites = userInDB.invites
+              ? [...userInDB.invites, room.toLowerCase().trim()]
               : [room.toLowerCase().trim()];
 
             await updateObjectByObject(
