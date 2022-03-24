@@ -658,6 +658,9 @@ io.on("connection", (socket) => {
           console.log(email.toLowerCase().trim());
           for (let key in getUsersInRoom(room.toLowerCase().trim())) {
             if (
+              getUsersInRoom(room.toLowerCase().trim()) &&
+              getUsersInRoom(room.toLowerCase().trim())[key] &&
+              getUsersInRoom(room.toLowerCase().trim())[key].email &&
               getUsersInRoom(room.toLowerCase().trim())
                 [key].email.toLowerCase()
                 .trim() === email.toLowerCase().trim()
