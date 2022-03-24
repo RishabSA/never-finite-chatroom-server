@@ -426,7 +426,10 @@ io.on("connection", (socket) => {
             );
 
             if (userSocketInArray) {
+              console.log("User invited successfully");
               userSocketInArray.socket.emit("inviteToRoom");
+            } else {
+              console.log("User to invite could not be found");
             }
           }
         }
