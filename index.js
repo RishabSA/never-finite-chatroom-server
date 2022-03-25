@@ -1061,6 +1061,54 @@ io.on("connection", (socket) => {
       console.log("Could not disconnect", e);
     }
   });
+
+  socket.on("leftRoom", async ({ lastTimeOnline, email, room }) => {
+    try {
+      const user = removeUserByEmail(email.toLowerCase().trim());
+
+      if (user) {
+        console.log(`${user.user} (${email}) has left the room, ${room}.`);
+
+        io.to(user.room).emit("roomData", {
+          users: getUsersInRoom(room.toLowerCase().trim()),
+        });
+
+        const userInDB = await findOneItemByObject(
+          client,
+          "chatroom",
+          "users",
+          { email: email.toLowerCase().trim() }
+        );
+
+        if (userInDB) {
+          const newRooms = [...userInDB.rooms];
+
+          for (let i = 0; i < newRooms.length; i++) {
+            if (
+              newRooms[i].room.toLowerCase().trim() ===
+              room.toLowerCase().trim()
+            ) {
+              newRooms[i].lastTimeOnline = lastTimeOnline;
+            }
+          }
+
+          // Update the last time online in DB
+          await updateObjectByObject(
+            client,
+            "chatroom",
+            "users",
+            {
+              email: email.toLowerCase().trim(),
+            },
+            { rooms: newRooms }
+          );
+        }
+      }
+    } catch (e) {
+      logger.log(e);
+      console.log("Could not leave room.", e);
+    }
+  });
 });
 
 server.listen(PORT, async () => {
