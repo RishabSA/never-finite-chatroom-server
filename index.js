@@ -225,6 +225,8 @@ router.get("/:key/messages/:room", async (req, res) => {
 });
 
 io.on("connection", (socket) => {
+  let userEmailSocketScope = "";
+
   socket.on("userOnline", async ({ name, photoURL, email }) => {
     try {
       console.log(`${name} has gotten online!`);
@@ -245,6 +247,8 @@ io.on("connection", (socket) => {
       }
 
       allSockets.push({ socket, ...user });
+
+      userEmailSocketScope = email.toLowerCase().trim();
 
       socket.emit("userInfo");
     } catch (e) {
@@ -968,18 +972,18 @@ io.on("connection", (socket) => {
     }
   });
 
-  socket.on("disconnect", async ({ email }) => {
-    console.log("disconnect:", email);
+  socket.on("disconnect", () => {
+    console.log("disconnect:", userEmailSocketScope);
 
     try {
-      if (email) {
-        console.log(`${email} has disconnected.`);
+      if (userEmailSocketScope) {
+        console.log(`${userEmailSocketScope} has disconnected.`);
 
         const allSocketsEmails = allSockets.map(
           (socketLooped) => socketLooped.email
         );
         allSockets.splice(
-          allSocketsEmails.indexOf(email.toLowerCase().trim()),
+          allSocketsEmails.indexOf(userEmailSocketScope.toLowerCase().trim()),
           1
         );
       }
