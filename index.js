@@ -688,6 +688,8 @@ io.on("connection", (socket) => {
             email,
           });
 
+          userActiveRoomSocketScope = room.toLowerCase().trim();
+
           if (error) {
             console.log(
               "An unexpected error has occurred while adding the user to the room!",
