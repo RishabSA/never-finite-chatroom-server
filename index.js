@@ -968,7 +968,7 @@ io.on("connection", (socket) => {
     }
   });
 
-  socket.on("disconnected", async ({ email }) => {
+  socket.on("disconnect", async ({ email }) => {
     console.log("disconnect:", email);
 
     try {
