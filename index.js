@@ -969,7 +969,7 @@ io.on("connection", (socket) => {
   });
 
   socket.on("disconnect", async ({ email }) => {
-    console.log("disconnect");
+    console.log("disconnect:", email);
 
     try {
       if (email) {
