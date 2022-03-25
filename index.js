@@ -226,6 +226,7 @@ router.get("/:key/messages/:room", async (req, res) => {
 
 io.on("connection", (socket) => {
   let userEmailSocketScope = "";
+  let userActiveRoomSocketScope = "";
 
   socket.on("userOnline", async ({ name, photoURL, email }) => {
     try {
@@ -972,11 +973,77 @@ io.on("connection", (socket) => {
     }
   });
 
-  socket.on("disconnect", () => {
+  socket.on("disconnect", async () => {
     console.log("disconnect:", userEmailSocketScope);
 
     try {
       if (userEmailSocketScope) {
+        if (userActiveRoomSocketScope) {
+          let lastTimeOnlineInRoom = Date.now();
+
+          const user = removeUserByEmail(
+            userEmailSocketScope.toLowerCase().trim()
+          );
+
+          if (user) {
+            console.log(
+              `${user.user} (${userEmailSocketScope
+                .toLowerCase()
+                .trim()}) has left the room, ${userActiveRoomSocketScope
+                .toLowerCase()
+                .trim()}.`
+            );
+
+            io.to(userActiveRoomSocketScope.toLowerCase().trim()).emit(
+              "roomData",
+              {
+                users: getUsersInRoom(
+                  userActiveRoomSocketScope
+                    .toLowerCase()
+                    .trim()
+                    .toLowerCase()
+                    .trim()
+                ),
+              }
+            );
+
+            const userInDB = await findOneItemByObject(
+              client,
+              "chatroom",
+              "users",
+              { email: userEmailSocketScope.toLowerCase().trim() }
+            );
+
+            if (userInDB) {
+              const newRooms = [...userInDB.rooms];
+
+              for (let i = 0; i < newRooms.length; i++) {
+                if (
+                  newRooms[i].room.toLowerCase().trim() ===
+                  userActiveRoomSocketScope
+                    .toLowerCase()
+                    .trim()
+                    .toLowerCase()
+                    .trim()
+                ) {
+                  newRooms[i].lastTimeOnline = lastTimeOnlineInRoom;
+                }
+              }
+
+              // Update the last time online in DB
+              await updateObjectByObject(
+                client,
+                "chatroom",
+                "users",
+                {
+                  email: userEmailSocketScope.toLowerCase().trim(),
+                },
+                { rooms: newRooms }
+              );
+            }
+          }
+        }
+
         console.log(`${userEmailSocketScope} has disconnected.`);
 
         const allSocketsEmails = allSockets.map(
@@ -990,54 +1057,6 @@ io.on("connection", (socket) => {
     } catch (e) {
       logger.log(e);
       console.log("Could not disconnect", e);
-    }
-  });
-
-  socket.on("leftRoom", async ({ lastTimeOnline, email, room }) => {
-    try {
-      const user = removeUserByEmail(email.toLowerCase().trim());
-
-      if (user) {
-        console.log(`${user.user} (${email}) has left the room, ${room}.`);
-
-        io.to(user.room).emit("roomData", {
-          users: getUsersInRoom(room.toLowerCase().trim()),
-        });
-
-        const userInDB = await findOneItemByObject(
-          client,
-          "chatroom",
-          "users",
-          { email: email.toLowerCase().trim() }
-        );
-
-        if (userInDB) {
-          const newRooms = [...userInDB.rooms];
-
-          for (let i = 0; i < newRooms.length; i++) {
-            if (
-              newRooms[i].room.toLowerCase().trim() ===
-              room.toLowerCase().trim()
-            ) {
-              newRooms[i].lastTimeOnline = lastTimeOnline;
-            }
-          }
-
-          // Update the last time online in DB
-          await updateObjectByObject(
-            client,
-            "chatroom",
-            "users",
-            {
-              email: email.toLowerCase().trim(),
-            },
-            { rooms: newRooms }
-          );
-        }
-      }
-    } catch (e) {
-      logger.log(e);
-      console.log("Could not leave room.", e);
     }
   });
 });
