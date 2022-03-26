@@ -11,15 +11,15 @@ const addTypingUser = ({ room, email, user }) => {
 
   if (existingUser) return { error: "User is already typing" };
 
-  const user = {
+  const userInArray = {
     user,
     room: room.toLowerCase().trim(),
     email: email.toLowerCase().trim(),
   };
 
-  typingUsersInRooms.push(user);
+  typingUsersInRooms.push(userInArray);
 
-  return { user };
+  return { userInArray };
 };
 
 const removeTypingUserByEmail = (email) => {
