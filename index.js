@@ -959,19 +959,12 @@ io.on("connection", (socket) => {
 
   socket.on("startTypingMessage", ({ room, userEmail, userName }) => {
     try {
-      console.log("start typing message:", room, userEmail, userName);
       if (
         room &&
         userEmail &&
         userName &&
         userName.toLowerCase().trim() !== "admin"
       ) {
-        console.log(
-          "start typing message inside if:",
-          room,
-          userEmail,
-          userName
-        );
         addTypingUser({
           room: room.toLowerCase().trim(),
           email: userEmail.toLowerCase().trim(),
@@ -989,16 +982,8 @@ io.on("connection", (socket) => {
 
   socket.on("stopTypingMessage", ({ room, userEmail }) => {
     try {
-      console.log("stop typing message:", room, userEmail);
       if (room && userEmail) {
-        console.log("stop typing message inside if:", room, userEmail);
         removeTypingUserByEmail(userEmail.toLowerCase().trim());
-
-        console.log(
-          "Array affter remove typing user:",
-          getTypingUsersInRoom(room.toLowerCase().trim())
-        );
-
         io.to(room.toLowerCase().trim()).emit("stopTypingMessage", {
           typingUsers: getTypingUsersInRoom(room.toLowerCase().trim()),
         });
@@ -1013,6 +998,18 @@ io.on("connection", (socket) => {
     console.log("disconnect:", userEmailSocketScope);
 
     try {
+      if (userActiveRoomSocketScope && userEmailSocketScope) {
+        removeTypingUserByEmail(userEmailSocketScope.toLowerCase().trim());
+        io.to(userActiveRoomSocketScope.toLowerCase().trim()).emit(
+          "stopTypingMessage",
+          {
+            typingUsers: getTypingUsersInRoom(
+              userActiveRoomSocketScope.toLowerCase().trim()
+            ),
+          }
+        );
+      }
+
       if (userEmailSocketScope) {
         if (userActiveRoomSocketScope) {
           let lastTimeOnlineInRoom = Date.now();
@@ -1098,6 +1095,13 @@ io.on("connection", (socket) => {
 
   socket.on("leftRoom", async ({ lastTimeOnline, email, room }) => {
     try {
+      if (room && email) {
+        removeTypingUserByEmail(email.toLowerCase().trim());
+        io.to(room.toLowerCase().trim()).emit("stopTypingMessage", {
+          typingUsers: getTypingUsersInRoom(room.toLowerCase().trim()),
+        });
+      }
+
       const user = removeUserByEmail(email.toLowerCase().trim());
 
       if (user) {
