@@ -8,10 +8,16 @@ const helmet = require("helmet");
 const { encrypt, decrypt } = require("./utils/Cryptography");
 const {
   addUser,
+  removeUserByEmail,
   getUserByEmail,
   getUsersInRoom,
-  removeUserByEmail,
 } = require("./users");
+const {
+  addTypingUser,
+  removeTypingUserByEmail,
+  getTypingUserByEmail,
+  getTypingUsersInRoom,
+} = require("./typingUsers");
 const {
   findOneItemByObject,
   findMultipleItemsByObject,
@@ -953,22 +959,35 @@ io.on("connection", (socket) => {
 
   socket.on("startTypingMessage", ({ room, userEmail, userName }) => {
     try {
-      io.to(room).emit("startTypingMessage", {
-        userEmail: userEmail.toLowerCase().trim(),
-        userName,
-      });
+      if (
+        room &&
+        userEmail &&
+        userName &&
+        userName.toLowerCase().trim() !== "admin"
+      ) {
+        addTypingUser({
+          room: room.toLowerCase().trim(),
+          email: userEmail.toLowerCase().trim(),
+          user: userName,
+        });
+        io.to(room).emit("startTypingMessage", {
+          typingUsers: getTypingUsersInRoom(room.toLowerCase().trim()),
+        });
+      }
     } catch (e) {
       logger.log(e);
       console.log("Could not start typing message!", e);
     }
   });
 
-  socket.on("stopTypingMessage", ({ room, userEmail, userName }) => {
+  socket.on("stopTypingMessage", ({ room, userEmail }) => {
     try {
-      io.to(room).emit("stopTypingMessage", {
-        userEmail: userEmail.toLowerCase().trim(),
-        userName,
-      });
+      if (room && userEmail) {
+        removeTypingUserByEmail(userEmail.toLowerCase().trim());
+        io.to(room).emit("stopTypingMessage", {
+          typingUsers: getTypingUsersInRoom(room.toLowerCase().trim()),
+        });
+      }
     } catch (e) {
       logger.log(e);
       console.log("Could not stop typing message!", e);

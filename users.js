@@ -42,8 +42,8 @@ const getUsersInRoom = (room) => usersInRooms.filter((user) => user.room.toLower
 module.exports = {
   addUser,
   removeUser,
+  removeUserByEmail,
   getUser,
   getUserByEmail,
   getUsersInRoom,
-  removeUserByEmail,
 };
