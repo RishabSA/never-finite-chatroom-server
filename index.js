@@ -11,13 +11,13 @@ const {
   removeUserByEmail,
   getUserByEmail,
   getUsersInRoom,
-} = require("./users");
+} = require("./data/users");
 const {
   addTypingUser,
   removeTypingUserByEmail,
   getTypingUserByEmail,
   getTypingUsersInRoom,
-} = require("./typingUsers");
+} = require("./data/typingUsers");
 const {
   findOneItemByObject,
   findMultipleItemsByObject,
@@ -25,7 +25,7 @@ const {
   updateObjectByObject,
   deleteByObject,
 } = require("./services/databaseService");
-const { clientPassKey } = require("./config.json");
+const { clientPassKey } = require("./startup/config.json");
 
 const { getDate } = require("./utils/getDate");
 
@@ -50,7 +50,7 @@ const io = socketio(server, {
 const { v4: uuidv4 } = require("uuid");
 
 app.use(helmet());
-require("./cors")(app);
+require("./startup/cors")(app);
 app.use(router);
 
 const allSockets = [];
