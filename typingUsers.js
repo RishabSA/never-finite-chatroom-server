@@ -19,6 +19,8 @@ const addTypingUser = ({ room, email, user }) => {
 
   typingUsersInRooms.push(userInArray);
 
+  console.log("Array affter add typing user:", typingUsersInRooms);
+
   return { userInArray };
 };
 
@@ -28,6 +30,8 @@ const removeTypingUserByEmail = (email) => {
   );
 
   if (index !== -1) return typingUsersInRooms.splice(index, 1)[0];
+
+  console.log("Array affter remove typing user:", typingUsersInRooms);
 };
 
 const getTypingUserByEmail = (email) =>
