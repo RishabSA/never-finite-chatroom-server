@@ -966,13 +966,18 @@ io.on("connection", (socket) => {
         userName &&
         userName.toLowerCase().trim() !== "admin"
       ) {
-        console.log("start typing message inside if:", room, userEmail, userName);
+        console.log(
+          "start typing message inside if:",
+          room,
+          userEmail,
+          userName
+        );
         addTypingUser({
           room: room.toLowerCase().trim(),
           email: userEmail.toLowerCase().trim(),
           user: userName,
         });
-        io.to(room).emit("startTypingMessage", {
+        io.to(room.toLowerCase().trim()).emit("startTypingMessage", {
           typingUsers: getTypingUsersInRoom(room.toLowerCase().trim()),
         });
       }
@@ -988,7 +993,13 @@ io.on("connection", (socket) => {
       if (room && userEmail) {
         console.log("stop typing message inside if:", room, userEmail);
         removeTypingUserByEmail(userEmail.toLowerCase().trim());
-        io.to(room).emit("stopTypingMessage", {
+
+        console.log(
+          "Array affter remove typing user:",
+          getTypingUsersInRoom(room.toLowerCase().trim())
+        );
+
+        io.to(room.toLowerCase().trim()).emit("stopTypingMessage", {
           typingUsers: getTypingUsersInRoom(room.toLowerCase().trim()),
         });
       }
