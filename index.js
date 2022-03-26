@@ -785,6 +785,8 @@ io.on("connection", (socket) => {
               rooms: roomsToSendToClient,
             });
           }
+
+          console.log(getUsersInRoom(room.toLowerCase().trim()));
         } catch (e) {
           logger.log(e);
           console.log("Could not join the room!", e);
