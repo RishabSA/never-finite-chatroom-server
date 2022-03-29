@@ -286,7 +286,7 @@ io.on("connection", (socket) => {
           email: "",
           text: encrypt(`${user.user} has left the room.`),
           photoURL:
-            "https://neverfinite.com/wp-content/uploads/2021/10/cropped-LogoOnly512x512png-4.png",
+            "https://neverfinite.com/wp-content/uploads/2022/03/NeverFiniteChatroomIcon.png",
           createdAtDisplay: formatted_date,
           uid,
           room,
@@ -718,7 +718,7 @@ io.on("connection", (socket) => {
               email: "",
               text: encrypt("Welcome to the room!"),
               photoURL:
-                "https://neverfinite.com/wp-content/uploads/2021/10/cropped-LogoOnly512x512png-4.png",
+                "https://neverfinite.com/wp-content/uploads/2022/03/NeverFiniteChatroomIcon.png",
               createdAtDisplay: formatted_date,
               uid,
               room,
@@ -732,7 +732,7 @@ io.on("connection", (socket) => {
               email: "",
               text: encrypt(`${user.user} has joined the room!`),
               photoURL:
-                "https://neverfinite.com/wp-content/uploads/2021/10/cropped-LogoOnly512x512png-4.png",
+                "https://neverfinite.com/wp-content/uploads/2022/03/NeverFiniteChatroomIcon.png",
               createdAtDisplay: formatted_date,
               uid,
               room,
