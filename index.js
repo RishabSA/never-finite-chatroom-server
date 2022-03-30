@@ -256,6 +256,8 @@ io.on("connection", (socket) => {
 
       userEmailSocketScope = email.toLowerCase().trim();
 
+      console.log(allSockets);
+
       socket.emit("userInfo");
     } catch (e) {
       logger.log(e);
