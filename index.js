@@ -1015,10 +1015,10 @@ io.on("connection", (socket) => {
         if (userActiveRoomSocketScope) {
           let lastTimeOnlineInRoom = Date.now();
 
-          const usersInRoomFiltered = getUsersInRoom(userActiveRoomSocketScope.toLowerCase().trim()).filter(
+          const usersInRoomFiltered = [...getUsersInRoom(userActiveRoomSocketScope.toLowerCase().trim()).filter(
             (user) =>
               user.email.toLowerCase().trim() === userEmailSocketScope.toLowerCase().trim()
-          );
+          )];
           console.log(usersInRoomFiltered);
           const user = removeUserByEmail(
             userEmailSocketScope.toLowerCase().trim()
@@ -1110,9 +1110,10 @@ io.on("connection", (socket) => {
         });
       }
 
-      const usersInRoomFiltered = getUsersInRoom(room.toLowerCase().trim()).filter(
-        (user) => user.email.toLowerCase().trim() === email.toLowerCase().trim()
-      );
+      const usersInRoomFiltered = [...getUsersInRoom(userActiveRoomSocketScope.toLowerCase().trim()).filter(
+        (user) =>
+          user.email.toLowerCase().trim() === userEmailSocketScope.toLowerCase().trim()
+      )];
       console.log(usersInRoomFiltered);
       const user = removeUserByEmail(email.toLowerCase().trim());
 
