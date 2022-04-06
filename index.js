@@ -87,13 +87,13 @@ router.get("/:key/users/:email", async (req, res) => {
   try {
     if (req.params.key === clientPassKey) {
       const result = await findOneItemByObject(client, "chatroom", "users", {
-        email: req.params.email,
+        email: encrypt(req.params.email),
       });
 
       if (!result)
         return res
           .status(404)
-          .send(`The user with the email '${req.params.email}' was not found`);
+          .send(`The user with the email '${encrypt(req.params.email)}' was not found`);
 
       res.send(result);
     } else {
@@ -137,13 +137,13 @@ router.get("/:key/rooms/:room", async (req, res) => {
   try {
     if (req.params.key === clientPassKey) {
       const result = await findOneItemByObject(client, "chatroom", "rooms", {
-        room: req.params.room,
+        room: encrypt(req.params.room),
       });
 
       if (!result)
         return res
           .status(404)
-          .send(`The room with the name '${req.params.room}' was not found`);
+          .send(`The room with the name '${encrypt(req.params.room)}' was not found`);
 
       res.send(result);
     } else {
@@ -161,7 +161,7 @@ router.get("/:key/rooms/:room", async (req, res) => {
 router.get("/:key/rooms/onlineUsers/:room", async (req, res) => {
   try {
     if (req.params.key === clientPassKey) {
-      res.send(getUsersInRoom(req.params.room));
+      res.send(getUsersInRoom(encrypt(req.params.room)));
     } else {
       return res
         .status(401)
@@ -207,14 +207,14 @@ router.get("/:key/messages/:room", async (req, res) => {
         "chatroom",
         "messages",
         {
-          room: req.params.room,
+          room: encrypt(req.params.room),
         }
       );
 
       if (!result)
         return res
           .status(404)
-          .send(`No messages in the room, '${req.params.room}' were found`);
+          .send(`No messages in the room, '${encrypt(req.params.room)}' were found`);
 
       res.send(result);
     } else {
@@ -281,14 +281,15 @@ io.on("connection", (socket) => {
         const formatted_date = getDate();
 
         socket.broadcast.to(room).emit("message", {
-          user: "Admin",
+          user: encrypt("Admin"),
           email: "",
           text: encrypt(`${user.user} has left the room.`),
-          photoURL:
-            "https://neverfinite.com/wp-content/uploads/2021/10/cropped-LogoOnly512x512png-4.png",
+          photoURL: encrypt(
+            "https://neverfinite.com/wp-content/uploads/2021/10/cropped-LogoOnly512x512png-4.png"
+          ),
           createdAtDisplay: formatted_date,
           uid,
-          room,
+          room: encrypt(room.toLowerCase().trim()),
           createdAt: Date.now(),
           media: "",
           mediaPath: "",
@@ -713,14 +714,15 @@ io.on("connection", (socket) => {
 
           if (shouldAddRoomToUser) {
             socket.emit("message", {
-              user: "Admin",
+              user: encrypt("Admin"),
               email: "",
               text: encrypt("Welcome to the room!"),
-              photoURL:
-                "https://neverfinite.com/wp-content/uploads/2021/10/cropped-LogoOnly512x512png-4.png",
+              photoURL: encrypt(
+                "https://neverfinite.com/wp-content/uploads/2021/10/cropped-LogoOnly512x512png-4.png"
+              ),
               createdAtDisplay: formatted_date,
               uid,
-              room,
+              room: encrypt(room.toLowerCase().trim()),
               createdAt: Date.now(),
               media: "",
               mediaPath: "",
@@ -730,11 +732,12 @@ io.on("connection", (socket) => {
               user: "Admin",
               email: "",
               text: encrypt(`${user.user} has joined the room!`),
-              photoURL:
-                "https://neverfinite.com/wp-content/uploads/2021/10/cropped-LogoOnly512x512png-4.png",
+              photoURL: encrypt(
+                "https://neverfinite.com/wp-content/uploads/2021/10/cropped-LogoOnly512x512png-4.png"
+              ),
               createdAtDisplay: formatted_date,
               uid,
-              room,
+              room: encrypt(room.toLowerCase().trim()),
               createdAt: Date.now(),
               media: "",
               mediaPath: "",
