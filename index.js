@@ -87,7 +87,7 @@ router.get("/:key/users/:email", async (req, res) => {
   try {
     if (req.params.key === clientPassKey) {
       const result = await findOneItemByObject(client, "chatroom", "users", {
-        email: encrypt(req.params.email),
+        email: encrypt(req.params.email.toLowerCase().trim()),
       });
 
       if (!result)
@@ -95,7 +95,7 @@ router.get("/:key/users/:email", async (req, res) => {
           .status(404)
           .send(
             `The user with the email '${encrypt(
-              req.params.email
+              req.params.email.toLowerCase().trim()
             )}' was not found`
           );
 
