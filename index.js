@@ -93,7 +93,11 @@ router.get("/:key/users/:email", async (req, res) => {
       if (!result)
         return res
           .status(404)
-          .send(`The user with the email '${encrypt(req.params.email)}' was not found`);
+          .send(
+            `The user with the email '${encrypt(
+              req.params.email
+            )}' was not found`
+          );
 
       res.send(result);
     } else {
@@ -143,7 +147,9 @@ router.get("/:key/rooms/:room", async (req, res) => {
       if (!result)
         return res
           .status(404)
-          .send(`The room with the name '${encrypt(req.params.room)}' was not found`);
+          .send(
+            `The room with the name '${encrypt(req.params.room)}' was not found`
+          );
 
       res.send(result);
     } else {
@@ -214,7 +220,9 @@ router.get("/:key/messages/:room", async (req, res) => {
       if (!result)
         return res
           .status(404)
-          .send(`No messages in the room, '${encrypt(req.params.room)}' were found`);
+          .send(
+            `No messages in the room, '${encrypt(req.params.room)}' were found`
+          );
 
       res.send(result);
     } else {
@@ -306,10 +314,7 @@ io.on("connection", (socket) => {
       if (userInDB.rooms) {
         let index = "";
         for (let i = 0; i < userInDB.rooms.length; i++) {
-          if (
-            userInDB.rooms[i].room ===
-            room
-          ) {
+          if (userInDB.rooms[i].room === room) {
             index = i;
           }
         }
@@ -341,10 +346,7 @@ io.on("connection", (socket) => {
       if (roomResult.users) {
         let index = "";
         for (let i = 0; i < roomResult.users.length; i++) {
-          if (
-            roomResult.users[i].email ===
-            email
-          ) {
+          if (roomResult.users[i].email === email) {
             index = i;
           }
         }
@@ -381,8 +383,7 @@ io.on("connection", (socket) => {
 
         rooms.forEach((roomLooped) => {
           if (
-            roomLooped.room ===
-              room &&
+            roomLooped.room === room &&
             roomLooped.invitedUsers &&
             roomLooped.invitedUsers.includes(email)
           ) {
@@ -431,9 +432,7 @@ io.on("connection", (socket) => {
             );
 
             const userSocketInArray = allSockets.find(
-              (socketLooped) =>
-                socketLooped.email ===
-                email
+              (socketLooped) => socketLooped.email === email
             );
 
             if (userSocketInArray) {
@@ -501,10 +500,7 @@ io.on("connection", (socket) => {
 
           if (userInDB && userInDB.rooms) {
             userInDB.rooms.forEach((loopedRoom) => {
-              if (
-                loopedRoom.room ===
-                room
-              ) {
+              if (loopedRoom.room === room) {
                 shouldAddRoomToUser = false;
               }
             });
@@ -518,9 +514,7 @@ io.on("connection", (socket) => {
           );
 
           rooms.forEach((roomLooped) => {
-            if (
-              roomLooped.room === room
-            ) {
+            if (roomLooped.room === room) {
               shouldAddRoom = false;
             }
           });
@@ -536,9 +530,7 @@ io.on("connection", (socket) => {
 
           if (roomInDB) {
             roomInDB.users.forEach((user) => {
-              if (
-                user.email === email
-              ) {
+              if (user.email === email) {
                 shouldAddUserToRoom = false;
               }
             });
@@ -641,8 +633,7 @@ io.on("connection", (socket) => {
 
           roomsInDB.forEach((roomLooped) => {
             if (
-              roomLooped.room ===
-                room &&
+              roomLooped.room === room &&
               roomLooped.invitedUsers &&
               roomLooped.invitedUsers.includes(email)
             ) {
@@ -678,9 +669,7 @@ io.on("connection", (socket) => {
               getUsersInRoom(room) &&
               getUsersInRoom(room)[key] &&
               getUsersInRoom(room)[key].email &&
-              getUsersInRoom(room)
-                [key].email.toLowerCase()
-                .trim() === email
+              getUsersInRoom(room)[key].email === email
             ) {
               removeUserByEmail(getUsersInRoom(room)[key].email);
             }
@@ -757,10 +746,7 @@ io.on("connection", (socket) => {
             const newRooms = [...userInDB.rooms];
 
             for (let i = 0; i < newRooms.length; i++) {
-              if (
-                newRooms[i].room ===
-                room
-              )
+              if (newRooms[i].room === room)
                 newRooms[i].lastTimeOnline = lastTimeOnline;
             }
 
@@ -929,15 +915,10 @@ io.on("connection", (socket) => {
       rooms.forEach((room) => {
         if (room.users) {
           room.users.forEach(async (user) => {
-            if (
-              user.email === email
-            ) {
+            if (user.email === email) {
               const newUsers = [...room.users];
               for (let key in newUsers) {
-                if (
-                  newUsers[key].email ===
-                  email
-                ) {
+                if (newUsers[key].email === email) {
                   newUsers[key].accountStatus = accountStatus;
                 }
               }
@@ -963,12 +944,7 @@ io.on("connection", (socket) => {
 
   socket.on("startTypingMessage", ({ room, userEmail, userName }) => {
     try {
-      if (
-        room &&
-        userEmail &&
-        userName &&
-        userName !== "admin"
-      ) {
+      if (room && userEmail && userName && userName !== "admin") {
         addTypingUser({
           room: room,
           email: userEmail,
@@ -1004,14 +980,9 @@ io.on("connection", (socket) => {
     try {
       if (userActiveRoomSocketScope && userEmailSocketScope) {
         removeTypingUserByEmail(userEmailSocketScope);
-        io.to(userActiveRoomSocketScope).emit(
-          "stopTypingMessage",
-          {
-            typingUsers: getTypingUsersInRoom(
-              userActiveRoomSocketScope
-            ),
-          }
-        );
+        io.to(userActiveRoomSocketScope).emit("stopTypingMessage", {
+          typingUsers: getTypingUsersInRoom(userActiveRoomSocketScope),
+        });
       }
 
       if (userEmailSocketScope) {
@@ -1019,41 +990,22 @@ io.on("connection", (socket) => {
           let lastTimeOnlineInRoom = Date.now();
 
           const usersInRoomFiltered = [
-            ...getUsersInRoom(
-              userActiveRoomSocketScope
-            ).filter(
-              (user) =>
-                user.email ===
-                userEmailSocketScope
+            ...getUsersInRoom(userActiveRoomSocketScope).filter(
+              (user) => user.email === userEmailSocketScope
             ),
           ];
           console.log(usersInRoomFiltered);
-          const user = removeUserByEmail(
-            userEmailSocketScope
-          );
+          const user = removeUserByEmail(userEmailSocketScope);
 
           if (user) {
             if (usersInRoomFiltered.length <= 1) {
               console.log(
-                `${user.user} (${userEmailSocketScope
-                  .toLowerCase()
-                  .trim()}) has left the room, ${userActiveRoomSocketScope
-                  .toLowerCase()
-                  .trim()}.`
+                `${user.user} (${userEmailSocketScope}) has left the room, ${userActiveRoomSocketScope}.`
               );
 
-              io.to(userActiveRoomSocketScope).emit(
-                "roomData",
-                {
-                  users: getUsersInRoom(
-                    userActiveRoomSocketScope
-                      .toLowerCase()
-                      .trim()
-                      .toLowerCase()
-                      .trim()
-                  ),
-                }
-              );
+              io.to(userActiveRoomSocketScope).emit("roomData", {
+                users: getUsersInRoom(userActiveRoomSocketScope),
+              });
 
               const userInDB = await findOneItemByObject(
                 client,
@@ -1066,14 +1018,7 @@ io.on("connection", (socket) => {
                 const newRooms = [...userInDB.rooms];
 
                 for (let i = 0; i < newRooms.length; i++) {
-                  if (
-                    newRooms[i].room ===
-                    userActiveRoomSocketScope
-                      .toLowerCase()
-                      .trim()
-                      .toLowerCase()
-                      .trim()
-                  ) {
+                  if (newRooms[i].room === userActiveRoomSocketScope) {
                     newRooms[i].lastTimeOnline = lastTimeOnlineInRoom;
                   }
                 }
@@ -1098,10 +1043,7 @@ io.on("connection", (socket) => {
         const allSocketsEmails = allSockets.map(
           (socketLooped) => socketLooped.email
         );
-        allSockets.splice(
-          allSocketsEmails.indexOf(userEmailSocketScope),
-          1
-        );
+        allSockets.splice(allSocketsEmails.indexOf(userEmailSocketScope), 1);
       }
     } catch (e) {
       logger.log(e);
@@ -1119,12 +1061,8 @@ io.on("connection", (socket) => {
       }
 
       const usersInRoomFiltered = [
-        ...getUsersInRoom(
-          userActiveRoomSocketScope
-        ).filter(
-          (user) =>
-            user.email ===
-            userEmailSocketScope
+        ...getUsersInRoom(userActiveRoomSocketScope).filter(
+          (user) => user.email === userEmailSocketScope
         ),
       ];
       console.log(usersInRoomFiltered);
@@ -1149,10 +1087,7 @@ io.on("connection", (socket) => {
             const newRooms = [...userInDB.rooms];
 
             for (let i = 0; i < newRooms.length; i++) {
-              if (
-                newRooms[i].room ===
-                room
-              ) {
+              if (newRooms[i].room === room) {
                 newRooms[i].lastTimeOnline = lastTimeOnline;
               }
             }
