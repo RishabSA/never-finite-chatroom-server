@@ -245,7 +245,7 @@ io.on("connection", (socket) => {
         user: name,
         photoURL,
         email,
-        accountStatus: `Hello! My name is ${name}!`,
+        accountStatus: `Hello! My name is ${decrypt(name)}!`,
       };
 
       if (!result) {
