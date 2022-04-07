@@ -93,7 +93,7 @@ router.get("/:key/users/:email", async (req, res) => {
       if (!result)
         return res
           .status(404)
-          .send(`The user with the email '${req.params.email}' was not found`);
+          .send(`The user with the email '${encrypt(req.params.email)}' was not found`);
 
       res.send(result);
     } else {
@@ -143,7 +143,7 @@ router.get("/:key/rooms/:room", async (req, res) => {
       if (!result)
         return res
           .status(404)
-          .send(`The room with the name '${req.params.room}' was not found`);
+          .send(`The room with the name '${encrypt(req.params.room)}' was not found`);
 
       res.send(result);
     } else {
@@ -214,7 +214,7 @@ router.get("/:key/messages/:room", async (req, res) => {
       if (!result)
         return res
           .status(404)
-          .send(`No messages in the room, '${req.params.room}' were found`);
+          .send(`No messages in the room, '${encrypt(req.params.room)}' were found`);
 
       res.send(result);
     } else {
