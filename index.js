@@ -87,7 +87,7 @@ router.get("/:key/users/:email", async (req, res) => {
   try {
     if (req.params.key === clientPassKey) {
       const result = await findOneItemByObject(client, "chatroom", "users", {
-        email: req.params.email,
+        email: encrypt(req.params.email),
       });
 
       if (!result)
@@ -137,7 +137,7 @@ router.get("/:key/rooms/:room", async (req, res) => {
   try {
     if (req.params.key === clientPassKey) {
       const result = await findOneItemByObject(client, "chatroom", "rooms", {
-        room: req.params.room,
+        room: encrypt(req.params.room),
       });
 
       if (!result)
@@ -207,7 +207,7 @@ router.get("/:key/messages/:room", async (req, res) => {
         "chatroom",
         "messages",
         {
-          room: req.params.room,
+          room: encrypt(req.params.room),
         }
       );
 
@@ -254,7 +254,7 @@ io.on("connection", (socket) => {
 
       allSockets.push({ socket, ...user });
 
-      userEmailSocketScope = email.toLowerCase().trim();
+      userEmailSocketScope = email;
 
       socket.emit("userInfo");
     } catch (e) {
@@ -267,13 +267,13 @@ io.on("connection", (socket) => {
     try {
       console.log(`${email} has deleted the room '${room}'.`);
 
-      const user = removeUserByEmail(email.toLowerCase().trim());
+      const user = removeUserByEmail(email);
 
       if (user) {
         console.log(`${user.user} (${email}) has left the room, ${room}.`);
 
         io.to(user.room).emit("roomData", {
-          users: getUsersInRoom(room.toLowerCase().trim()),
+          users: getUsersInRoom(room),
         });
 
         let uid = uuidv4();
@@ -281,14 +281,15 @@ io.on("connection", (socket) => {
         const formatted_date = getDate();
 
         socket.broadcast.to(room).emit("message", {
-          user: "Admin",
+          user: encrypt("Admin"),
           email: "",
           text: encrypt(`${user.user} has left the room.`),
-          photoURL:
-            "https://neverfinite.com/wp-content/uploads/2021/10/cropped-LogoOnly512x512png-4.png",
+          photoURL: encrypt(
+            "https://neverfinite.com/wp-content/uploads/2021/10/cropped-LogoOnly512x512png-4.png"
+          ),
           createdAtDisplay: formatted_date,
           uid,
-          room,
+          room: encrypt(room),
           createdAt: Date.now(),
           media: "",
           mediaPath: "",
@@ -305,10 +306,7 @@ io.on("connection", (socket) => {
       if (userInDB.rooms) {
         let index = "";
         for (let i = 0; i < userInDB.rooms.length; i++) {
-          if (
-            userInDB.rooms[i].room.toLowerCase().trim() ===
-            room.trim().toLowerCase()
-          ) {
+          if (userInDB.rooms[i].room === room) {
             index = i;
           }
         }
@@ -340,10 +338,7 @@ io.on("connection", (socket) => {
       if (roomResult.users) {
         let index = "";
         for (let i = 0; i < roomResult.users.length; i++) {
-          if (
-            roomResult.users[i].email.toLowerCase().trim() ===
-            email.trim().toLowerCase()
-          ) {
+          if (roomResult.users[i].email === email) {
             index = i;
           }
         }
@@ -380,10 +375,9 @@ io.on("connection", (socket) => {
 
         rooms.forEach((roomLooped) => {
           if (
-            roomLooped.room.toLowerCase().trim() ===
-              room.toLowerCase().trim() &&
+            roomLooped.room === room &&
             roomLooped.invitedUsers &&
-            roomLooped.invitedUsers.includes(email.toLowerCase().trim())
+            roomLooped.invitedUsers.includes(email)
           ) {
             shouldInvite = false;
           }
@@ -394,18 +388,18 @@ io.on("connection", (socket) => {
             client,
             "chatroom",
             "rooms",
-            { room: room.toLowerCase().trim() }
+            { room: room }
           );
 
           const newInvitedUsers = invitedUsers
-            ? [...invitedUsers, email.toLowerCase().trim()]
-            : [email.toLowerCase().trim()];
+            ? [...invitedUsers, email]
+            : [email];
 
           await updateObjectByObject(
             client,
             "chatroom",
             "rooms",
-            { room: room.toLowerCase().trim() },
+            { room: room },
             { invitedUsers: newInvitedUsers }
           );
 
@@ -413,26 +407,24 @@ io.on("connection", (socket) => {
             client,
             "chatroom",
             "users",
-            { email: email.toLowerCase().trim() }
+            { email: email }
           );
 
           if (userInDB) {
             const newInvites = userInDB.invites
-              ? [...userInDB.invites, room.toLowerCase().trim()]
-              : [room.toLowerCase().trim()];
+              ? [...userInDB.invites, room]
+              : [room];
 
             await updateObjectByObject(
               client,
               "chatroom",
               "users",
-              { email: email.toLowerCase().trim() },
+              { email: email },
               { invites: newInvites }
             );
 
             const userSocketInArray = allSockets.find(
-              (socketLooped) =>
-                socketLooped.email.toLowerCase().trim() ===
-                email.toLowerCase().trim()
+              (socketLooped) => socketLooped.email === email
             );
 
             if (userSocketInArray) {
@@ -459,17 +451,17 @@ io.on("connection", (socket) => {
         client,
         "chatroom",
         "users",
-        { email: email.toLowerCase().trim() }
+        { email: email }
       );
 
       const newRoomInvites = [...invites];
-      newRoomInvites.splice(invites.indexOf(room.toLowerCase().trim()), 1);
+      newRoomInvites.splice(invites.indexOf(room), 1);
 
       await updateObjectByObject(
         client,
         "chatroom",
         "users",
-        { email: email.toLowerCase().trim() },
+        { email: email },
         { invites: newRoomInvites }
       );
     } catch (e) {
@@ -494,16 +486,13 @@ io.on("connection", (socket) => {
             "chatroom",
             "users",
             {
-              email: email.toLowerCase().trim(),
+              email: email,
             }
           );
 
           if (userInDB && userInDB.rooms) {
             userInDB.rooms.forEach((loopedRoom) => {
-              if (
-                loopedRoom.room.toLowerCase().trim() ===
-                room.toLowerCase().trim()
-              ) {
+              if (loopedRoom.room === room) {
                 shouldAddRoomToUser = false;
               }
             });
@@ -517,9 +506,7 @@ io.on("connection", (socket) => {
           );
 
           rooms.forEach((roomLooped) => {
-            if (
-              roomLooped.room.toLowerCase().trim() === room.trim().toLowerCase()
-            ) {
+            if (roomLooped.room === room) {
               shouldAddRoom = false;
             }
           });
@@ -535,16 +522,14 @@ io.on("connection", (socket) => {
 
           if (roomInDB) {
             roomInDB.users.forEach((user) => {
-              if (
-                user.email.toLowerCase().trim() === email.toLowerCase().trim()
-              ) {
+              if (user.email === email) {
                 shouldAddUserToRoom = false;
               }
             });
           }
 
           userInDB = await findOneItemByObject(client, "chatroom", "users", {
-            email: email.toLowerCase().trim(),
+            email: email,
           });
 
           if (shouldAddRoomToUser && userInDB) {
@@ -593,7 +578,7 @@ io.on("connection", (socket) => {
             );
 
             userInDB = await findOneItemByObject(client, "chatroom", "users", {
-              email: email.toLowerCase().trim(),
+              email: email,
             });
 
             if (userInDB) {
@@ -603,7 +588,7 @@ io.on("connection", (socket) => {
                   {
                     user: name,
                     photoURL,
-                    email: email.trim().toLowerCase(),
+                    email,
                     accountStatus: userInDB.accountStatus,
                   },
                 ];
@@ -612,7 +597,7 @@ io.on("connection", (socket) => {
                   {
                     user: name,
                     photoURL,
-                    email: email.trim().toLowerCase(),
+                    email,
                     accountStatus: userInDB.accountStatus,
                   },
                 ];
@@ -640,10 +625,9 @@ io.on("connection", (socket) => {
 
           roomsInDB.forEach((roomLooped) => {
             if (
-              roomLooped.room.toLowerCase().trim() ===
-                room.toLowerCase().trim() &&
+              roomLooped.room === room &&
               roomLooped.invitedUsers &&
-              roomLooped.invitedUsers.includes(email.toLowerCase().trim())
+              roomLooped.invitedUsers.includes(email)
             ) {
               shouldInvite = false;
             }
@@ -654,32 +638,30 @@ io.on("connection", (socket) => {
               client,
               "chatroom",
               "rooms",
-              { room: room.toLowerCase().trim() }
+              { room: room }
             );
 
             const newInvitedUsers = invitedUsers
-              ? [...invitedUsers, email.toLowerCase().trim()]
-              : [email.toLowerCase().trim()];
+              ? [...invitedUsers, email]
+              : [email];
 
             await updateObjectByObject(
               client,
               "chatroom",
               "rooms",
-              { room: room.toLowerCase().trim() },
+              { room: room },
               { invitedUsers: newInvitedUsers }
             );
           }
 
-          console.log(getUsersInRoom(room.toLowerCase().trim()));
-          console.log(email.toLowerCase().trim());
-          for (let key in getUsersInRoom(room.toLowerCase().trim())) {
+          console.log(getUsersInRoom(room));
+          console.log(email);
+          for (let key in getUsersInRoom(room)) {
             if (
-              getUsersInRoom(room.toLowerCase().trim()) &&
-              getUsersInRoom(room.toLowerCase().trim())[key] &&
-              getUsersInRoom(room.toLowerCase().trim())[key].email &&
-              getUsersInRoom(room.toLowerCase().trim())
-                [key].email.toLowerCase()
-                .trim() === email.toLowerCase().trim()
+              getUsersInRoom(room) &&
+              getUsersInRoom(room)[key] &&
+              getUsersInRoom(room)[key].email &&
+              getUsersInRoom(room)[key].email === email
             ) {
               removeUserByEmail(getUsersInRoom(room)[key].email);
             }
@@ -693,7 +675,7 @@ io.on("connection", (socket) => {
             email,
           });
 
-          userActiveRoomSocketScope = room.toLowerCase().trim();
+          userActiveRoomSocketScope = room;
 
           if (error) {
             console.log(
@@ -713,28 +695,30 @@ io.on("connection", (socket) => {
 
           if (shouldAddRoomToUser) {
             socket.emit("message", {
-              user: "Admin",
+              user: encrypt("Admin"),
               email: "",
               text: encrypt("Welcome to the room!"),
-              photoURL:
-                "https://neverfinite.com/wp-content/uploads/2021/10/cropped-LogoOnly512x512png-4.png",
+              photoURL: encrypt(
+                "https://neverfinite.com/wp-content/uploads/2021/10/cropped-LogoOnly512x512png-4.png"
+              ),
               createdAtDisplay: formatted_date,
               uid,
-              room,
+              room: encrypt(room),
               createdAt: Date.now(),
               media: "",
               mediaPath: "",
               isEdited: false,
             });
             socket.broadcast.to(user.room).emit("message", {
-              user: "Admin",
+              user: encrypt("Admin"),
               email: "",
               text: encrypt(`${user.user} has joined the room!`),
-              photoURL:
-                "https://neverfinite.com/wp-content/uploads/2021/10/cropped-LogoOnly512x512png-4.png",
+              photoURL: encrypt(
+                "https://neverfinite.com/wp-content/uploads/2021/10/cropped-LogoOnly512x512png-4.png"
+              ),
               createdAtDisplay: formatted_date,
               uid,
-              room,
+              room: encrypt(room),
               createdAt: Date.now(),
               media: "",
               mediaPath: "",
@@ -743,21 +727,18 @@ io.on("connection", (socket) => {
           }
 
           io.to(user.room).emit("roomData", {
-            users: getUsersInRoom(user.room),
+            users: getUsersInRoom(room),
           });
 
           userInDB = await findOneItemByObject(client, "chatroom", "users", {
-            email: email.toLowerCase().trim(),
+            email: email,
           });
 
           if (userInDB && userInDB.rooms) {
             const newRooms = [...userInDB.rooms];
 
             for (let i = 0; i < newRooms.length; i++) {
-              if (
-                newRooms[i].room.toLowerCase().trim() ===
-                room.toLowerCase().trim()
-              )
+              if (newRooms[i].room === room)
                 newRooms[i].lastTimeOnline = lastTimeOnline;
             }
 
@@ -767,14 +748,14 @@ io.on("connection", (socket) => {
               "chatroom",
               "users",
               {
-                email: email.toLowerCase().trim(),
+                email: email,
               },
               { rooms: newRooms }
             );
           }
 
           userInDB = await findOneItemByObject(client, "chatroom", "users", {
-            email: email.toLowerCase().trim(),
+            email: email,
           });
 
           if (userInDB) {
@@ -785,7 +766,7 @@ io.on("connection", (socket) => {
             });
           }
 
-          console.log(getUsersInRoom(room.toLowerCase().trim()));
+          console.log(getUsersInRoom(room));
         } catch (e) {
           logger.log(e);
           console.log("Could not join the room!", e);
@@ -810,7 +791,7 @@ io.on("connection", (socket) => {
     ) => {
       try {
         if (message && !isMedia) {
-          console.log(decrypt(message));
+          console.log(message);
         }
 
         const createdAt = Date.now();
@@ -926,15 +907,10 @@ io.on("connection", (socket) => {
       rooms.forEach((room) => {
         if (room.users) {
           room.users.forEach(async (user) => {
-            if (
-              user.email.toLowerCase().trim() === email.toLowerCase().trim()
-            ) {
+            if (user.email === email) {
               const newUsers = [...room.users];
               for (let key in newUsers) {
-                if (
-                  newUsers[key].email.toLowerCase().trim() ===
-                  email.toLowerCase().trim()
-                ) {
+                if (newUsers[key].email === email) {
                   newUsers[key].accountStatus = accountStatus;
                 }
               }
@@ -960,19 +936,15 @@ io.on("connection", (socket) => {
 
   socket.on("startTypingMessage", ({ room, userEmail, userName }) => {
     try {
-      if (
-        room &&
-        userEmail &&
-        userName &&
-        userName.toLowerCase().trim() !== "admin"
-      ) {
+      if (room && userEmail && userName && decrypt(userName) !== "admin") {
         addTypingUser({
-          room: room.toLowerCase().trim(),
-          email: userEmail.toLowerCase().trim(),
+          room,
+          email,
           user: userName,
         });
-        io.to(room.toLowerCase().trim()).emit("startTypingMessage", {
-          typingUsers: getTypingUsersInRoom(room.toLowerCase().trim()),
+
+        io.to(room).emit("startTypingMessage", {
+          typingUsers: getTypingUsersInRoom(room),
         });
       }
     } catch (e) {
@@ -984,9 +956,10 @@ io.on("connection", (socket) => {
   socket.on("stopTypingMessage", ({ room, userEmail }) => {
     try {
       if (room && userEmail) {
-        removeTypingUserByEmail(userEmail.toLowerCase().trim());
-        io.to(room.toLowerCase().trim()).emit("stopTypingMessage", {
-          typingUsers: getTypingUsersInRoom(room.toLowerCase().trim()),
+        removeTypingUserByEmail(userEmail);
+
+        io.to(room).emit("stopTypingMessage", {
+          typingUsers: getTypingUsersInRoom(room),
         });
       }
     } catch (e) {
@@ -1000,15 +973,10 @@ io.on("connection", (socket) => {
 
     try {
       if (userActiveRoomSocketScope && userEmailSocketScope) {
-        removeTypingUserByEmail(userEmailSocketScope.toLowerCase().trim());
-        io.to(userActiveRoomSocketScope.toLowerCase().trim()).emit(
-          "stopTypingMessage",
-          {
-            typingUsers: getTypingUsersInRoom(
-              userActiveRoomSocketScope.toLowerCase().trim()
-            ),
-          }
-        );
+        removeTypingUserByEmail(userEmailSocketScope);
+        io.to(userActiveRoomSocketScope).emit("stopTypingMessage", {
+          typingUsers: getTypingUsersInRoom(userActiveRoomSocketScope),
+        });
       }
 
       if (userEmailSocketScope) {
@@ -1016,61 +984,35 @@ io.on("connection", (socket) => {
           let lastTimeOnlineInRoom = Date.now();
 
           const usersInRoomFiltered = [
-            ...getUsersInRoom(
-              userActiveRoomSocketScope.toLowerCase().trim()
-            ).filter(
-              (user) =>
-                user.email.toLowerCase().trim() ===
-                userEmailSocketScope.toLowerCase().trim()
+            ...getUsersInRoom(userActiveRoomSocketScope).filter(
+              (user) => user.email === userEmailSocketScope
             ),
           ];
           console.log(usersInRoomFiltered);
-          const user = removeUserByEmail(
-            userEmailSocketScope.toLowerCase().trim()
-          );
+          const user = removeUserByEmail(userEmailSocketScope);
 
           if (user) {
             if (usersInRoomFiltered.length <= 1) {
               console.log(
-                `${user.user} (${userEmailSocketScope
-                  .toLowerCase()
-                  .trim()}) has left the room, ${userActiveRoomSocketScope
-                  .toLowerCase()
-                  .trim()}.`
+                `${user.user} (${userEmailSocketScope}) has left the room, ${userActiveRoomSocketScope}.`
               );
 
-              io.to(userActiveRoomSocketScope.toLowerCase().trim()).emit(
-                "roomData",
-                {
-                  users: getUsersInRoom(
-                    userActiveRoomSocketScope
-                      .toLowerCase()
-                      .trim()
-                      .toLowerCase()
-                      .trim()
-                  ),
-                }
-              );
+              io.to(userActiveRoomSocketScope).emit("roomData", {
+                users: getUsersInRoom(userActiveRoomSocketScope),
+              });
 
               const userInDB = await findOneItemByObject(
                 client,
                 "chatroom",
                 "users",
-                { email: userEmailSocketScope.toLowerCase().trim() }
+                { email: userEmailSocketScope }
               );
 
               if (userInDB) {
                 const newRooms = [...userInDB.rooms];
 
                 for (let i = 0; i < newRooms.length; i++) {
-                  if (
-                    newRooms[i].room.toLowerCase().trim() ===
-                    userActiveRoomSocketScope
-                      .toLowerCase()
-                      .trim()
-                      .toLowerCase()
-                      .trim()
-                  ) {
+                  if (newRooms[i].room === userActiveRoomSocketScope) {
                     newRooms[i].lastTimeOnline = lastTimeOnlineInRoom;
                   }
                 }
@@ -1081,7 +1023,7 @@ io.on("connection", (socket) => {
                   "chatroom",
                   "users",
                   {
-                    email: userEmailSocketScope.toLowerCase().trim(),
+                    email: userEmailSocketScope,
                   },
                   { rooms: newRooms }
                 );
@@ -1095,10 +1037,7 @@ io.on("connection", (socket) => {
         const allSocketsEmails = allSockets.map(
           (socketLooped) => socketLooped.email
         );
-        allSockets.splice(
-          allSocketsEmails.indexOf(userEmailSocketScope.toLowerCase().trim()),
-          1
-        );
+        allSockets.splice(allSocketsEmails.indexOf(userEmailSocketScope), 1);
       }
     } catch (e) {
       logger.log(e);
@@ -1109,47 +1048,40 @@ io.on("connection", (socket) => {
   socket.on("leftRoom", async ({ lastTimeOnline, email, room }) => {
     try {
       if (room && email) {
-        removeTypingUserByEmail(email.toLowerCase().trim());
-        io.to(room.toLowerCase().trim()).emit("stopTypingMessage", {
-          typingUsers: getTypingUsersInRoom(room.toLowerCase().trim()),
+        removeTypingUserByEmail(email);
+        io.to(room).emit("stopTypingMessage", {
+          typingUsers: getTypingUsersInRoom(room),
         });
       }
 
       const usersInRoomFiltered = [
-        ...getUsersInRoom(
-          userActiveRoomSocketScope.toLowerCase().trim()
-        ).filter(
-          (user) =>
-            user.email.toLowerCase().trim() ===
-            userEmailSocketScope.toLowerCase().trim()
+        ...getUsersInRoom(userActiveRoomSocketScope).filter(
+          (user) => user.email === userEmailSocketScope
         ),
       ];
       console.log(usersInRoomFiltered);
-      const user = removeUserByEmail(email.toLowerCase().trim());
+      const user = removeUserByEmail(email);
 
       if (user) {
         if (usersInRoomFiltered.length <= 1) {
           console.log(`${user.user} (${email}) has left the room, ${room}.`);
 
           io.to(user.room).emit("roomData", {
-            users: getUsersInRoom(room.toLowerCase().trim()),
+            users: getUsersInRoom(room),
           });
 
           const userInDB = await findOneItemByObject(
             client,
             "chatroom",
             "users",
-            { email: email.toLowerCase().trim() }
+            { email: email }
           );
 
           if (userInDB) {
             const newRooms = [...userInDB.rooms];
 
             for (let i = 0; i < newRooms.length; i++) {
-              if (
-                newRooms[i].room.toLowerCase().trim() ===
-                room.toLowerCase().trim()
-              ) {
+              if (newRooms[i].room === room) {
                 newRooms[i].lastTimeOnline = lastTimeOnline;
               }
             }
@@ -1160,7 +1092,7 @@ io.on("connection", (socket) => {
               "chatroom",
               "users",
               {
-                email: email.toLowerCase().trim(),
+                email: email,
               },
               { rooms: newRooms }
             );
