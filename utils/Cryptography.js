@@ -11,7 +11,8 @@ var iv = CryptoJS.enc.Hex.parse(
 
 const encrypt = (text) => {
   try {
-    return CryptoJS.AES.encrypt(text, passphrase, { iv }).toString();
+    if (text) return CryptoJS.AES.encrypt(text, passphrase, { iv }).toString();
+    return "";
   } catch (error) {
     logger.log(error);
   }
@@ -19,9 +20,12 @@ const encrypt = (text) => {
 
 const decrypt = (ciphertext) => {
   try {
-    const bytes = CryptoJS.AES.decrypt(ciphertext, passphrase, { iv });
-    const originalText = bytes.toString(CryptoJS.enc.Utf8);
-    return originalText;
+    if (ciphertext) {
+      const bytes = CryptoJS.AES.decrypt(ciphertext, passphrase, { iv });
+      const originalText = bytes.toString(CryptoJS.enc.Utf8);
+      return originalText;
+    }
+    return "";
   } catch (error) {
     logger.log(error);
   }
