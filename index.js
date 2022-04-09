@@ -276,7 +276,7 @@ io.on("connection", (socket) => {
           users: getUsersInRoom(room),
         });
 
-        let uid = uuidv4();
+        const uid = uuidv4() + "-" + Date.now().toString();
 
         const formatted_date = getDate();
 
@@ -689,7 +689,7 @@ io.on("connection", (socket) => {
 
           socket.join(user.room);
 
-          let uid = uuidv4();
+          const uid = uuidv4() + "-" + Date.now().toString();
 
           const formatted_date = getDate();
 
