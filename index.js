@@ -441,7 +441,7 @@ io.on("connection", (socket) => {
       });
     } catch (e) {
       logger.log(e);
-      console.log("Could not get online!", e);
+      console.log("Could not get invite users!", e);
     }
   });
 
