@@ -939,7 +939,7 @@ io.on("connection", (socket) => {
       if (room && userEmail && userName && decrypt(userName) !== "admin") {
         addTypingUser({
           room,
-          email,
+          email: userEmail,
           user: userName,
         });
 
