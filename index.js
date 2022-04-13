@@ -951,15 +951,9 @@ io.on("connection", (socket) => {
           user,
         });
 
-        if (email !== userEmailSocketScope) {
-          socket.broadcast.to(room).emit("startTypingMessage", {
-            typingUsersProp: getTypingUsersInRoom(room),
-          });
-        } else {
-          io.to(room).emit("startTypingMessage", {
-            typingUsersProp: getTypingUsersInRoom(room),
-          });
-        }
+        io.to(room).emit("startTypingMessage", {
+          typingUsersProp: getTypingUsersInRoom(room),
+        });
       }
     } catch (e) {
       logger.log(e);
