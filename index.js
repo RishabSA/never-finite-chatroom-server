@@ -952,6 +952,10 @@ io.on("connection", (socket) => {
         });
 
         if (email !== userEmailSocketScope) {
+          socket.broadcast.to(room).emit("startTypingMessage", {
+            typingUsers: getTypingUsersInRoom(room),
+          });
+        } else {
           io.to(room).emit("startTypingMessage", {
             typingUsers: getTypingUsersInRoom(room),
           });
