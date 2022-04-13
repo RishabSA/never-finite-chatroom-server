@@ -942,13 +942,13 @@ io.on("connection", (socket) => {
     }
   });
 
-  socket.on("startTypingMessage", ({ room, userEmail, userName }) => {
+  socket.on("startTypingMessage", ({ room, email, user }) => {
     try {
-      if (room && userEmail && userName && decrypt(userName) !== "admin") {
+      if (room && email && user && decrypt(user) !== "admin") {
         addTypingUser({
           room,
-          email: userEmail,
-          user: userName,
+          email,
+          user,
         });
 
         io.to(room).emit("startTypingMessage", {
@@ -961,10 +961,10 @@ io.on("connection", (socket) => {
     }
   });
 
-  socket.on("stopTypingMessage", ({ room, userEmail }) => {
+  socket.on("stopTypingMessage", ({ room, email }) => {
     try {
-      if (room && userEmail) {
-        removeTypingUserByEmail(userEmail);
+      if (room && email) {
+        removeTypingUserByEmail(email);
 
         io.to(room).emit("stopTypingMessage", {
           typingUsers: getTypingUsersInRoom(room),
