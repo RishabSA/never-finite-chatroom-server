@@ -951,7 +951,7 @@ io.on("connection", (socket) => {
           user,
         });
 
-        if (decrypt(email).toLowerCase().trim() !== userEmailSocketScope) {
+        if (email !== userEmailSocketScope) {
           io.to(room).emit("startTypingMessage", {
             typingUsers: getTypingUsersInRoom(room),
           });
