@@ -13,8 +13,8 @@ const addTypingUser = ({ room, email, user }) => {
 
   const userInArray = {
     user,
-    room: room.toLowerCase().trim(),
-    email: email.toLowerCase().trim(),
+    room,
+    email,
   };
 
   typingUsersInRooms.push(userInArray);
@@ -26,7 +26,7 @@ const addTypingUser = ({ room, email, user }) => {
 
 const removeTypingUserByEmail = (email) => {
   const index = typingUsersInRooms.findIndex(
-    (user) => user.email.toLowerCase().trim() === email.toLowerCase().trim()
+    (user) => user.email === email
   );
 
   if (index !== -1) return typingUsersInRooms.splice(index, 1)[0];
@@ -34,12 +34,12 @@ const removeTypingUserByEmail = (email) => {
 
 const getTypingUserByEmail = (email) =>
   typingUsersInRooms.find(
-    (user) => user.email.toLowerCase().trim() === email.toLowerCase().trim()
+    (user) => user.email === email
   );
 
 const getTypingUsersInRoom = (room) =>
   typingUsersInRooms.filter(
-    (user) => user.room.toLowerCase().trim() === room.toLowerCase().trim()
+    (user) => user.room === room
   );
 
 module.exports = {

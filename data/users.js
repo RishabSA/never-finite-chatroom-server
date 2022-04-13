@@ -27,7 +27,7 @@ const removeUser = (id) => {
 
 const removeUserByEmail = (email) => {
   const index = usersInRooms.findIndex(
-    (user) => user.email.toLowerCase().trim() === email.toLowerCase().trim()
+    (user) => user.email === email
   );
 
   if (index !== -1) return usersInRooms.splice(index, 1)[0];
@@ -35,9 +35,9 @@ const removeUserByEmail = (email) => {
 
 const getUser = (id) => usersInRooms.find((user) => user.id === id);
 
-const getUserByEmail = (email) => usersInRooms.find((user) => user.email.toLowerCase().trim() === email.toLowerCase().trim());
+const getUserByEmail = (email) => usersInRooms.find((user) => user.email === email);
 
-const getUsersInRoom = (room) => usersInRooms.filter((user) => user.room.toLowerCase().trim() === room.toLowerCase().trim());
+const getUsersInRoom = (room) => usersInRooms.filter((user) => user.room === room);
 
 module.exports = {
   addUser,

@@ -951,8 +951,6 @@ io.on("connection", (socket) => {
           user,
         });
 
-        console.log("tresting123:", email, " : ", decrypt(email));
-
         io.to(room).emit("startTypingMessage", {
           typingUsers: getTypingUsersInRoom(room),
         });
