@@ -951,9 +951,11 @@ io.on("connection", (socket) => {
           user,
         });
 
-        io.to(room).emit("startTypingMessage", {
-          typingUsers: getTypingUsersInRoom(room),
-        });
+        if (decrypt(email).toLowerCase().trim() !== userEmailSocketScope) {
+          io.to(room).emit("startTypingMessage", {
+            typingUsers: getTypingUsersInRoom(room),
+          });
+        }
       }
     } catch (e) {
       logger.log(e);
