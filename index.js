@@ -951,15 +951,11 @@ io.on("connection", (socket) => {
           user,
         });
 
-        if (email !== userEmailSocketScope) {
-          socket.broadcast.to(room).emit("startTypingMessage", {
-            typingUsers: getTypingUsersInRoom(room),
-          });
-        } else {
-          io.to(room).emit("startTypingMessage", {
-            typingUsers: getTypingUsersInRoom(room),
-          });
-        }
+        console.log("tresting123:", email, " : ", decrypt(email));
+
+        io.to(room).emit("startTypingMessage", {
+          typingUsers: getTypingUsersInRoom(room),
+        });
       }
     } catch (e) {
       logger.log(e);
