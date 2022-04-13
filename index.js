@@ -952,7 +952,7 @@ io.on("connection", (socket) => {
         });
 
         io.to(room).emit("startTypingMessage", {
-          typingUsers: getTypingUsersInRoom(room),
+          typingUsersProp: getTypingUsersInRoom(room),
         });
       }
     } catch (e) {
@@ -967,7 +967,7 @@ io.on("connection", (socket) => {
         removeTypingUserByEmail(email);
 
         io.to(room).emit("stopTypingMessage", {
-          typingUsers: getTypingUsersInRoom(room),
+          typingUsersProp: getTypingUsersInRoom(room),
         });
       }
     } catch (e) {
