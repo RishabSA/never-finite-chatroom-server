@@ -646,20 +646,22 @@ io.on("connection", (socket) => {
               client,
               "chatroom",
               "rooms",
-              { room: room }
+              { room }
             );
 
-            const newInvitedUsers = invitedUsers
-              ? [...invitedUsers, email]
-              : [email];
+            if (invitedUsers) {
+              const newInvitedUsers = invitedUsers
+                ? [...invitedUsers, email]
+                : [email];
 
-            await updateObjectByObject(
-              client,
-              "chatroom",
-              "rooms",
-              { room: room },
-              { invitedUsers: newInvitedUsers }
-            );
+              await updateObjectByObject(
+                client,
+                "chatroom",
+                "rooms",
+                { room: room },
+                { invitedUsers: newInvitedUsers }
+              );
+            }
           }
 
           console.log(getUsersInRoom(room));
