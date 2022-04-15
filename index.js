@@ -732,7 +732,7 @@ io.on("connection", (socket) => {
               isEdited: false,
               uid,
               createdAt: Date.now(),
-              text: encrypt(`${user.user} has joined the room`),
+              text: encrypt(`${decrypt(user.user)} has joined the room`),
             });
           }
 
