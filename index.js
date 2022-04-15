@@ -705,34 +705,36 @@ io.on("connection", (socket) => {
 
           if (shouldAddRoomToUser) {
             socket.emit("message", {
+              room: encrypt(room.toLowerCase().trim()),
               user: encrypt("Admin"),
-              email: "",
-              text: encrypt("Welcome to the room!"),
               photoURL: encrypt(
                 "https://neverfinite.com/wp-content/uploads/2021/10/cropped-LogoOnly512x512png-4.png"
               ),
-              createdAtDisplay: formatted_date,
-              uid,
-              room: encrypt(room),
-              createdAt: Date.now(),
+              email: encrypt("neverfinitetech@gmail.com"),
               media: "",
+              createdAtDisplay,
+              formatted_date,
               mediaPath: "",
               isEdited: false,
+              uid,
+              createdAt: Date.now(),
+              text: encrypt("Welcome to the room!"),
             });
             socket.broadcast.to(user.room).emit("message", {
+              room: encrypt(room.toLowerCase().trim()),
               user: encrypt("Admin"),
-              email: "",
-              text: encrypt(`${user.user} has joined the room!`),
               photoURL: encrypt(
                 "https://neverfinite.com/wp-content/uploads/2021/10/cropped-LogoOnly512x512png-4.png"
               ),
-              createdAtDisplay: formatted_date,
-              uid,
-              room: encrypt(room),
-              createdAt: Date.now(),
+              email: encrypt("neverfinitetech@gmail.com"),
               media: "",
+              createdAtDisplay,
+              formatted_date,
               mediaPath: "",
               isEdited: false,
+              uid,
+              createdAt: Date.now(),
+              text: encrypt(`${user.user} has joined the room`),
             });
           }
 
