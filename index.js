@@ -705,7 +705,7 @@ io.on("connection", (socket) => {
 
           if (shouldAddRoomToUser) {
             socket.emit("message", {
-              room: encrypt(room.toLowerCase().trim()),
+              room: room.toLowerCase().trim(),
               user: encrypt("Admin"),
               photoURL: encrypt(
                 "https://neverfinite.com/wp-content/uploads/2021/10/cropped-LogoOnly512x512png-4.png"
@@ -720,7 +720,7 @@ io.on("connection", (socket) => {
               text: encrypt("Welcome to the room!"),
             });
             socket.broadcast.to(user.room).emit("message", {
-              room: encrypt(room.toLowerCase().trim()),
+              room: room.toLowerCase().trim(),
               user: encrypt("Admin"),
               photoURL: encrypt(
                 "https://neverfinite.com/wp-content/uploads/2021/10/cropped-LogoOnly512x512png-4.png"
