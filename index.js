@@ -316,7 +316,7 @@ io.on("connection", (socket) => {
           room,
         });
 
-        if (result.users.length <= 0) {
+        if (result.users.length <= 1) {
           // Delete the room
           deleteByObject(client, "chatroom", "rooms", {
             room,
