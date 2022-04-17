@@ -321,6 +321,7 @@ io.on("connection", (socket) => {
           deleteByObject(client, "chatroom", "rooms", {
             room,
           });
+          console.log(`The room ${room} has been deleted.`);
         } else {
           io.to(user.room).emit("roomData", {
             users: getUsersInRoom(room),
