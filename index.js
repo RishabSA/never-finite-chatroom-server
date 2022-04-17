@@ -320,7 +320,7 @@ io.on("connection", (socket) => {
           // Delete the room
           deleteByObject(client, "chatroom", "rooms", {
             room,
-          });
+          }); 
           console.log(`The room ${room} has been deleted.`);
         } else {
           io.to(user.room).emit("roomData", {
