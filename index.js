@@ -280,106 +280,89 @@ io.on("connection", (socket) => {
       if (user) {
         console.log(`${user.user} (${email}) has left the room, ${room}.`);
 
-        const userInDB = await findOneItemByObject(
-          client,
-          "chatroom",
-          "users",
-          {
-            email,
-          }
-        );
-
-        let newRooms = [...userInDB.rooms];
-
-        if (userInDB.rooms) {
-          let index = "";
-          for (let i = 0; i < userInDB.rooms.length; i++) {
-            if (userInDB.rooms[i].room === room) {
-              index = i;
-            }
-          }
-
-          newRooms.splice(index, 1);
-        }
-
-        updateObjectByObject(
-          client,
-          "chatroom",
-          "users",
-          { email },
-          {
-            rooms: newRooms,
-          }
-        );
-
-        const result = await findOneItemByObject(client, "chatroom", "rooms", {
-          room,
+        io.to(user.room).emit("roomData", {
+          users: getUsersInRoom(room),
         });
 
-        if (result.users.length <= 0) {
-          // Delete the room
-          deleteByObject(client, "chatroom", "rooms", {
-            room,
-          }); 
-          console.log(`The room ${room} has been deleted.`);
-        } else {
-          io.to(user.room).emit("roomData", {
-            users: getUsersInRoom(room),
-          });
+        const uid = uuidv4() + "-" + Date.now().toString();
 
-          const uid = uuidv4() + "-" + Date.now().toString();
+        const formatted_date = getDate();
 
-          const formatted_date = getDate();
-
-          socket.broadcast.to(room).emit("message", {
-            user: encrypt("Admin"),
-            email: "",
-            text: encrypt(`${user.user} has left the room.`),
-            photoURL: encrypt(
-              "https://neverfinite.com/wp-content/uploads/2021/10/cropped-LogoOnly512x512png-4.png"
-            ),
-            createdAtDisplay: formatted_date,
-            uid,
-            room: encrypt(room),
-            createdAt: Date.now(),
-            media: "",
-            mediaPath: "",
-            isEdited: false,
-          });
-
-          const roomResult = await findOneItemByObject(
-            client,
-            "chatroom",
-            "rooms",
-            {
-              room,
-            }
-          );
-
-          let newUsers = [...roomResult.users];
-
-          if (roomResult.users) {
-            let index = "";
-            for (let i = 0; i < roomResult.users.length; i++) {
-              if (roomResult.users[i].email === email) {
-                index = i;
-              }
-            }
-
-            newUsers.splice(index, 1);
-          }
-
-          updateObjectByObject(
-            client,
-            "chatroom",
-            "rooms",
-            { room },
-            {
-              users: newUsers,
-            }
-          );
-        }
+        socket.broadcast.to(room).emit("message", {
+          user: encrypt("Admin"),
+          email: "",
+          text: encrypt(`${user.user} has left the room.`),
+          photoURL: encrypt(
+            "https://neverfinite.com/wp-content/uploads/2021/10/cropped-LogoOnly512x512png-4.png"
+          ),
+          createdAtDisplay: formatted_date,
+          uid,
+          room: encrypt(room),
+          createdAt: Date.now(),
+          media: "",
+          mediaPath: "",
+          isEdited: false,
+        });
       }
+
+      const userInDB = await findOneItemByObject(client, "chatroom", "users", {
+        email,
+      });
+
+      let newRooms = [...userInDB.rooms];
+
+      if (userInDB.rooms) {
+        let index = "";
+        for (let i = 0; i < userInDB.rooms.length; i++) {
+          if (userInDB.rooms[i].room === room) {
+            index = i;
+          }
+        }
+
+        newRooms.splice(index, 1);
+      }
+
+      updateObjectByObject(
+        client,
+        "chatroom",
+        "users",
+        { email },
+        {
+          rooms: newRooms,
+        }
+      );
+
+      const roomResult = await findOneItemByObject(
+        client,
+        "chatroom",
+        "rooms",
+        {
+          room,
+        }
+      );
+
+      let newUsers = [...roomResult.users];
+
+      if (roomResult.users) {
+        let index = "";
+        for (let i = 0; i < roomResult.users.length; i++) {
+          if (roomResult.users[i].email === email) {
+            index = i;
+          }
+        }
+
+        newUsers.splice(index, 1);
+      }
+
+      updateObjectByObject(
+        client,
+        "chatroom",
+        "rooms",
+        { room },
+        {
+          users: newUsers,
+        }
+      );
     } catch (e) {
       logger.log(e);
       console.log("Could not get online!", e);
