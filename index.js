@@ -303,7 +303,7 @@ io.on("connection", (socket) => {
         }
 
         updateObjectByObject(
-          client,
+          client, 
           "chatroom",
           "users",
           { email },
