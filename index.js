@@ -305,7 +305,7 @@ io.on("connection", (socket) => {
         updateObjectByObject(
           client, 
           "chatroom",
-          "users",
+          "users", 
           { email },
           {
             rooms: newRooms,
