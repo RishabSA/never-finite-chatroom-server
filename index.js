@@ -834,7 +834,7 @@ io.on("connection", (socket) => {
           media: isMedia ? message : "",
           mediaPath: mediaPath,
           isEdited: false,
-          uid: uid + createdAt,
+          uid,
         });
 
         io.to(room).emit("message", {
@@ -848,7 +848,7 @@ io.on("connection", (socket) => {
           media: isMedia ? message : "",
           mediaPath: mediaPath,
           isEdited: false,
-          uid: uid + createdAt,
+          uid,
         });
 
         callback();
