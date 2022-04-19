@@ -1018,6 +1018,8 @@ io.on("connection", (socket) => {
           console.log(usersInRoomFiltered);
           const user = removeUserByEmail(userEmailSocketScope);
 
+          socket.leave(userActiveRoomSocketScope);
+
           if (user) {
             if (usersInRoomFiltered.length <= 1) {
               console.log(
@@ -1088,6 +1090,8 @@ io.on("connection", (socket) => {
       ];
       console.log(usersInRoomFiltered);
       const user = removeUserByEmail(email);
+
+      socket.leave(userActiveRoomSocketScope);
 
       if (user) {
         if (usersInRoomFiltered.length <= 1) {
