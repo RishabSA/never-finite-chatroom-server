@@ -705,10 +705,6 @@ io.on("connection", (socket) => {
               getUsersInRoom(room)[key].email === email
             ) {
               removeUserByEmail(getUsersInRoom(room)[key].email);
-              allUsersInRooms.splice(
-                allUsersInRooms.findIndex((user) => user.email === email),
-                1
-              );
             }
           }
 
