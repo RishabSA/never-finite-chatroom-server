@@ -837,7 +837,7 @@ io.on("connection", (socket) => {
           uid,
         });
 
-        io.to(room).emit("message", {
+        io.emit("message", {
           user,
           room,
           photoURL,
