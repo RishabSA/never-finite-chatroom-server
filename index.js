@@ -54,7 +54,7 @@ app.use(router);
 
 const allSockets = [];
 
-const allUsersInRooms = [];
+let allUsersInRooms = [];
 
 router.get("/", (req, res) => {
   res.send("Waiting for any connections...");
@@ -705,6 +705,10 @@ io.on("connection", (socket) => {
               getUsersInRoom(room)[key].email === email
             ) {
               removeUserByEmail(getUsersInRoom(room)[key].email);
+              allUsersInRooms.splice(
+                allUsersInRooms.findIndex((user) => user.email === email),
+                1
+              );
             }
           }
 
@@ -716,13 +720,13 @@ io.on("connection", (socket) => {
             email,
           });
 
-          allUsersInRooms.push({
-            email,
-            room,
-            user: name,
-            photoURL,
-            socket,
-          });
+          allUsersInRooms = [
+            ...allUsersInRooms,
+            {
+              socket,
+              ...user,
+            },
+          ];
 
           console.log(allUsersInRooms);
 
