@@ -1108,7 +1108,7 @@ io.on("connection", (socket) => {
           const user = removeUserByEmail(userEmailSocketScope);
 
           allUsersInRooms.splice(
-            allUsersInRooms.findIndex((user) => user.email === email),
+            allUsersInRooms.findIndex((user) => user.email === userEmailSocketScope),
             1
           );
 
