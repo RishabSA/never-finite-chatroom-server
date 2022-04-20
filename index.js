@@ -303,9 +303,9 @@ io.on("connection", (socket) => {
         }
 
         updateObjectByObject(
-          client, 
+          client,
           "chatroom",
-          "users", 
+          "users",
           { email },
           {
             rooms: newRooms,
@@ -714,7 +714,9 @@ io.on("connection", (socket) => {
 
           console.log("User has joined!", user);
 
-          await socket.join(room);
+          socket.join(room, () => {
+            console.log(`User is now in rooms: ${socket.rooms}`);
+          });
 
           const uid = uuidv4() + "-" + Date.now().toString();
 
