@@ -55,7 +55,7 @@ app.use(router);
 const allSockets = [];
 
 router.get("/", (req, res) => {
-  res.send("Waiting for connections...");
+  res.send("Waiting for any connections...");
 });
 
 router.get("/:key/users", async (req, res) => {
@@ -714,7 +714,7 @@ io.on("connection", (socket) => {
 
           console.log("User has joined!", user);
 
-          socket.join(user.room);
+          socket.join(room);
 
           const uid = uuidv4() + "-" + Date.now().toString();
 
@@ -837,7 +837,7 @@ io.on("connection", (socket) => {
           uid,
         });
 
-        io.emit("message", {
+        io.to(room).emit("message", {
           user,
           room,
           photoURL,
