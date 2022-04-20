@@ -714,7 +714,7 @@ io.on("connection", (socket) => {
 
           console.log("User has joined!", user);
 
-          socket.join(room, () => {
+          socket.join(room, function() {
             console.log(`User is now in rooms: ${socket.rooms}`);
           });
 
