@@ -714,7 +714,7 @@ io.on("connection", (socket) => {
 
           console.log("User has joined!", user);
 
-          socket.join(room);
+          await socket.join(room);
 
           const uid = uuidv4() + "-" + Date.now().toString();
 
@@ -1018,7 +1018,7 @@ io.on("connection", (socket) => {
           console.log(usersInRoomFiltered);
           const user = removeUserByEmail(userEmailSocketScope);
 
-          socket.leave(userActiveRoomSocketScope);
+          await socket.leave(userActiveRoomSocketScope);
 
           if (user) {
             if (usersInRoomFiltered.length <= 1) {
@@ -1091,7 +1091,7 @@ io.on("connection", (socket) => {
       console.log(usersInRoomFiltered);
       const user = removeUserByEmail(email);
 
-      socket.leave(userActiveRoomSocketScope);
+      await socket.leave(userActiveRoomSocketScope);
 
       if (user) {
         if (usersInRoomFiltered.length <= 1) {
