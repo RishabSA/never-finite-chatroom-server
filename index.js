@@ -1020,7 +1020,9 @@ io.on("connection", (socket) => {
           console.log(usersInRoomFiltered);
           const user = removeUserByEmail(userEmailSocketScope);
 
-          await socket.leave(userActiveRoomSocketScope);
+          socket.leave(userActiveRoomSocketScope, () => {
+            console.log(`User is now in rooms: ${socket.rooms}`);
+          });
 
           if (user) {
             if (usersInRoomFiltered.length <= 1) {
@@ -1093,7 +1095,9 @@ io.on("connection", (socket) => {
       console.log(usersInRoomFiltered);
       const user = removeUserByEmail(email);
 
-      await socket.leave(userActiveRoomSocketScope);
+      socket.leave(userActiveRoomSocketScope, () => {
+        console.log(`User is now in rooms: ${socket.rooms}`);
+      });
 
       if (user) {
         if (usersInRoomFiltered.length <= 1) {
