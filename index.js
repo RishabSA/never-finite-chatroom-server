@@ -54,6 +54,8 @@ app.use(router);
 
 const allSockets = [];
 
+const allUsersInRooms = [];
+
 router.get("/", (req, res) => {
   res.send("Waiting for any connections...");
 });
@@ -277,6 +279,11 @@ io.on("connection", (socket) => {
 
       const user = removeUserByEmail(email);
 
+      allUsersInRooms.splice(
+        allUsersInRooms.findIndex((user) => user.email === email),
+        1
+      );
+
       if (user) {
         console.log(`${user.user} (${email}) has left the room, ${room}.`);
 
@@ -323,9 +330,16 @@ io.on("connection", (socket) => {
           });
           console.log(`The room ${room} has been deleted.`);
         } else {
-          io.to(user.room).emit("roomData", {
-            users: getUsersInRoom(room),
-          });
+          allUsersInRooms
+            .filter((user) => user.room === room)
+            .forEach((user) => {
+              user.socket.emit("roomData", {
+                users: getUsersInRoom(room),
+              });
+            });
+          // io.to(user.room).emit("roomData", {
+          //   users: getUsersInRoom(room),
+          // });
 
           const uid = uuidv4() + "-" + Date.now().toString();
 
@@ -691,6 +705,10 @@ io.on("connection", (socket) => {
               getUsersInRoom(room)[key].email === email
             ) {
               removeUserByEmail(getUsersInRoom(room)[key].email);
+              allUsersInRooms.splice(
+                allUsersInRooms.findIndex((user) => user.email === email),
+                1
+              );
             }
           }
 
@@ -700,6 +718,14 @@ io.on("connection", (socket) => {
             room,
             photoURL,
             email,
+          });
+
+          allUsersInRooms.push({
+            email,
+            room,
+            user: name,
+            photoURL,
+            socket,
           });
 
           userActiveRoomSocketScope = room;
@@ -755,9 +781,16 @@ io.on("connection", (socket) => {
             });
           }
 
-          io.to(user.room).emit("roomData", {
-            users: getUsersInRoom(room),
-          });
+          allUsersInRooms
+            .filter((userLooped) => userLooped.room === room)
+            .forEach((userLooped) => {
+              userLooped.socket.emit("roomData", {
+                users: getUsersInRoom(room),
+              });
+            });
+          // io.to(user.room).emit("roomData", {
+          //   users: getUsersInRoom(room),
+          // });
 
           userInDB = await findOneItemByObject(client, "chatroom", "users", {
             email: email,
@@ -839,19 +872,36 @@ io.on("connection", (socket) => {
           uid,
         });
 
-        io.to(room).emit("message", {
-          user,
-          room,
-          photoURL,
-          email,
-          createdAt,
-          createdAtDisplay,
-          text: isMedia ? "" : message,
-          media: isMedia ? message : "",
-          mediaPath: mediaPath,
-          isEdited: false,
-          uid,
-        });
+        allUsersInRooms
+          .filter((userLooped) => userLooped.room === room)
+          .forEach((userLooped) => {
+            userLooped.socket.emit("message", {
+              user,
+              room,
+              photoURL,
+              email,
+              createdAt,
+              createdAtDisplay,
+              text: isMedia ? "" : message,
+              media: isMedia ? message : "",
+              mediaPath: mediaPath,
+              isEdited: false,
+              uid,
+            });
+          });
+        // io.to(room).emit("message", {
+        //   user,
+        //   room,
+        //   photoURL,
+        //   email,
+        //   createdAt,
+        //   createdAtDisplay,
+        //   text: isMedia ? "" : message,
+        //   media: isMedia ? message : "",
+        //   mediaPath: mediaPath,
+        //   isEdited: false,
+        //   uid,
+        // });
 
         callback();
       } catch (e) {
@@ -869,9 +919,16 @@ io.on("connection", (socket) => {
         uid,
       });
 
-      io.to(user.room).emit("delete", {
-        uid,
-      });
+      allUsersInRooms
+        .filter((userLooped) => userLooped.room === user.room)
+        .forEach((userLooped) => {
+          userLooped.socket.emit("delete", {
+            uid,
+          });
+        });
+      // io.to(user.room).emit("delete", {
+      //   uid,
+      // });
     } catch (e) {
       logger.log(e);
       console.log("Could not delete message!", e);
@@ -898,11 +955,20 @@ io.on("connection", (socket) => {
           }
         );
 
-        io.to(user.room).emit("edit", {
-          uid,
-          newMessage,
-          newCreatedAtDisplay,
-        });
+        allUsersInRooms
+          .filter((userLooped) => userLooped.room === user.room)
+          .forEach((userLooped) => {
+            userLooped.socket.emit("edit", {
+              uid,
+              newMessage,
+              newCreatedAtDisplay,
+            });
+          });
+        // io.to(user.room).emit("edit", {
+        //   uid,
+        //   newMessage,
+        //   newCreatedAtDisplay,
+        // });
       } catch (e) {
         logger.log(e);
         console.log("Could not edit message!", e);
@@ -972,9 +1038,16 @@ io.on("connection", (socket) => {
           user,
         });
 
-        io.to(room).emit("startTypingMessage", {
-          typingUsersProp: getTypingUsersInRoom(room),
-        });
+        allUsersInRooms
+          .filter((userLooped) => userLooped.room === room)
+          .forEach((userLooped) => {
+            userLooped.socket.emit("startTypingMessage", {
+              typingUsersProp: getTypingUsersInRoom(room),
+            });
+          });
+        // io.to(room).emit("startTypingMessage", {
+        //   typingUsersProp: getTypingUsersInRoom(room),
+        // });
       }
     } catch (e) {
       logger.log(e);
@@ -987,9 +1060,16 @@ io.on("connection", (socket) => {
       if (room && email) {
         removeTypingUserByEmail(email);
 
-        io.to(room).emit("stopTypingMessage", {
-          typingUsersProp: getTypingUsersInRoom(room),
-        });
+        allUsersInRooms
+          .filter((userLooped) => userLooped.room === room)
+          .forEach((userLooped) => {
+            userLooped.socket.emit("stopTypingMessage", {
+              typingUsersProp: getTypingUsersInRoom(room),
+            });
+          });
+        // io.to(room).emit("stopTypingMessage", {
+        //   typingUsersProp: getTypingUsersInRoom(room),
+        // });
       }
     } catch (e) {
       logger.log(e);
@@ -1003,9 +1083,16 @@ io.on("connection", (socket) => {
     try {
       if (userActiveRoomSocketScope && userEmailSocketScope) {
         removeTypingUserByEmail(userEmailSocketScope);
-        io.to(userActiveRoomSocketScope).emit("stopTypingMessage", {
-          typingUsers: getTypingUsersInRoom(userActiveRoomSocketScope),
-        });
+        allUsersInRooms
+          .filter((userLooped) => userLooped.room === userActiveRoomSocketScope)
+          .forEach((userLooped) => {
+            userLooped.socket.emit("stopTypingMessage", {
+              typingUsers: getTypingUsersInRoom(userActiveRoomSocketScope),
+            });
+          });
+        // io.to(userActiveRoomSocketScope).emit("stopTypingMessage", {
+        //   typingUsers: getTypingUsersInRoom(userActiveRoomSocketScope),
+        // });
       }
 
       if (userEmailSocketScope) {
@@ -1020,6 +1107,11 @@ io.on("connection", (socket) => {
           console.log(usersInRoomFiltered);
           const user = removeUserByEmail(userEmailSocketScope);
 
+          allUsersInRooms.splice(
+            allUsersInRooms.findIndex((user) => user.email === email),
+            1
+          );
+
           socket.leave(userActiveRoomSocketScope);
 
           if (user) {
@@ -1028,9 +1120,18 @@ io.on("connection", (socket) => {
                 `${user.user} (${userEmailSocketScope}) has left the room, ${userActiveRoomSocketScope}.`
               );
 
-              io.to(userActiveRoomSocketScope).emit("roomData", {
-                users: getUsersInRoom(userActiveRoomSocketScope),
-              });
+              allUsersInRooms
+                .filter(
+                  (userLooped) => userLooped.room === userActiveRoomSocketScope
+                )
+                .forEach((userLooped) => {
+                  userLooped.socket.emit("roomData", {
+                    users: getUsersInRoom(userActiveRoomSocketScope),
+                  });
+                });
+              // io.to(userActiveRoomSocketScope).emit("roomData", {
+              //   users: getUsersInRoom(userActiveRoomSocketScope),
+              // });
 
               const userInDB = await findOneItemByObject(
                 client,
@@ -1080,9 +1181,16 @@ io.on("connection", (socket) => {
     try {
       if (room && email) {
         removeTypingUserByEmail(email);
-        io.to(room).emit("stopTypingMessage", {
-          typingUsers: getTypingUsersInRoom(room),
-        });
+        allUsersInRooms
+          .filter((userLooped) => userLooped.room === room)
+          .forEach((userLooped) => {
+            userLooped.socket.emit("stopTypingMessage", {
+              typingUsers: getTypingUsersInRoom(room),
+            });
+          });
+        // io.to(room).emit("stopTypingMessage", {
+        //   typingUsers: getTypingUsersInRoom(room),
+        // });
       }
 
       const usersInRoomFiltered = [
@@ -1093,15 +1201,27 @@ io.on("connection", (socket) => {
       console.log(usersInRoomFiltered);
       const user = removeUserByEmail(email);
 
+      allUsersInRooms.splice(
+        allUsersInRooms.findIndex((user) => user.email === email),
+        1
+      );
+
       socket.leave(userActiveRoomSocketScope);
 
       if (user) {
         if (usersInRoomFiltered.length <= 1) {
           console.log(`${user.user} (${email}) has left the room, ${room}.`);
 
-          io.to(user.room).emit("roomData", {
-            users: getUsersInRoom(room),
-          });
+          allUsersInRooms
+            .filter((userLooped) => userLooped.room === user.room)
+            .forEach((userLooped) => {
+              userLooped.socket.emit("roomData", {
+                users: getUsersInRoom(room),
+              });
+            });
+          // io.to(user.room).emit("roomData", {
+          //   users: getUsersInRoom(room),
+          // });
 
           const userInDB = await findOneItemByObject(
             client,
