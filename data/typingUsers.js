@@ -19,7 +19,7 @@ const addTypingUser = ({ room, email, user }) => {
 
   typingUsersInRooms.push(userInArray);
 
-  console.log("Array affter add typing user:", typingUsersInRooms);
+  //console.log("Array affter add typing user:", typingUsersInRooms);
 
   return { userInArray };
 };
