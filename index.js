@@ -54,7 +54,7 @@ app.use(router);
 
 const allSockets = [];
 
-let allUsersInRooms = [];
+const allUsersInRooms = [];
 
 router.get("/", (req, res) => {
   res.send("Waiting for any connections...");
@@ -720,15 +720,14 @@ io.on("connection", (socket) => {
             email,
           });
 
-          allUsersInRooms = [
-            ...allUsersInRooms,
-            {
-              socket,
-              ...user,
-            },
-          ];
+          console.log("before", allUsersInRooms);
 
-          console.log(allUsersInRooms);
+          allUsersInRooms.push({
+            socket,
+            ...user,
+          });
+
+          console.log("after", allUsersInRooms);
 
           userActiveRoomSocketScope = room;
 
