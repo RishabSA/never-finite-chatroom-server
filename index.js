@@ -325,7 +325,7 @@ io.on("connection", (socket) => {
           });
           console.log(`The room ${room} has been deleted.`);
         } else {
-          io.to(user.room).emit("roomData", {
+          io.in(user.room).emit("roomData", {
             users: getUsersInRoom(room),
           });
 
@@ -758,7 +758,7 @@ io.on("connection", (socket) => {
             });
           }
 
-          io.to(user.room).emit("roomData", {
+          io.in(user.room).emit("roomData", {
             users: getUsersInRoom(room),
           });
 
@@ -842,7 +842,7 @@ io.on("connection", (socket) => {
           uid,
         });
 
-        io.to(room).emit("message", {
+        io.in(room).emit("message", {
           user,
           room,
           photoURL,
@@ -872,7 +872,7 @@ io.on("connection", (socket) => {
         uid,
       });
 
-      io.to(user.room).emit("delete", {
+      io.in(user.room).emit("delete", {
         uid,
       });
     } catch (e) {
@@ -901,7 +901,7 @@ io.on("connection", (socket) => {
           }
         );
 
-        io.to(user.room).emit("edit", {
+        io.in(user.room).emit("edit", {
           uid,
           newMessage,
           newCreatedAtDisplay,
@@ -975,7 +975,7 @@ io.on("connection", (socket) => {
           user,
         });
 
-        io.to(room).emit("startTypingMessage", {
+        io.in(room).emit("startTypingMessage", {
           typingUsersProp: getTypingUsersInRoom(room),
         });
       }
@@ -990,7 +990,7 @@ io.on("connection", (socket) => {
       if (room && email) {
         removeTypingUserByEmail(email);
 
-        io.to(room).emit("stopTypingMessage", {
+        io.in(room).emit("stopTypingMessage", {
           typingUsersProp: getTypingUsersInRoom(room),
         });
       }
@@ -1006,7 +1006,7 @@ io.on("connection", (socket) => {
     try {
       if (userActiveRoomSocketScope && userEmailSocketScope) {
         removeTypingUserByEmail(userEmailSocketScope);
-        io.to(userActiveRoomSocketScope).emit("stopTypingMessage", {
+        io.in(userActiveRoomSocketScope).emit("stopTypingMessage", {
           typingUsers: getTypingUsersInRoom(userActiveRoomSocketScope),
         });
       }
@@ -1031,7 +1031,7 @@ io.on("connection", (socket) => {
                 `${user.user} (${userEmailSocketScope}) has left the room, ${userActiveRoomSocketScope}.`
               );
 
-              io.to(userActiveRoomSocketScope).emit("roomData", {
+              io.in(userActiveRoomSocketScope).emit("roomData", {
                 users: getUsersInRoom(userActiveRoomSocketScope),
               });
 
@@ -1073,7 +1073,6 @@ io.on("connection", (socket) => {
         );
         allSockets.splice(allSocketsEmails.indexOf(userEmailSocketScope), 1);
       }
-      socket.disconnect();
     } catch (e) {
       logger.log(e);
       console.log("Could not disconnect", e);
@@ -1084,7 +1083,7 @@ io.on("connection", (socket) => {
     try {
       if (room && email) {
         removeTypingUserByEmail(email);
-        io.to(room).emit("stopTypingMessage", {
+        io.in(room).emit("stopTypingMessage", {
           typingUsers: getTypingUsersInRoom(room),
         });
       }
@@ -1103,7 +1102,7 @@ io.on("connection", (socket) => {
         if (usersInRoomFiltered.length <= 1) {
           console.log(`${user.user} (${email}) has left the room, ${room}.`);
 
-          io.to(user.room).emit("roomData", {
+          io.in(user.room).emit("roomData", {
             users: getUsersInRoom(room),
           });
 
