@@ -277,7 +277,7 @@ io.on("connection", (socket) => {
 
       const user = removeUserByEmail(email);
 
-      await socket.leave(room);
+      socket.leave(room);
 
       if (user) {
         console.log(`${user.user} (${email}) has left the room, ${room}.`);
@@ -693,7 +693,7 @@ io.on("connection", (socket) => {
               getUsersInRoom(room)[key].email === email
             ) {
               removeUserByEmail(getUsersInRoom(room)[key].email);
-              await socket.leave(room);
+              socket.leave(room);
             }
           }
 
@@ -721,7 +721,7 @@ io.on("connection", (socket) => {
 
           //console.log("Socket info:", socket);
 
-          await socket.join(room);
+          socket.join(room);
 
           const uid = uuidv4() + "-" + Date.now().toString();
 
@@ -1070,7 +1070,7 @@ io.on("connection", (socket) => {
           console.log(usersInRoomFiltered);
           const user = removeUserByEmail(userEmailSocketScope);
 
-          await socket.leave(userActiveRoomSocketScope);
+          socket.leave(userActiveRoomSocketScope);
 
           if (user) {
             if (usersInRoomFiltered.length <= 1) {
@@ -1143,7 +1143,7 @@ io.on("connection", (socket) => {
       console.log(usersInRoomFiltered);
       const user = removeUserByEmail(email);
 
-      await socket.leave(userActiveRoomSocketScope);
+      socket.leave(userActiveRoomSocketScope);
 
       if (user) {
         if (usersInRoomFiltered.length <= 1) {
