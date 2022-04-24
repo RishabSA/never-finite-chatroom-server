@@ -824,23 +824,21 @@ io.on("connection", (socket) => {
       callback
     ) => {
       try {
-        if (message && !isMedia) {
-          console.log("message to send:", {
-            user,
-            room,
-            photoURL,
-            email,
-            createdAt,
-            createdAtDisplay,
-            text: isMedia ? "" : message,
-            media: isMedia ? message : "",
-            mediaPath: mediaPath,
-            isEdited: false,
-            uid,
-          });
-        }
-
         const createdAt = Date.now();
+
+        console.log("message to send:", {
+          user,
+          room,
+          photoURL,
+          email,
+          createdAt,
+          createdAtDisplay,
+          text: isMedia ? "" : message,
+          media: isMedia ? message : "",
+          mediaPath: mediaPath,
+          isEdited: false,
+          uid,
+        });
 
         await create(client, "chatroom", "messages", {
           user,
