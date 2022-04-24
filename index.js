@@ -854,6 +854,8 @@ io.on("connection", (socket) => {
           uid,
         });
 
+        console.log("All clients in room:", io.sockets.clients(room));
+
         io.to(room).emit("message", {
           user,
           room,
