@@ -1006,17 +1006,8 @@ io.on("connection", (socket) => {
     console.log("disconnect:", userEmailSocketScope);
 
     try {
-      if (userActiveRoomSocketScope && userEmailSocketScope) {
-        removeTypingUserByEmail(userEmailSocketScope);
-        io.to(userActiveRoomSocketScope).emit("stopTypingMessage", {
-          typingUsers: getTypingUsersInRoom(userActiveRoomSocketScope),
-        });
-      }
-
       if (userEmailSocketScope) {
         if (userActiveRoomSocketScope) {
-          let lastTimeOnlineInRoom = Date.now();
-
           const usersInRoomFiltered = [
             ...getUsersInRoom(userActiveRoomSocketScope).filter(
               (user) => user.email === userEmailSocketScope
@@ -1024,8 +1015,6 @@ io.on("connection", (socket) => {
           ];
           console.log(usersInRoomFiltered);
           const user = removeUserByEmail(userEmailSocketScope);
-
-          await socket.leave(userActiveRoomSocketScope);
 
           if (user) {
             if (usersInRoomFiltered.length <= 1) {
@@ -1036,50 +1025,94 @@ io.on("connection", (socket) => {
               io.to(userActiveRoomSocketScope).emit("roomData", {
                 users: getUsersInRoom(userActiveRoomSocketScope),
               });
-
-              const userInDB = await findOneItemByObject(
-                client,
-                "chatroom",
-                "users",
-                { email: userEmailSocketScope }
-              );
-
-              if (userInDB) {
-                const newRooms = [...userInDB.rooms];
-
-                for (let i = 0; i < newRooms.length; i++) {
-                  if (newRooms[i].room === userActiveRoomSocketScope) {
-                    newRooms[i].lastTimeOnline = lastTimeOnlineInRoom;
-                  }
-                }
-
-                // Update the last time online in DB
-                await updateObjectByObject(
-                  client,
-                  "chatroom",
-                  "users",
-                  {
-                    email: userEmailSocketScope,
-                  },
-                  { rooms: newRooms }
-                );
-              }
             }
           }
         }
-
-        console.log(`${userEmailSocketScope} has disconnected.`);
-
-        const allSocketsEmails = allSockets.map(
-          (socketLooped) => socketLooped.email
-        );
-        allSockets.splice(allSocketsEmails.indexOf(userEmailSocketScope), 1);
       }
     } catch (e) {
       logger.log(e);
       console.log("Could not disconnect", e);
     }
   });
+  
+  // socket.on("disconnect", async () => {
+  //   console.log("disconnect:", userEmailSocketScope);
+
+  //   try {
+  //     if (userActiveRoomSocketScope && userEmailSocketScope) {
+  //       removeTypingUserByEmail(userEmailSocketScope);
+  //       io.to(userActiveRoomSocketScope).emit("stopTypingMessage", {
+  //         typingUsers: getTypingUsersInRoom(userActiveRoomSocketScope),
+  //       });
+  //     }
+
+  //     if (userEmailSocketScope) {
+  //       if (userActiveRoomSocketScope) {
+  //         let lastTimeOnlineInRoom = Date.now();
+
+  //         const usersInRoomFiltered = [
+  //           ...getUsersInRoom(userActiveRoomSocketScope).filter(
+  //             (user) => user.email === userEmailSocketScope
+  //           ),
+  //         ];
+  //         console.log(usersInRoomFiltered);
+  //         const user = removeUserByEmail(userEmailSocketScope);
+
+  //         await socket.leave(userActiveRoomSocketScope);
+
+  //         if (user) {
+  //           if (usersInRoomFiltered.length <= 1) {
+  //             console.log(
+  //               `${user.user} (${userEmailSocketScope}) has left the room, ${userActiveRoomSocketScope}.`
+  //             );
+
+  //             io.to(userActiveRoomSocketScope).emit("roomData", {
+  //               users: getUsersInRoom(userActiveRoomSocketScope),
+  //             });
+
+  //             const userInDB = await findOneItemByObject(
+  //               client,
+  //               "chatroom",
+  //               "users",
+  //               { email: userEmailSocketScope }
+  //             );
+
+  //             if (userInDB) {
+  //               const newRooms = [...userInDB.rooms];
+
+  //               for (let i = 0; i < newRooms.length; i++) {
+  //                 if (newRooms[i].room === userActiveRoomSocketScope) {
+  //                   newRooms[i].lastTimeOnline = lastTimeOnlineInRoom;
+  //                 }
+  //               }
+
+  //               // Update the last time online in DB
+  //               await updateObjectByObject(
+  //                 client,
+  //                 "chatroom",
+  //                 "users",
+  //                 {
+  //                   email: userEmailSocketScope,
+  //                 },
+  //                 { rooms: newRooms }
+  //               );
+  //             }
+  //           }
+  //         }
+  //       }
+
+  //       console.log(`${userEmailSocketScope} has disconnected.`);
+
+  //       const allSocketsEmails = allSockets.map(
+  //         (socketLooped) => socketLooped.email
+  //       );
+  //       allSockets.splice(allSocketsEmails.indexOf(userEmailSocketScope), 1);
+  //     }
+  //   } catch (e) {
+  //     logger.log(e);
+  //     console.log("Could not disconnect", e);
+  //   }
+  // });
 
   socket.on("leftRoom", async ({ lastTimeOnline, email, room }) => {
     try {
