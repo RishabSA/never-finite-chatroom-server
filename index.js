@@ -1002,7 +1002,7 @@ io.on("connection", (socket) => {
     }
   });
 
-  socket.on("disconnected", async () => {
+  socket.on("disconnect", async () => {
     console.log("disconnect:", userEmailSocketScope);
 
     try {
