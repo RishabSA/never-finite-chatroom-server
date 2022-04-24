@@ -854,7 +854,7 @@ io.on("connection", (socket) => {
           uid,
         });
 
-        console.log("All clients in room:", io.sockets.adapter.rooms[room]);
+        console.log("All clients in room:", io.of("/").adapter.rooms);
 
         io.to(room).emit("message", {
           user,
@@ -1070,7 +1070,7 @@ io.on("connection", (socket) => {
           console.log(usersInRoomFiltered);
           const user = removeUserByEmail(userEmailSocketScope);
 
-          socket.leave(userActiveRoomSocketScope);
+          //socket.leave(userActiveRoomSocketScope);
 
           if (user) {
             if (usersInRoomFiltered.length <= 1) {
