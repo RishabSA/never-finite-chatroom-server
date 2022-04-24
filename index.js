@@ -1073,8 +1073,6 @@ io.on("connection", (socket) => {
         );
         allSockets.splice(allSocketsEmails.indexOf(userEmailSocketScope), 1);
       }
-      socket.destroy();
-      socket = null;
     } catch (e) {
       logger.log(e);
       console.log("Could not disconnect", e);
