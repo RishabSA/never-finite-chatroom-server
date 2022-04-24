@@ -45,7 +45,6 @@ const io = socketio(server, {
   cors: {
     origin: "*",
   },
-  cookie: false,
 });
 const { v4: uuidv4 } = require("uuid");
 
@@ -1003,7 +1002,7 @@ io.on("connection", (socket) => {
     }
   });
 
-  socket.on("disconnect", async () => {
+  socket.on("disconnected", async () => {
     console.log("disconnect:", userEmailSocketScope);
 
     try {
