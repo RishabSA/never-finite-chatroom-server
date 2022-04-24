@@ -45,6 +45,7 @@ const io = socketio(server, {
   cors: {
     origin: "*",
   },
+  cookie: false,
 });
 const { v4: uuidv4 } = require("uuid");
 
