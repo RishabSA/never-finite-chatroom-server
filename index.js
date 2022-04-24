@@ -825,7 +825,19 @@ io.on("connection", (socket) => {
     ) => {
       try {
         if (message && !isMedia) {
-          console.log(message);
+          console.log("message to send:", {
+            user,
+            room,
+            photoURL,
+            email,
+            createdAt,
+            createdAtDisplay,
+            text: isMedia ? "" : message,
+            media: isMedia ? message : "",
+            mediaPath: mediaPath,
+            isEdited: false,
+            uid,
+          });
         }
 
         const createdAt = Date.now();
@@ -1034,7 +1046,7 @@ io.on("connection", (socket) => {
       console.log("Could not disconnect", e);
     }
   });
-  
+
   // socket.on("disconnect", async () => {
   //   console.log("disconnect:", userEmailSocketScope);
 
