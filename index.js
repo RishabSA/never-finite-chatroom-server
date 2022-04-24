@@ -719,7 +719,7 @@ io.on("connection", (socket) => {
 
           console.log(`Room to socket.join: ${decrypt(room)}`);
 
-          console.log("Socket info:", socket);
+          //console.log("Socket info:", socket);
 
           await socket.join(room);
 
