@@ -719,6 +719,8 @@ io.on("connection", (socket) => {
 
           console.log(`Room to socket.join: ${decrypt(room)}`);
 
+          console.log("Socket info:", socket);
+
           await socket.join(room);
 
           const uid = uuidv4() + "-" + Date.now().toString();
