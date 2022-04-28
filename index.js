@@ -271,14 +271,14 @@ io.on("connection", (socket) => {
     }
   });
 
-  socket.on("deleteRoom", async ({ email, room }) => {
+  socket.on("deleteRoom", async ({user, email, room }) => {
     try {
-      const user = removeUserByEmail(email);
+      removeUserByEmail(email);
 
-      //socket.leave(room);
+      socket.leave(room);
 
       if (user) {
-        console.log(`${user.user} (${email}) has left the room, ${room}.`);
+        console.log(`${user} (${email}) has left the room, ${room}.`);
 
         const userInDB = await findOneItemByObject(
           client,
@@ -323,7 +323,7 @@ io.on("connection", (socket) => {
           });
           console.log(`The room ${room} has been deleted.`);
         } else {
-          io.to(user.room).emit("roomData", {
+          io.to(room).emit("roomData", {
             users: getUsersInRoom(room),
           });
 
@@ -334,7 +334,7 @@ io.on("connection", (socket) => {
           socket.broadcast.to(room).emit("message", {
             user: encrypt("Admin"),
             email: "",
-            text: encrypt(`${user.user} has left the room.`),
+            text: encrypt(`${user} has left the room.`),
             photoURL: encrypt(
               "https://neverfinite.com/wp-content/uploads/2021/10/cropped-LogoOnly512x512png-4.png"
             ),
