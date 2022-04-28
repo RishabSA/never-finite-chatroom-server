@@ -273,11 +273,9 @@ io.on("connection", (socket) => {
 
   socket.on("deleteRoom", async ({ email, room }) => {
     try {
-      console.log(`${email} has deleted the room '${room}'.`);
-
       const user = removeUserByEmail(email);
 
-      socket.leave(room);
+      //socket.leave(room);
 
       if (user) {
         console.log(`${user.user} (${email}) has left the room, ${room}.`);
