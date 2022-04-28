@@ -243,8 +243,6 @@ io.on("connection", (socket) => {
 
   socket.on("userOnline", async ({ name, photoURL, email }) => {
     try {
-      console.log(`${name} has gotten online!`);
-
       const result = await findOneItemByObject(client, "chatroom", "users", {
         email,
       });
@@ -271,15 +269,13 @@ io.on("connection", (socket) => {
     }
   });
 
-  socket.on("deleteRoom", async ({user, email, room }) => {
+  socket.on("deleteRoom", async ({ user, email, room }) => {
     try {
       removeUserByEmail(email);
 
       socket.leave(room);
 
       if (user) {
-        console.log(`${user} (${email}) has left the room, ${room}.`);
-
         const userInDB = await findOneItemByObject(
           client,
           "chatroom",
@@ -321,7 +317,6 @@ io.on("connection", (socket) => {
           deleteByObject(client, "chatroom", "rooms", {
             room,
           });
-          console.log(`The room ${room} has been deleted.`);
         } else {
           io.to(room).emit("roomData", {
             users: getUsersInRoom(room),
@@ -453,13 +448,9 @@ io.on("connection", (socket) => {
             );
 
             if (userSocketInArray) {
-              console.log("User to invite found");
               if (userSocketInArray.socket) {
-                console.log("User socket to invite found");
                 userSocketInArray.socket.emit("inviteToRoom");
               }
-            } else {
-              console.log("User to invite could not be found");
             }
           }
         }
@@ -503,8 +494,6 @@ io.on("connection", (socket) => {
           let shouldAddRoomToUser = true;
           let shouldAddRoom = true;
           let shouldAddUserToRoom = true;
-
-          console.log("join room:", email);
 
           let userInDB = await findOneItemByObject(
             client,
@@ -681,8 +670,6 @@ io.on("connection", (socket) => {
             }
           }
 
-          console.log(getUsersInRoom(room));
-          console.log(email);
           for (let key in getUsersInRoom(room)) {
             if (
               getUsersInRoom(room) &&
@@ -712,12 +699,6 @@ io.on("connection", (socket) => {
             );
             return;
           }
-
-          console.log("User has joined!", user);
-
-          console.log(`Room to socket.join: ${decrypt(room)}`);
-
-          //console.log("Socket info:", socket);
 
           socket.join(room);
 
@@ -797,8 +778,6 @@ io.on("connection", (socket) => {
               rooms: roomsToSendToClient,
             });
           }
-
-          console.log(getUsersInRoom(room));
         } catch (e) {
           logger.log(e);
           console.log("Could not join the room!", e);
@@ -823,20 +802,6 @@ io.on("connection", (socket) => {
     ) => {
       try {
         const createdAt = Date.now();
-
-        console.log("message to send:", {
-          user,
-          room,
-          photoURL,
-          email,
-          createdAt,
-          createdAtDisplay,
-          text: isMedia ? "" : message,
-          media: isMedia ? message : "",
-          mediaPath: mediaPath,
-          isEdited: false,
-          uid,
-        });
 
         await create(client, "chatroom", "messages", {
           user,
@@ -925,10 +890,6 @@ io.on("connection", (socket) => {
 
   socket.on("newAccountStatus", async ({ email, accountStatus }) => {
     try {
-      console.log(
-        `${email} has changed their account status to: ${accountStatus}.`
-      );
-
       await updateObjectByObject(
         client,
         "chatroom",
@@ -1010,42 +971,7 @@ io.on("connection", (socket) => {
     }
   });
 
-  // socket.on("disconnect", async () => {
-  //   console.log("disconnect:", userEmailSocketScope);
-
-  //   try {
-  //     if (userEmailSocketScope) {
-  //       if (userActiveRoomSocketScope) {
-  //         const usersInRoomFiltered = [
-  //           ...getUsersInRoom(userActiveRoomSocketScope).filter(
-  //             (user) => user.email === userEmailSocketScope
-  //           ),
-  //         ];
-  //         console.log(usersInRoomFiltered);
-  //         const user = removeUserByEmail(userEmailSocketScope);
-
-  //         if (user) {
-  //           if (usersInRoomFiltered.length <= 1) {
-  //             console.log(
-  //               `${user.user} (${userEmailSocketScope}) has left the room, ${userActiveRoomSocketScope}.`
-  //             );
-
-  //             io.to(userActiveRoomSocketScope).emit("roomData", {
-  //               users: getUsersInRoom(userActiveRoomSocketScope),
-  //             });
-  //           }
-  //         }
-  //       }
-  //     }
-  //   } catch (e) {
-  //     logger.log(e);
-  //     console.log("Could not disconnect", e);
-  //   }
-  // });
-
   socket.on("disconnect", async () => {
-    console.log("disconnect:", userEmailSocketScope);
-
     try {
       if (userActiveRoomSocketScope && userEmailSocketScope) {
         removeTypingUserByEmail(userEmailSocketScope);
@@ -1063,10 +989,7 @@ io.on("connection", (socket) => {
               (user) => user.email === userEmailSocketScope
             ),
           ];
-          console.log(usersInRoomFiltered);
           const user = removeUserByEmail(userEmailSocketScope);
-
-          //socket.leave(userActiveRoomSocketScope);
 
           if (user) {
             if (usersInRoomFiltered.length <= 1) {
@@ -1109,8 +1032,6 @@ io.on("connection", (socket) => {
           }
         }
 
-        console.log(`${userEmailSocketScope} has disconnected.`);
-
         const allSocketsEmails = allSockets.map(
           (socketLooped) => socketLooped.email
         );
@@ -1136,7 +1057,6 @@ io.on("connection", (socket) => {
           (user) => user.email === userEmailSocketScope
         ),
       ];
-      console.log(usersInRoomFiltered);
       const user = removeUserByEmail(email);
 
       socket.leave(userActiveRoomSocketScope);
