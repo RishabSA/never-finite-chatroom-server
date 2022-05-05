@@ -387,15 +387,25 @@ io.on("connection", (socket) => {
           {}
         );
 
-        rooms.forEach((roomLooped) => {
-          if (
-            roomLooped.room === room &&
-            roomLooped.invitedUsers &&
-            roomLooped.invitedUsers.includes(email)
-          ) {
-            shouldInvite = false;
-          }
-        });
+        // rooms.forEach((roomLooped) => {
+        //   if (
+        //     roomLooped.room === room &&
+        //     roomLooped.invitedUsers &&
+        //     roomLooped.invitedUsers.includes(email)
+        //   ) {
+        //     shouldInvite = false;
+        //   }
+        // });
+
+        if (
+          rooms.find(
+            (roomLooped) =>
+              roomLooped.room === room &&
+              roomLooped.invitedUsers &&
+              roomLooped.invitedUsers.includes(email)
+          )
+        )
+          shouldInvite = false;
 
         if (shouldInvite) {
           const { invitedUsers } = await findOneItemByObject(
@@ -499,11 +509,14 @@ io.on("connection", (socket) => {
           );
 
           if (userInDB && userInDB.rooms) {
-            userInDB.rooms.forEach((loopedRoom) => {
-              if (loopedRoom.room === room) {
-                shouldAddRoomToUser = false;
-              }
-            });
+            // userInDB.rooms.forEach((loopedRoom) => {
+            //   if (loopedRoom.room === room) {
+            //     shouldAddRoomToUser = false;
+            //   }
+            // });
+
+            if (userInDB.rooms.find((loopedRoom) => loopedRoom.room === room))
+              shouldAddRoomToUser = false;
           }
 
           const rooms = await findMultipleItemsByObject(
@@ -513,11 +526,14 @@ io.on("connection", (socket) => {
             {}
           );
 
-          rooms.forEach((roomLooped) => {
-            if (roomLooped.room === room) {
-              shouldAddRoom = false;
-            }
-          });
+          // rooms.forEach((roomLooped) => {
+          //   if (roomLooped.room === room) {
+          //     shouldAddRoom = false;
+          //   }
+          // });
+
+          if (rooms.find((roomLooped) => roomLooped.room === room))
+            shouldAddRoom = false;
 
           const roomInDB = await findOneItemByObject(
             client,
@@ -529,11 +545,14 @@ io.on("connection", (socket) => {
           );
 
           if (roomInDB) {
-            roomInDB.users.forEach((user) => {
-              if (user.email === email) {
-                shouldAddUserToRoom = false;
-              }
-            });
+            // roomInDB.users.forEach((user) => {
+            //   if (user.email === email) {
+            //     shouldAddUserToRoom = false;
+            //   }
+            // });
+
+            if (roomInDB.users.find((user) => user.email === email))
+              shouldAddUserToRoom = false;
           }
 
           userInDB = await findOneItemByObject(client, "chatroom", "users", {
@@ -631,15 +650,25 @@ io.on("connection", (socket) => {
             {}
           );
 
-          roomsInDB.forEach((roomLooped) => {
-            if (
-              roomLooped.room === room &&
-              roomLooped.invitedUsers &&
-              roomLooped.invitedUsers.includes(email)
-            ) {
-              shouldInvite = false;
-            }
-          });
+          // roomsInDB.forEach((roomLooped) => {
+          //   if (
+          //     roomLooped.room === room &&
+          //     roomLooped.invitedUsers &&
+          //     roomLooped.invitedUsers.includes(email)
+          //   ) {
+          //     shouldInvite = false;
+          //   }
+          // });
+
+          if (
+            roomsInDB.find(
+              (roomLooped) =>
+                roomLooped.room === room &&
+                roomLooped.invitedUsers &&
+                roomLooped.invitedUsers.includes(email)
+            )
+          )
+            shouldInvite = false;
 
           if (shouldInvite) {
             const { invitedUsers } = await findOneItemByObject(
