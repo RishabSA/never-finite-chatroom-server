@@ -1050,7 +1050,7 @@ io.on("connection", (socket) => {
                     (newRoomLooped) =>
                       newRoomLooped.room === userActiveRoomSocketScope
                   )
-                ].lastTimeOnline = lastTimeOnline;
+                ].lastTimeOnline = lastTimeOnlineInRoom;
 
                 // Update the last time online in DB
                 await updateObjectByObject(
