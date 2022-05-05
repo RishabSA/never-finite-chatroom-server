@@ -288,13 +288,6 @@ io.on("connection", (socket) => {
         let newRooms = [...userInDB.rooms];
 
         if (userInDB.rooms) {
-          // let index = "";
-          // for (let i = 0; i < userInDB.rooms.length; i++) {
-          //   if (userInDB.rooms[i].room === room) {
-          //     index = i;
-          //   }
-          // }
-
           newRooms.splice(
             newRooms.findIndex((newRoomLooped) => newRoomLooped.room === room),
             1
@@ -357,13 +350,6 @@ io.on("connection", (socket) => {
           let newUsers = [...roomResult.users];
 
           if (roomResult.users) {
-            // let index = "";
-            // for (let i = 0; i < roomResult.users.length; i++) {
-            //   if (roomResult.users[i].email === email) {
-            //     index = i;
-            //   }
-            // }
-
             newUsers.splice(
               newUsers.findIndex(
                 (newUserLooped) => newUserLooped.email === email
@@ -678,18 +664,6 @@ io.on("connection", (socket) => {
             }
           }
 
-          // for (let key in getUsersInRoom(room)) {
-          //   if (
-          //     getUsersInRoom(room) &&
-          //     getUsersInRoom(room)[key] &&
-          //     getUsersInRoom(room)[key].email &&
-          //     getUsersInRoom(room)[key].email === email
-          //   ) {
-          //     removeUserByEmail(getUsersInRoom(room)[key].email);
-          //     socket.leave(room);
-          //   }
-          // }
-
           if (getUsersInRoom(room)) {
             const userToRemove = getUsersInRoom(room).find(
               (userInRoomLooped) => userInRoomLooped.email === email
@@ -767,11 +741,6 @@ io.on("connection", (socket) => {
 
           if (userInDB && userInDB.rooms) {
             const newRooms = [...userInDB.rooms];
-
-            // for (let i = 0; i < newRooms.length; i++) {
-            //   if (newRooms[i].room === room)
-            //     newRooms[i].lastTimeOnline = lastTimeOnline;
-            // }
 
             newRooms[
               newRooms.findIndex((newRoomLooped) => newRoomLooped.room === room)
@@ -934,11 +903,6 @@ io.on("connection", (socket) => {
           room.users.forEach(async (user) => {
             if (user.email === email) {
               const newUsers = [...room.users];
-              // for (let key in newUsers) {
-              //   if (newUsers[key].email === email) {
-              //     newUsers[key].accountStatus = accountStatus;
-              //   }
-              // }
 
               newUsers[
                 newUsers.findIndex(
@@ -1039,12 +1003,6 @@ io.on("connection", (socket) => {
               if (userInDB) {
                 const newRooms = [...userInDB.rooms];
 
-                // for (let i = 0; i < newRooms.length; i++) {
-                //   if (newRooms[i].room === userActiveRoomSocketScope) {
-                //     newRooms[i].lastTimeOnline = lastTimeOnlineInRoom;
-                //   }
-                // }
-
                 newRooms[
                   newRooms.findIndex(
                     (newRoomLooped) =>
@@ -1113,12 +1071,6 @@ io.on("connection", (socket) => {
 
           if (userInDB) {
             const newRooms = [...userInDB.rooms];
-
-            // for (let i = 0; i < newRooms.length; i++) {
-            //   if (newRooms[i].room === room) {
-            //     newRooms[i].lastTimeOnline = lastTimeOnline;
-            //   }
-            // }
 
             newRooms[
               newRooms.findIndex((newRoomLooped) => newRoomLooped.room === room)
