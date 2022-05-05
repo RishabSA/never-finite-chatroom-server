@@ -694,8 +694,10 @@ io.on("connection", (socket) => {
             const userToRemove = getUsersInRoom(room).find(
               (userInRoomLooped) => userInRoomLooped.email === email
             );
-            removeUserByEmail(userToRemove.email);
-            socket.leave(room);
+            if (userToRemove) {
+              removeUserByEmail(userToRemove.email);
+              socket.leave(room);
+            }
           }
 
           const { error, user } = addUser({
