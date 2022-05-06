@@ -387,16 +387,6 @@ io.on("connection", (socket) => {
           { room }
         );
 
-        // rooms.forEach((roomLooped) => {
-        //   if (
-        //     roomLooped.room === room &&
-        //     roomLooped.invitedUsers &&
-        //     roomLooped.invitedUsers.includes(email)
-        //   ) {
-        //     shouldInvite = false;
-        //   }
-        // });
-
         if (roomInDB.invitedUsers && roomInDB.invitedUsers.includes(email))
           shouldInvite = false;
 
@@ -502,12 +492,6 @@ io.on("connection", (socket) => {
           );
 
           if (userInDB && userInDB.rooms) {
-            // userInDB.rooms.forEach((loopedRoom) => {
-            //   if (loopedRoom.room === room) {
-            //     shouldAddRoomToUser = false;
-            //   }
-            // });
-
             if (userInDB.rooms.find((loopedRoom) => loopedRoom.room === room))
               shouldAddRoomToUser = false;
           }
@@ -518,12 +502,6 @@ io.on("connection", (socket) => {
             "rooms",
             {}
           );
-
-          // rooms.forEach((roomLooped) => {
-          //   if (roomLooped.room === room) {
-          //     shouldAddRoom = false;
-          //   }
-          // });
 
           if (rooms.find((roomLooped) => roomLooped.room === room))
             shouldAddRoom = false;
@@ -538,12 +516,6 @@ io.on("connection", (socket) => {
           );
 
           if (roomInDB) {
-            // roomInDB.users.forEach((user) => {
-            //   if (user.email === email) {
-            //     shouldAddUserToRoom = false;
-            //   }
-            // });
-
             if (roomInDB.users.find((user) => user.email === email))
               shouldAddUserToRoom = false;
           }
@@ -642,16 +614,6 @@ io.on("connection", (socket) => {
             "rooms",
             {}
           );
-
-          // roomsInDB.forEach((roomLooped) => {
-          //   if (
-          //     roomLooped.room === room &&
-          //     roomLooped.invitedUsers &&
-          //     roomLooped.invitedUsers.includes(email)
-          //   ) {
-          //     shouldInvite = false;
-          //   }
-          // });
 
           if (
             roomsInDB.find(
