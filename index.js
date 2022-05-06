@@ -380,11 +380,11 @@ io.on("connection", (socket) => {
       selectedUsersToInvite.forEach(async (email) => {
         let shouldInvite = true;
 
-        const rooms = await findMultipleItemsByObject(
+        const roomInDB = await findMultipleItemsByObject(
           client,
           "chatroom",
           "rooms",
-          {}
+          { room }
         );
 
         // rooms.forEach((roomLooped) => {
@@ -397,14 +397,7 @@ io.on("connection", (socket) => {
         //   }
         // });
 
-        if (
-          rooms.find(
-            (roomLooped) =>
-              roomLooped.room === room &&
-              roomLooped.invitedUsers &&
-              roomLooped.invitedUsers.includes(email)
-          )
-        )
+        if (roomInDB.invitedUsers && roomInDB.invitedUsers.includes(email))
           shouldInvite = false;
 
         if (shouldInvite) {
