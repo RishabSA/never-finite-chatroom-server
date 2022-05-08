@@ -969,10 +969,6 @@ io.on("connection", (socket) => {
 
           if (user) {
             if (usersInRoomFiltered.length <= 1) {
-              console.log(
-                `${user.user} (${userEmailSocketScope}) has left the room, ${userActiveRoomSocketScope}.`
-              );
-
               io.to(userActiveRoomSocketScope).emit("roomData", {
                 users: getUsersInRoom(userActiveRoomSocketScope),
               });
@@ -1040,8 +1036,6 @@ io.on("connection", (socket) => {
 
       if (user) {
         if (usersInRoomFiltered.length <= 1) {
-          console.log(`${user.user} (${email}) has left the room, ${room}.`);
-
           io.to(user.room).emit("roomData", {
             users: getUsersInRoom(room),
           });
