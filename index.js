@@ -308,11 +308,15 @@ io.on("connection", (socket) => {
           room,
         });
 
+        // Check if this is the last user in the room
         if (result.users.length <= 1) {
           // Delete the room
-          deleteByObject(client, "chatroom", "rooms", {
+          await deleteByObject(client, "chatroom", "rooms", {
             room,
           });
+
+          // Delete all the messages related to the room
+          await deleteManyByObject(client, "chatroom", "messages", { room });
         } else {
           io.to(room).emit("roomData", {
             users: getUsersInRoom(room),
