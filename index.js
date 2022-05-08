@@ -23,6 +23,7 @@ const {
   create,
   updateObjectByObject,
   deleteByObject,
+  deleteManyByObject,
 } = require("./services/databaseService");
 const { clientPassKey } = require("./startup/config.json");
 
