@@ -1055,7 +1055,11 @@ io.on("connection", (socket) => {
           if (userInDB) {
             const newRooms = [...userInDB.rooms];
 
-            if (lastTimeOnline) {
+            if (lastTimeOnline && newRooms[
+              newRooms.findIndex(
+                (newRoomLooped) => newRoomLooped.room === room
+              )
+            ].lastTimeOnline) {
               newRooms[
                 newRooms.findIndex(
                   (newRoomLooped) => newRoomLooped.room === room
