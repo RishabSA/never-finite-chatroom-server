@@ -12,7 +12,7 @@ const {
   getUserByEmail,
   getUsersInRoom,
 } = require("./data/users");
-const {
+const { 
   addTypingUser,
   removeTypingUserByEmail,
   getTypingUsersInRoom,
