@@ -12,7 +12,7 @@ const {
   getUserByEmail,
   getUsersInRoom,
 } = require("./data/users");
-const { 
+const {
   addTypingUser,
   removeTypingUserByEmail,
   getTypingUsersInRoom,
@@ -1055,9 +1055,13 @@ io.on("connection", (socket) => {
           if (userInDB) {
             const newRooms = [...userInDB.rooms];
 
-            newRooms[
-              newRooms.findIndex((newRoomLooped) => newRoomLooped.room === room)
-            ].lastTimeOnline = lastTimeOnline;
+            if (lastTimeOnline) {
+              newRooms[
+                newRooms.findIndex(
+                  (newRoomLooped) => newRoomLooped.room === room
+                )
+              ].lastTimeOnline = lastTimeOnline;
+            }
 
             // Update the last time online in DB
             await updateObjectByObject(
