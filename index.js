@@ -1,4 +1,8 @@
-const { MongoClient } = require("mongodb");
+//const { MongoClient } = require("mongodb");
+const mongoose = require("mongoose");
+const RoomModel = require("./models/room");
+const UserModel = require("./models/user");
+const MessageModel = require("./models/message");
 const express = require("express");
 require("express-async-errors");
 const socketio = require("socket.io");
@@ -32,7 +36,7 @@ const { getDate } = require("./utils/getDate");
 const uri =
   "mongodb+srv://never-finite-chatroom-admin:4RjGzhTbbcepwPGe@never-finite-chatroom.mpem8.mongodb.net/chatroom?retryWrites=true&w=majority";
 
-const client = new MongoClient(uri);
+mongoose.connect(uri);
 
 const PORT = process.env.PORT || 5000;
 
@@ -62,12 +66,7 @@ router.get("/", (req, res) => {
 router.get("/:key/users", async (req, res) => {
   try {
     if (req.params.key === clientPassKey) {
-      const result = await findMultipleItemsByObject(
-        client,
-        "chatroom",
-        "users",
-        {}
-      );
+      const result = await findMultipleItemsByObject(UserModel, {});
 
       if (!result) return res.status(404).send("No users found");
 
@@ -87,7 +86,7 @@ router.get("/:key/users", async (req, res) => {
 router.get("/:key/users/:email", async (req, res) => {
   try {
     if (req.params.key === clientPassKey) {
-      const result = await findOneItemByObject(client, "chatroom", "users", {
+      const result = await findOneItemByObject(UserModel, {
         email: encrypt(req.params.email),
       });
 
@@ -116,12 +115,7 @@ router.get("/:key/users/:email", async (req, res) => {
 router.get("/:key/rooms", async (req, res) => {
   try {
     if (req.params.key === clientPassKey) {
-      const result = await findMultipleItemsByObject(
-        client,
-        "chatroom",
-        "rooms",
-        {}
-      );
+      const result = await findMultipleItemsByObject(RoomModel, {});
 
       if (!result) return res.status(404).send("No rooms found");
 
@@ -141,7 +135,7 @@ router.get("/:key/rooms", async (req, res) => {
 router.get("/:key/rooms/:room", async (req, res) => {
   try {
     if (req.params.key === clientPassKey) {
-      const result = await findOneItemByObject(client, "chatroom", "rooms", {
+      const result = await findOneItemByObject(RoomModel, {
         room: encrypt(req.params.room),
       });
 
@@ -184,12 +178,7 @@ router.get("/:key/rooms/onlineUsers/:room", async (req, res) => {
 router.get("/:key/messages", async (req, res) => {
   try {
     if (req.params.key === clientPassKey) {
-      const result = await findMultipleItemsByObject(
-        client,
-        "chatroom",
-        "messages",
-        {}
-      );
+      const result = await findMultipleItemsByObject(MessageModel, {});
 
       if (!result) return res.status(404).send("No messages found");
 
@@ -209,14 +198,9 @@ router.get("/:key/messages", async (req, res) => {
 router.get("/:key/messages/:room", async (req, res) => {
   try {
     if (req.params.key === clientPassKey) {
-      const result = await findMultipleItemsByObject(
-        client,
-        "chatroom",
-        "messages",
-        {
-          room: encrypt(req.params.room),
-        }
-      );
+      const result = await findMultipleItemsByObject(MessageModel, {
+        room: encrypt(req.params.room),
+      });
 
       if (!result)
         return res
@@ -244,7 +228,7 @@ io.on("connection", (socket) => {
 
   socket.on("userOnline", async ({ name, photoURL, email }) => {
     try {
-      const result = await findOneItemByObject(client, "chatroom", "users", {
+      const result = await findOneItemByObject(UserModel, {
         email,
       });
 
@@ -256,7 +240,7 @@ io.on("connection", (socket) => {
       };
 
       if (!result) {
-        await create(client, "chatroom", "users", user);
+        await create(UserModel, user);
       }
 
       allSockets.push({ socket, ...user });
@@ -277,14 +261,9 @@ io.on("connection", (socket) => {
       socket.leave(room);
 
       if (user) {
-        const userInDB = await findOneItemByObject(
-          client,
-          "chatroom",
-          "users",
-          {
-            email,
-          }
-        );
+        const userInDB = await findOneItemByObject(UserModel, {
+          email,
+        });
 
         let newRooms = [...userInDB.rooms];
 
@@ -296,28 +275,26 @@ io.on("connection", (socket) => {
         }
 
         updateObjectByObject(
-          client,
-          "chatroom",
-          "users",
+          UserModel,
           { email },
           {
             rooms: newRooms,
           }
         );
 
-        const result = await findOneItemByObject(client, "chatroom", "rooms", {
+        const result = await findOneItemByObject(RoomModel, {
           room,
         });
 
         // Check if this is the last user in the room
         if (result.users.length <= 1) {
           // Delete the room
-          await deleteByObject(client, "chatroom", "rooms", {
+          await deleteByObject(RoomModel, {
             room,
           });
 
           // Delete all the messages related to the room
-          await deleteManyByObject(client, "chatroom", "messages", { room });
+          await deleteManyByObject(MessageModel, { room });
         } else {
           io.to(room).emit("roomData", {
             users: getUsersInRoom(room),
@@ -343,14 +320,9 @@ io.on("connection", (socket) => {
             isEdited: false,
           });
 
-          const roomResult = await findOneItemByObject(
-            client,
-            "chatroom",
-            "rooms",
-            {
-              room,
-            }
-          );
+          const roomResult = await findOneItemByObject(RoomModel, {
+            room,
+          });
 
           let newUsers = [...roomResult.users];
 
@@ -364,9 +336,7 @@ io.on("connection", (socket) => {
           }
 
           updateObjectByObject(
-            client,
-            "chatroom",
-            "rooms",
+            RoomModel,
             { room },
             {
               users: newUsers,
@@ -385,42 +355,29 @@ io.on("connection", (socket) => {
       selectedUsersToInvite.forEach(async (email) => {
         let shouldInvite = true;
 
-        const roomInDB = await findMultipleItemsByObject(
-          client,
-          "chatroom",
-          "rooms",
-          { room }
-        );
+        const roomInDB = await findMultipleItemsByObject(RoomModel, { room });
 
         if (roomInDB.invitedUsers && roomInDB.invitedUsers.includes(email))
           shouldInvite = false;
 
         if (shouldInvite) {
-          const { invitedUsers } = await findOneItemByObject(
-            client,
-            "chatroom",
-            "rooms",
-            { room: room }
-          );
+          const { invitedUsers } = await findOneItemByObject(RoomModel, {
+            room: room,
+          });
 
           const newInvitedUsers = invitedUsers
             ? [...invitedUsers, email]
             : [email];
 
           await updateObjectByObject(
-            client,
-            "chatroom",
-            "rooms",
-            { room: room },
+            RoomModel,
+            { room },
             { invitedUsers: newInvitedUsers }
           );
 
-          const userInDB = await findOneItemByObject(
-            client,
-            "chatroom",
-            "users",
-            { email: email }
-          );
+          const userInDB = await findOneItemByObject(UserModel, {
+            email: email,
+          });
 
           if (userInDB) {
             const newInvites = userInDB.invites
@@ -428,10 +385,8 @@ io.on("connection", (socket) => {
               : [room];
 
             await updateObjectByObject(
-              client,
-              "chatroom",
-              "users",
-              { email: email },
+              UserModel,
+              { email },
               { invites: newInvites }
             );
 
@@ -455,21 +410,16 @@ io.on("connection", (socket) => {
 
   socket.on("ignoreRoomInvite", async ({ email, room }) => {
     try {
-      const { invites } = await findOneItemByObject(
-        client,
-        "chatroom",
-        "users",
-        { email: email }
-      );
+      const { invites } = await findOneItemByObject(UserModel, {
+        email,
+      });
 
       const newRoomInvites = [...invites];
       newRoomInvites.splice(invites.indexOf(room), 1);
 
       await updateObjectByObject(
-        client,
-        "chatroom",
-        "users",
-        { email: email },
+        UserModel,
+        { email },
         { invites: newRoomInvites }
       );
     } catch (e) {
@@ -487,46 +437,31 @@ io.on("connection", (socket) => {
           let shouldAddRoom = true;
           let shouldAddUserToRoom = true;
 
-          let userInDB = await findOneItemByObject(
-            client,
-            "chatroom",
-            "users",
-            {
-              email: email,
-            }
-          );
+          let userInDB = await findOneItemByObject(UserModel, {
+            email: email,
+          });
 
           if (userInDB && userInDB.rooms) {
             if (userInDB.rooms.find((loopedRoom) => loopedRoom.room === room))
               shouldAddRoomToUser = false;
           }
 
-          const rooms = await findMultipleItemsByObject(
-            client,
-            "chatroom",
-            "rooms",
-            {}
-          );
+          const rooms = await findMultipleItemsByObject(RoomModel, {});
 
           if (rooms.find((roomLooped) => roomLooped.room === room))
             shouldAddRoom = false;
 
-          const roomInDB = await findOneItemByObject(
-            client,
-            "chatroom",
-            "rooms",
-            {
-              room,
-            }
-          );
+          const roomInDB = await findOneItemByObject(RoomModel, {
+            room,
+          });
 
           if (roomInDB) {
             if (roomInDB.users.find((user) => user.email === email))
               shouldAddUserToRoom = false;
           }
 
-          userInDB = await findOneItemByObject(client, "chatroom", "users", {
-            email: email,
+          userInDB = await findOneItemByObject(UserModel, {
+            email,
           });
 
           if (shouldAddRoomToUser && userInDB) {
@@ -546,16 +481,14 @@ io.on("connection", (socket) => {
                 ];
 
             updateObjectByObject(
-              client,
-              "chatroom",
-              "users",
+              UserModel,
               { email },
               { rooms: newRoomsInUser }
             );
           }
 
           if (shouldAddRoom) {
-            await create(client, "chatroom", "rooms", {
+            await create(RoomModel, {
               room,
               isPrivate,
               users: [],
@@ -565,17 +498,12 @@ io.on("connection", (socket) => {
           if (shouldAddUserToRoom) {
             let newUsersInRoom = [];
 
-            const roomInDBNew = await findOneItemByObject(
-              client,
-              "chatroom",
-              "rooms",
-              {
-                room,
-              }
-            );
+            const roomInDBNew = await findOneItemByObject(RoomModel, {
+              room,
+            });
 
-            userInDB = await findOneItemByObject(client, "chatroom", "users", {
-              email: email,
+            userInDB = await findOneItemByObject(UserModel, {
+              email,
             });
 
             if (userInDB) {
@@ -602,9 +530,7 @@ io.on("connection", (socket) => {
             }
 
             updateObjectByObject(
-              client,
-              "chatroom",
-              "rooms",
+              RoomModel,
               { room },
               { users: newUsersInRoom }
             );
@@ -613,12 +539,7 @@ io.on("connection", (socket) => {
           // Invite the user to the room if they haven't already been invited
           let shouldInvite = true;
 
-          const roomsInDB = await findMultipleItemsByObject(
-            client,
-            "chatroom",
-            "rooms",
-            {}
-          );
+          const roomsInDB = await findMultipleItemsByObject(RoomModel, {});
 
           if (
             roomsInDB.find(
@@ -631,12 +552,9 @@ io.on("connection", (socket) => {
             shouldInvite = false;
 
           if (shouldInvite) {
-            const { invitedUsers } = await findOneItemByObject(
-              client,
-              "chatroom",
-              "rooms",
-              { room }
-            );
+            const { invitedUsers } = await findOneItemByObject(RoomModel, {
+              room,
+            });
 
             if (invitedUsers) {
               const newInvitedUsers = invitedUsers
@@ -644,10 +562,8 @@ io.on("connection", (socket) => {
                 : [email];
 
               await updateObjectByObject(
-                client,
-                "chatroom",
-                "rooms",
-                { room: room },
+                RoomModel,
+                { room },
                 { invitedUsers: newInvitedUsers }
               );
             }
@@ -724,8 +640,8 @@ io.on("connection", (socket) => {
             users: getUsersInRoom(room),
           });
 
-          userInDB = await findOneItemByObject(client, "chatroom", "users", {
-            email: email,
+          userInDB = await findOneItemByObject(UserModel, {
+            email,
           });
 
           if (userInDB && userInDB.rooms) {
@@ -737,17 +653,15 @@ io.on("connection", (socket) => {
 
             // Update the last time online in DB
             await updateObjectByObject(
-              client,
-              "chatroom",
-              "users",
+              UserModel,
               {
-                email: email,
+                email,
               },
               { rooms: newRooms }
             );
           }
 
-          userInDB = await findOneItemByObject(client, "chatroom", "users", {
+          userInDB = await findOneItemByObject(UserModel, {
             email: email,
           });
 
@@ -783,7 +697,7 @@ io.on("connection", (socket) => {
       try {
         const createdAt = Date.now();
 
-        await create(client, "chatroom", "messages", {
+        await create(MessageModel, {
           user,
           room,
           photoURL,
@@ -823,7 +737,7 @@ io.on("connection", (socket) => {
     try {
       const user = getUserByEmail(email);
 
-      await deleteByObject(client, "chatroom", "messages", {
+      await deleteByObject(MessageModel, {
         uid,
       });
 
@@ -843,9 +757,7 @@ io.on("connection", (socket) => {
         const user = getUserByEmail(email);
 
         await updateObjectByObject(
-          client,
-          "chatroom",
-          "messages",
+          MessageModel,
           {
             uid,
           },
@@ -871,21 +783,14 @@ io.on("connection", (socket) => {
   socket.on("newAccountStatus", async ({ email, accountStatus }) => {
     try {
       await updateObjectByObject(
-        client,
-        "chatroom",
-        "users",
+        UserModel,
         {
           email,
         },
         { accountStatus }
       );
 
-      const rooms = await findMultipleItemsByObject(
-        client,
-        "chatroom",
-        "rooms",
-        {}
-      );
+      const rooms = await findMultipleItemsByObject(RoomModel, {});
 
       rooms.forEach((room) => {
         if (room.users) {
@@ -900,9 +805,7 @@ io.on("connection", (socket) => {
               ].accountStatus = accountStatus;
 
               await updateObjectByObject(
-                client,
-                "chatroom",
-                "rooms",
+                RoomModel,
                 {
                   room: room.room,
                 },
@@ -978,12 +881,9 @@ io.on("connection", (socket) => {
                 users: getUsersInRoom(userActiveRoomSocketScope),
               });
 
-              const userInDB = await findOneItemByObject(
-                client,
-                "chatroom",
-                "users",
-                { email: userEmailSocketScope }
-              );
+              const userInDB = await findOneItemByObject(UserModel, {
+                email: userEmailSocketScope,
+              });
 
               if (userInDB) {
                 const newRooms = [...userInDB.rooms];
@@ -997,9 +897,7 @@ io.on("connection", (socket) => {
 
                 // Update the last time online in DB
                 await updateObjectByObject(
-                  client,
-                  "chatroom",
-                  "users",
+                  UserModel,
                   {
                     email: userEmailSocketScope,
                   },
@@ -1045,21 +943,21 @@ io.on("connection", (socket) => {
             users: getUsersInRoom(room),
           });
 
-          const userInDB = await findOneItemByObject(
-            client,
-            "chatroom",
-            "users",
-            { email: email }
-          );
+          const userInDB = await findOneItemByObject(UserModel, {
+            email: email,
+          });
 
           if (userInDB) {
             const newRooms = [...userInDB.rooms];
 
-            if (lastTimeOnline && newRooms[
-              newRooms.findIndex(
-                (newRoomLooped) => newRoomLooped.room === room
-              )
-            ].lastTimeOnline) {
+            if (
+              lastTimeOnline &&
+              newRooms[
+                newRooms.findIndex(
+                  (newRoomLooped) => newRoomLooped.room === room
+                )
+              ].lastTimeOnline
+            ) {
               newRooms[
                 newRooms.findIndex(
                   (newRoomLooped) => newRoomLooped.room === room
@@ -1069,9 +967,7 @@ io.on("connection", (socket) => {
 
             // Update the last time online in DB
             await updateObjectByObject(
-              client,
-              "chatroom",
-              "users",
+              UserModel,
               {
                 email: email,
               },
@@ -1087,10 +983,8 @@ io.on("connection", (socket) => {
   });
 });
 
-server.listen(PORT, async () => {
+server.listen(PORT, () => {
   try {
-    await client.connect();
-
     console.log(`Listening on port ${PORT}`);
   } catch (e) {
     console.error(e);

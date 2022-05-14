@@ -1,98 +1,49 @@
-async function findOneItemByObject(client, db, collection, object) {
-  const result = await client.db(db).collection(collection).findOne(object);
+const mongoose = require("mongoose");
+
+async function findOneItemByObject(schema, object) {
+  const result = await schema.findOne(object);
 
   if (result) {
     return result;
   }
 }
 
-async function findMultipleItemsByObject(client, db, collection, object) {
-  const cursor = await client.db(db).collection(collection).find(object);
-
-  const results = await cursor.toArray();
+async function findMultipleItemsByObject(schema, object) {
+  const results = await schema.find(object);
 
   if (results) {
     return results;
   }
 }
 
-async function create(client, db, collection, newObject) {
-  const result = await client
-    .db(db)
-    .collection(collection)
-    .insertOne(newObject);
-
+async function create(schema, newObject) {
+  const result = await schema.create(newObject);
   return result;
 }
 
-async function createMultiple(client, db, collection, newObjects) {
-  const result = await client
-    .db(db)
-    .collection(collection)
-    .insertMany(newObjects);
-
+async function createMultiple(schema, newObjects) {
+  const result = await schema.insertMany(newObjects);
   return result;
 }
 
-async function updateObjectByObject(
-  client,
-  db,
-  collection,
-  object,
-  updatedObject
-) {
-  const result = await client
-    .db(db)
-    .collection(collection)
-    .updateOne(object, { $set: updatedObject });
-
+async function updateObjectByObject(schema, object, updatedObject) {
+  const result = await schema.updateOne(object, updatedObject);
   return result;
 }
 
-async function updateManyObjectsByObject(
-  client,
-  db,
-  collection,
-  object,
-  updatedObject
-) {
-  const result = await client
-    .db(db)
-    .collection(collection)
-    .updateMany(object, { $set: updatedObject });
-
+async function updateManyObjectsByObject(schema, object, updatedObject) {
+  const result = await schema.update(object, updatedObject);
   return result;
 }
 
-async function upsertObjectByObject(
-  client,
-  db,
-  collection,
-  object,
-  updatedObject
-) {
-  const result = await client
-    .db(db)
-    .collection(collection)
-    .updateOne(object, { $set: updatedObject }, { upsert: true });
-
-  if (result.upsertedCount > 0) {
-    return result;
-  }
-}
-
-async function deleteByObject(client, db, collection, object) {
-  const result = await client.db(db).collection(collection).deleteOne(object);
+async function deleteByObject(schema, object) {
+  const result = await schema.deleteOne(object);
   return result;
 }
 
-async function deleteManyByObject(client, db, collection, object) {
-  const result = await client.db(db).collection(collection).deleteMany(object);
+async function deleteManyByObject(schema, object) {
+  const result = await schema.deleteMany(object);
   return result;
-}
-
-async function listDatabases(client) {
-  const databasesList = await client.db().admin().listDatabases();
 }
 
 module.exports = {
@@ -102,8 +53,6 @@ module.exports = {
   createMultiple,
   updateObjectByObject,
   updateManyObjectsByObject,
-  upsertObjectByObject,
   deleteByObject,
   deleteManyByObject,
-  listDatabases,
 };
