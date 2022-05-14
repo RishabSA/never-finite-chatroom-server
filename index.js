@@ -1,4 +1,3 @@
-//const { MongoClient } = require("mongodb");
 const mongoose = require("mongoose");
 const RoomModel = require("./models/room");
 const UserModel = require("./models/user");
