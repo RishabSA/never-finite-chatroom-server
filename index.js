@@ -345,7 +345,7 @@ io.on("connection", (socket) => {
       }
     } catch (e) {
       logger.log(e);
-      console.log("Could not get online!", e);
+      console.log("Could not delete room!", e);
     }
   });
 
@@ -423,7 +423,7 @@ io.on("connection", (socket) => {
       );
     } catch (e) {
       logger.log(e);
-      console.log("Could not get online!", e);
+      console.log("Could not ignore room invite!", e);
     }
   });
 
@@ -819,7 +819,7 @@ io.on("connection", (socket) => {
       });
     } catch (e) {
       logger.log(e);
-      console.log("Could not get online!", e);
+      console.log("Could not set new account status!", e);
     }
   });
 
