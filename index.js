@@ -690,6 +690,7 @@ io.on("connection", (socket) => {
       createdAtDisplay,
       mediaPath,
       isMedia,
+      imageData,
       uid,
       callback
     ) => {
@@ -706,6 +707,7 @@ io.on("connection", (socket) => {
           text: isMedia ? "" : message,
           media: isMedia ? message : "",
           mediaPath: mediaPath,
+          imageData: imageData ? imageData : "",
           isEdited: false,
           uid,
         });
@@ -720,6 +722,7 @@ io.on("connection", (socket) => {
           text: isMedia ? "" : message,
           media: isMedia ? message : "",
           mediaPath: mediaPath,
+          imageData: imageData ? imageData : "",
           isEdited: false,
           uid,
         });

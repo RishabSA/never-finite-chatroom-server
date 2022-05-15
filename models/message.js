@@ -11,6 +11,7 @@ const MessageSchema = new mongoose.Schema(
     text: { type: String, default: "" },
     media: { type: String, default: "" },
     mediaPath: { type: String, default: "" },
+    imageData: { type: String, default: "" },
     isEdited: { type: Boolean, default: false },
     uid: { type: String, required: "" },
   },
