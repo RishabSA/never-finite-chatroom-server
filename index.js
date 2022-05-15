@@ -49,6 +49,7 @@ const io = socketio(server, {
   cors: {
     origin: "*",
   },
+  maxHttpBufferSize: 4e6,
 });
 const { v4: uuidv4 } = require("uuid");
 
@@ -696,6 +697,8 @@ io.on("connection", (socket) => {
     ) => {
       try {
         const createdAt = Date.now();
+
+        console.log("hi");
 
         await create(MessageModel, {
           user,
