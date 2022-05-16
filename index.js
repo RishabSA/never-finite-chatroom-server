@@ -49,7 +49,7 @@ const io = socketio(server, {
   cors: {
     origin: "*",
   },
-  maxHttpBufferSize: 4e6,
+  maxHttpBufferSize: 5e6,
 });
 const { v4: uuidv4 } = require("uuid");
 
