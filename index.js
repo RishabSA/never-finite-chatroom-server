@@ -3,6 +3,12 @@ const RoomModel = require("./models/room");
 const UserModel = require("./models/user");
 const MessageModel = require("./models/message");
 const express = require("express");
+const fs = require("fs");
+const util = require("util");
+const unlinkFile = util.promisify(fs.unlink);
+const multer = require("multer");
+const upload = multer({ dest: "uploads/" });
+const { uploadFile, getFileStream } = require("./s3");
 require("express-async-errors");
 const socketio = require("socket.io");
 const http = require("http");
@@ -53,7 +59,11 @@ const io = socketio(server, {
 });
 const { v4: uuidv4 } = require("uuid");
 
-app.use(helmet());
+app.use(
+  helmet({
+    crossOriginResourcePolicy: false,
+  })
+);
 require("./startup/cors")(app);
 app.use(router);
 
@@ -222,6 +232,38 @@ router.get("/:key/messages/:room", async (req, res) => {
   }
 });
 
+router.get("/:clientPassKey/images/:key", (req, res) => {
+  if (req.params.clientPassKey === clientPassKey) {
+    const key = req.params.key;
+    const readStream = getFileStream(key);
+
+    readStream.pipe(res);
+  } else {
+    return res
+      .status(401)
+      .send(
+        "Don't care + didn't ask + L + Ratio + soyjak + beta + cringe + stfu + cope + seethe + ok boomer + incel + virgin + Karen + you are not just a clown, you are the entire circus + nah this ain't it + do better + check your privilege + pronouns in bio + anime pfp + the cognitive dissonance is real with this one + small dick energy + lol copium + snowflake + those tears taste delicious + Lisa Simpson meme template saying that your opinion is wrong + wojak meme in which I'm the chad + average your opinion fan vs average my opinion enjoyer + random k-pop fancam + cry more + how's your wife's boyfriend doing + Cheetos breath + Intelligence 0 + r/whooooosh + r/downvotedtooblivion + blocked and reported + yo Momma so fat + I fucked your mom last night + what zero pussy does to a mf + Jesse what the fuck are you talking about + holy shit go touch some grass + cry about it + get triggered"
+      );
+  }
+});
+
+router.post("/:key/images", upload.single("image"), async (req, res) => {
+  if (req.params.key === clientPassKey) {
+    const file = req.file;
+    console.log(file);
+    const result = await uploadFile(file);
+    await unlinkFile(file.path);
+    console.log(result);
+    res.send({ imagePath: `/images/${result.key}` });
+  } else {
+    return res
+      .status(401)
+      .send(
+        "Don't care + didn't ask + L + Ratio + soyjak + beta + cringe + stfu + cope + seethe + ok boomer + incel + virgin + Karen + you are not just a clown, you are the entire circus + nah this ain't it + do better + check your privilege + pronouns in bio + anime pfp + the cognitive dissonance is real with this one + small dick energy + lol copium + snowflake + those tears taste delicious + Lisa Simpson meme template saying that your opinion is wrong + wojak meme in which I'm the chad + average your opinion fan vs average my opinion enjoyer + random k-pop fancam + cry more + how's your wife's boyfriend doing + Cheetos breath + Intelligence 0 + r/whooooosh + r/downvotedtooblivion + blocked and reported + yo Momma so fat + I fucked your mom last night + what zero pussy does to a mf + Jesse what the fuck are you talking about + holy shit go touch some grass + cry about it + get triggered"
+      );
+  }
+});
+
 io.on("connection", (socket) => {
   let userEmailSocketScope = "";
   let userActiveRoomSocketScope = "";
@@ -317,6 +359,7 @@ io.on("connection", (socket) => {
             createdAt: Date.now(),
             media: "",
             mediaPath: "",
+            imagePath: "",
             isEdited: false,
           });
 
@@ -617,6 +660,7 @@ io.on("connection", (socket) => {
               isEdited: false,
               uid,
               createdAt: Date.now(),
+              imagePath: "",
               text: encrypt("Welcome to the room!"),
             });
             socket.broadcast.to(user.room).emit("message", {
@@ -632,6 +676,7 @@ io.on("connection", (socket) => {
               isEdited: false,
               uid,
               createdAt: Date.now(),
+              imagePath: "",
               text: encrypt(`${decrypt(user.user)} has joined the room`),
             });
           }
@@ -691,7 +736,7 @@ io.on("connection", (socket) => {
       createdAtDisplay,
       mediaPath,
       isMedia,
-      imageData,
+      imagePath,
       uid,
       callback
     ) => {
@@ -699,6 +744,8 @@ io.on("connection", (socket) => {
         const createdAt = Date.now();
 
         console.log("hi");
+
+        console.log(imagePath);
 
         await create(MessageModel, {
           user,
@@ -710,7 +757,7 @@ io.on("connection", (socket) => {
           text: isMedia ? "" : message,
           media: isMedia ? message : "",
           mediaPath: mediaPath,
-          imageData: imageData ? imageData : "",
+          imagePath: imagePath ? imagePath : "",
           isEdited: false,
           uid,
         });
@@ -725,7 +772,7 @@ io.on("connection", (socket) => {
           text: isMedia ? "" : message,
           media: isMedia ? message : "",
           mediaPath: mediaPath,
-          imageData: imageData ? imageData : "",
+          imagePath: imagePath ? imagePath : "",
           isEdited: false,
           uid,
         });
