@@ -1,5 +1,5 @@
 require("dotenv").config();
-const fs = require("fs");
+const fs = require('fs')
 const S3 = require("aws-sdk/clients/s3");
 
 const bucketName = process.env.AWS_BUCKET_NAME;
@@ -23,20 +23,20 @@ function uploadFile(file) {
     Key: file.filename,
   };
 
-  return s3.deleteObject(uploadParams).promise();
+  return s3.upload(uploadParams).promise();
 }
 exports.uploadFile = uploadFile;
 
 // Deletes file from s3
-// function deleteFile(key) {
-//   const deleteParams = {
-//     Bucket: bucketName,
-//     Key: key,
-//   };
+function deleteFile(key) {
+  const deleteParams = {
+    Bucket: bucketName,
+    Key: key,
+  };
 
-//   return s3.upload(deleteParams).promise();
-// }
-// exports.deleteFile = deleteFile;
+  return s3.deleteObject(deleteParams).promise();
+}
+exports.deleteFile = deleteFile;
 
 // Downloads a file from s3
 function getFileStream(fileKey) {
