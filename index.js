@@ -250,10 +250,8 @@ router.get("/:clientPassKey/images/:key", (req, res) => {
 router.post("/:key/images", upload.single("image"), async (req, res) => {
   if (req.params.key === clientPassKey) {
     const file = req.file;
-    console.log(file);
     const result = await uploadFile(file);
     await unlinkFile(file.path);
-    console.log(result);
     res.send({ imagePath: `/images/${result.key}` });
   } else {
     return res
@@ -742,10 +740,6 @@ io.on("connection", (socket) => {
     ) => {
       try {
         const createdAt = Date.now();
-
-        console.log("hi");
-
-        console.log(imagePath);
 
         await create(MessageModel, {
           user,
