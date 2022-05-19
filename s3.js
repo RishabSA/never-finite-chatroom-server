@@ -28,15 +28,15 @@ function uploadFile(file) {
 exports.uploadFile = uploadFile;
 
 // Deletes file from s3
-function deleteFile(key) {
-  const deleteParams = {
-    Bucket: bucketName,
-    Key: key,
-  };
+// function deleteFile(key) {
+//   const deleteParams = {
+//     Bucket: bucketName,
+//     Key: key,
+//   };
 
-  return s3.upload(deleteParams).promise();
-}
-exports.deleteFile = deleteFile;
+//   return s3.upload(deleteParams).promise();
+// }
+// exports.deleteFile = deleteFile;
 
 // Downloads a file from s3
 function getFileStream(fileKey) {
