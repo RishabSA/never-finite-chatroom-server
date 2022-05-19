@@ -8,7 +8,7 @@ const util = require("util");
 const unlinkFile = util.promisify(fs.unlink);
 const multer = require("multer");
 const upload = multer({ dest: "uploads/" });
-const { uploadFile, getFileStream } = require("./s3");
+const { uploadFile, getFileStream, deleteFile } = require("./s3");
 require("express-async-errors");
 const socketio = require("socket.io");
 const http = require("http");
@@ -707,7 +707,7 @@ io.on("connection", (socket) => {
           }
 
           userInDB = await findOneItemByObject(UserModel, {
-            email: email,
+            email,
           });
 
           if (userInDB) {
@@ -792,6 +792,15 @@ io.on("connection", (socket) => {
       await deleteByObject(MessageModel, {
         uid,
       });
+
+      messageInDB = await findOneItemByObject(MessageModel, {
+        uid,
+        email,
+      });
+
+      if (messageInDB.imagePath) {
+        await deleteFile(messageInDB.imagePath.slice(8));
+      }
 
       io.to(user.room).emit("delete", {
         uid,
