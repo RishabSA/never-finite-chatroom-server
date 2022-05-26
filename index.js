@@ -297,6 +297,9 @@ io.on("connection", (socket) => {
   socket.on("deleteRoom", async ({ user, email, room }) => {
     try {
       removeUserByEmail(email);
+      io.to(user.room).emit("userLeft", {
+        leftUserEmail: email,
+      });
 
       socket.leave(room);
 
@@ -929,6 +932,9 @@ io.on("connection", (socket) => {
             ),
           ];
           const user = removeUserByEmail(userEmailSocketScope);
+          io.to(user.room).emit("userLeft", {
+            leftUserEmail: userEmailSocketScope,
+          });
 
           if (user) {
             if (usersInRoomFiltered.length <= 1) {
@@ -989,6 +995,9 @@ io.on("connection", (socket) => {
         ),
       ];
       const user = removeUserByEmail(email);
+      io.to(user.room).emit("userLeft", {
+        leftUserEmail: email,
+      });
 
       socket.leave(userActiveRoomSocketScope);
 
