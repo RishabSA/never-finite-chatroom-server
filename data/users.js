@@ -6,12 +6,6 @@ const addUser = ({ id, name, room, photoURL, email }) => {
   photoURL = photoURL;
   email = email;
 
-  // const existingUser = usersInRooms.find(
-  //   (user) => user.room === room && user.email === email
-  // );
-
-  // if (existingUser) return { error: "Account is taken" };
-
   const user = { id, user: name, room, photoURL, email };
 
   usersInRooms.push(user);
