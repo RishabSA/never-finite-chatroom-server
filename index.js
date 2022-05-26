@@ -9,7 +9,6 @@ const unlinkFile = util.promisify(fs.unlink);
 const multer = require("multer");
 const upload = multer({ dest: "uploads/" });
 const { uploadFile, deleteFile, getFileStream } = require("./s3");
-require("express-async-errors");
 const socketio = require("socket.io");
 const http = require("http");
 const logger = require("./services/logService");
