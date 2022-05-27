@@ -405,7 +405,7 @@ io.on("connection", (socket) => {
 
         if (shouldInvite) {
           const { invitedUsers } = await findOneItemByObject(RoomModel, {
-            room: room,
+            room,
           });
 
           const newInvitedUsers = invitedUsers
@@ -419,7 +419,7 @@ io.on("connection", (socket) => {
           );
 
           const userInDB = await findOneItemByObject(UserModel, {
-            email: email,
+            email,
           });
 
           if (userInDB) {
@@ -481,7 +481,7 @@ io.on("connection", (socket) => {
           let shouldAddUserToRoom = true;
 
           let userInDB = await findOneItemByObject(UserModel, {
-            email: email,
+            email,
           });
 
           if (userInDB && userInDB.rooms) {
@@ -707,7 +707,7 @@ io.on("connection", (socket) => {
           }
 
           userInDB = await findOneItemByObject(UserModel, {
-            email: email,
+            email,
           });
 
           if (userInDB) {
@@ -1007,7 +1007,7 @@ io.on("connection", (socket) => {
           });
 
           const userInDB = await findOneItemByObject(UserModel, {
-            email: email,
+            email,
           });
 
           if (userInDB) {
@@ -1032,7 +1032,7 @@ io.on("connection", (socket) => {
             await updateObjectByObject(
               UserModel,
               {
-                email: email,
+                email,
               },
               { rooms: newRooms }
             );
