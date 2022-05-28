@@ -994,9 +994,11 @@ io.on("connection", (socket) => {
         ),
       ];
       const user = removeUserByEmail(email);
-      io.to(user.room).emit("userLeft", {
-        leftUserEmail: email,
-      });
+      if (user) {
+        io.to(user.room).emit("userLeft", {
+          leftUserEmail: email,
+        });
+      }
 
       socket.leave(userActiveRoomSocketScope);
 
