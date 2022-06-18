@@ -790,7 +790,7 @@ io.on("connection", (socket) => {
         email,
       });
 
-      if (messageInDB.imagePath) {
+      if (messageInDB && messageInDB.imagePath) {
         await deleteFile(messageInDB.imagePath.slice(8));
       }
 
