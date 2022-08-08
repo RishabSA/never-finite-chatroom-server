@@ -58,6 +58,7 @@ const io = socketio(server, {
 });
 const { v4: uuidv4 } = require("uuid");
 
+// Use helmet
 app.use(
   helmet({
     crossOriginResourcePolicy: false,
