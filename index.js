@@ -81,11 +81,7 @@ router.get("/:key/users", async (req, res) => {
 
       res.send(result);
     } else {
-      return res
-        .status(401)
-        .send(
-          "Don't care + didn't ask + L + Ratio + soyjak + beta + cringe + stfu + cope + seethe + ok boomer + incel + virgin + Karen + you are not just a clown, you are the entire circus + nah this ain't it + do better + check your privilege + pronouns in bio + anime pfp + the cognitive dissonance is real with this one + small dick energy + lol copium + snowflake + those tears taste delicious + Lisa Simpson meme template saying that your opinion is wrong + wojak meme in which I'm the chad + average your opinion fan vs average my opinion enjoyer + random k-pop fancam + cry more + how's your wife's boyfriend doing + Cheetos breath + Intelligence 0 + r/whooooosh + r/downvotedtooblivion + blocked and reported + yo Momma so fat + I fucked your mom last night + what zero pussy does to a mf + Jesse what the fuck are you talking about + holy shit go touch some grass + cry about it + get triggered"
-        );
+      return res.status(401);
     }
   } catch (e) {
     res.status(500).send({ message: e.message });
@@ -110,11 +106,7 @@ router.get("/:key/users/:email", async (req, res) => {
 
       res.send(result);
     } else {
-      return res
-        .status(401)
-        .send(
-          "Don't care + didn't ask + L + Ratio + soyjak + beta + cringe + stfu + cope + seethe + ok boomer + incel + virgin + Karen + you are not just a clown, you are the entire circus + nah this ain't it + do better + check your privilege + pronouns in bio + anime pfp + the cognitive dissonance is real with this one + small dick energy + lol copium + snowflake + those tears taste delicious + Lisa Simpson meme template saying that your opinion is wrong + wojak meme in which I'm the chad + average your opinion fan vs average my opinion enjoyer + random k-pop fancam + cry more + how's your wife's boyfriend doing + Cheetos breath + Intelligence 0 + r/whooooosh + r/downvotedtooblivion + blocked and reported + yo Momma so fat + I fucked your mom last night + what zero pussy does to a mf + Jesse what the fuck are you talking about + holy shit go touch some grass + cry about it + get triggered"
-        );
+      return res.status(401);
     }
   } catch (e) {
     res.status(500).send({ message: e.message });
@@ -130,11 +122,7 @@ router.get("/:key/rooms", async (req, res) => {
 
       res.send(result);
     } else {
-      return res
-        .status(401)
-        .send(
-          "Don't care + didn't ask + L + Ratio + soyjak + beta + cringe + stfu + cope + seethe + ok boomer + incel + virgin + Karen + you are not just a clown, you are the entire circus + nah this ain't it + do better + check your privilege + pronouns in bio + anime pfp + the cognitive dissonance is real with this one + small dick energy + lol copium + snowflake + those tears taste delicious + Lisa Simpson meme template saying that your opinion is wrong + wojak meme in which I'm the chad + average your opinion fan vs average my opinion enjoyer + random k-pop fancam + cry more + how's your wife's boyfriend doing + Cheetos breath + Intelligence 0 + r/whooooosh + r/downvotedtooblivion + blocked and reported + yo Momma so fat + I fucked your mom last night + what zero pussy does to a mf + Jesse what the fuck are you talking about + holy shit go touch some grass + cry about it + get triggered"
-        );
+      return res.status(401);
     }
   } catch (e) {
     res.status(500).send({ message: e.message });
@@ -157,11 +145,7 @@ router.get("/:key/rooms/:room", async (req, res) => {
 
       res.send(result);
     } else {
-      return res
-        .status(401)
-        .send(
-          "Don't care + didn't ask + L + Ratio + soyjak + beta + cringe + stfu + cope + seethe + ok boomer + incel + virgin + Karen + you are not just a clown, you are the entire circus + nah this ain't it + do better + check your privilege + pronouns in bio + anime pfp + the cognitive dissonance is real with this one + small dick energy + lol copium + snowflake + those tears taste delicious + Lisa Simpson meme template saying that your opinion is wrong + wojak meme in which I'm the chad + average your opinion fan vs average my opinion enjoyer + random k-pop fancam + cry more + how's your wife's boyfriend doing + Cheetos breath + Intelligence 0 + r/whooooosh + r/downvotedtooblivion + blocked and reported + yo Momma so fat + I fucked your mom last night + what zero pussy does to a mf + Jesse what the fuck are you talking about + holy shit go touch some grass + cry about it + get triggered"
-        );
+      return res.status(401);
     }
   } catch (e) {
     res.status(500).send({ message: e.message });
@@ -173,11 +157,7 @@ router.get("/:key/rooms/onlineUsers/:room", async (req, res) => {
     if (req.params.key === clientPassKey) {
       res.send(getUsersInRoom(req.params.room));
     } else {
-      return res
-        .status(401)
-        .send(
-          "Don't care + didn't ask + L + Ratio + soyjak + beta + cringe + stfu + cope + seethe + ok boomer + incel + virgin + Karen + you are not just a clown, you are the entire circus + nah this ain't it + do better + check your privilege + pronouns in bio + anime pfp + the cognitive dissonance is real with this one + small dick energy + lol copium + snowflake + those tears taste delicious + Lisa Simpson meme template saying that your opinion is wrong + wojak meme in which I'm the chad + average your opinion fan vs average my opinion enjoyer + random k-pop fancam + cry more + how's your wife's boyfriend doing + Cheetos breath + Intelligence 0 + r/whooooosh + r/downvotedtooblivion + blocked and reported + yo Momma so fat + I fucked your mom last night + what zero pussy does to a mf + Jesse what the fuck are you talking about + holy shit go touch some grass + cry about it + get triggered"
-        );
+      return res.status(401);
     }
   } catch (e) {
     res.status(500).send({ message: e.message });
@@ -193,11 +173,7 @@ router.get("/:key/messages", async (req, res) => {
 
       res.send(result);
     } else {
-      return res
-        .status(401)
-        .send(
-          "Don't care + didn't ask + L + Ratio + soyjak + beta + cringe + stfu + cope + seethe + ok boomer + incel + virgin + Karen + you are not just a clown, you are the entire circus + nah this ain't it + do better + check your privilege + pronouns in bio + anime pfp + the cognitive dissonance is real with this one + small dick energy + lol copium + snowflake + those tears taste delicious + Lisa Simpson meme template saying that your opinion is wrong + wojak meme in which I'm the chad + average your opinion fan vs average my opinion enjoyer + random k-pop fancam + cry more + how's your wife's boyfriend doing + Cheetos breath + Intelligence 0 + r/whooooosh + r/downvotedtooblivion + blocked and reported + yo Momma so fat + I fucked your mom last night + what zero pussy does to a mf + Jesse what the fuck are you talking about + holy shit go touch some grass + cry about it + get triggered"
-        );
+      return res.status(401);
     }
   } catch (e) {
     res.status(500).send({ message: e.message });
@@ -211,20 +187,11 @@ router.get("/:key/messages/:room", async (req, res) => {
         room: encrypt(req.params.room),
       });
 
-      if (!result)
-        return res
-          .status(404)
-          .send(
-            `No messages in the room, '${encrypt(req.params.room)}' were found`
-          );
+      if (!result) return res.status(404);
 
       res.send(result);
     } else {
-      return res
-        .status(401)
-        .send(
-          "Don't care + didn't ask + L + Ratio + soyjak + beta + cringe + stfu + cope + seethe + ok boomer + incel + virgin + Karen + you are not just a clown, you are the entire circus + nah this ain't it + do better + check your privilege + pronouns in bio + anime pfp + the cognitive dissonance is real with this one + small dick energy + lol copium + snowflake + those tears taste delicious + Lisa Simpson meme template saying that your opinion is wrong + wojak meme in which I'm the chad + average your opinion fan vs average my opinion enjoyer + random k-pop fancam + cry more + how's your wife's boyfriend doing + Cheetos breath + Intelligence 0 + r/whooooosh + r/downvotedtooblivion + blocked and reported + yo Momma so fat + I fucked your mom last night + what zero pussy does to a mf + Jesse what the fuck are you talking about + holy shit go touch some grass + cry about it + get triggered"
-        );
+      return res.status(401);
     }
   } catch (e) {
     res.status(500).send({ message: e.message });
@@ -238,11 +205,7 @@ router.get("/:clientPassKey/images/:key", (req, res) => {
 
     readStream.pipe(res);
   } else {
-    return res
-      .status(401)
-      .send(
-        "Don't care + didn't ask + L + Ratio + soyjak + beta + cringe + stfu + cope + seethe + ok boomer + incel + virgin + Karen + you are not just a clown, you are the entire circus + nah this ain't it + do better + check your privilege + pronouns in bio + anime pfp + the cognitive dissonance is real with this one + small dick energy + lol copium + snowflake + those tears taste delicious + Lisa Simpson meme template saying that your opinion is wrong + wojak meme in which I'm the chad + average your opinion fan vs average my opinion enjoyer + random k-pop fancam + cry more + how's your wife's boyfriend doing + Cheetos breath + Intelligence 0 + r/whooooosh + r/downvotedtooblivion + blocked and reported + yo Momma so fat + I fucked your mom last night + what zero pussy does to a mf + Jesse what the fuck are you talking about + holy shit go touch some grass + cry about it + get triggered"
-      );
+    return res.status(401);
   }
 });
 
@@ -253,11 +216,7 @@ router.post("/:key/images", upload.single("image"), async (req, res) => {
     await unlinkFile(file.path);
     res.send({ imagePath: `/images/${result.key}` });
   } else {
-    return res
-      .status(401)
-      .send(
-        "Don't care + didn't ask + L + Ratio + soyjak + beta + cringe + stfu + cope + seethe + ok boomer + incel + virgin + Karen + you are not just a clown, you are the entire circus + nah this ain't it + do better + check your privilege + pronouns in bio + anime pfp + the cognitive dissonance is real with this one + small dick energy + lol copium + snowflake + those tears taste delicious + Lisa Simpson meme template saying that your opinion is wrong + wojak meme in which I'm the chad + average your opinion fan vs average my opinion enjoyer + random k-pop fancam + cry more + how's your wife's boyfriend doing + Cheetos breath + Intelligence 0 + r/whooooosh + r/downvotedtooblivion + blocked and reported + yo Momma so fat + I fucked your mom last night + what zero pussy does to a mf + Jesse what the fuck are you talking about + holy shit go touch some grass + cry about it + get triggered"
-      );
+    return res.status(401);
   }
 });
 
