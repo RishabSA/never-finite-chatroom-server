@@ -65,9 +65,18 @@ app.use(
   })
 );
 require("./startup/cors")(app);
+app.use(restrictHeaderMiddlewareFunction);
 app.use(router);
 
 const allSockets = [];
+
+function restrictHeaderMiddlewareFunction(req, res, next) {
+  if (req.headers["access-key"] === clientPassKey) {
+    next();
+  } else {
+    res.sendStatus(403);
+  }
+}
 
 router.get("/", (req, res) => {
   res.send("Waiting for any connections...");
