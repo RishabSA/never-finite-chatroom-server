@@ -65,10 +65,20 @@ app.use(
   })
 );
 require("./startup/cors")(app);
-//app.use(restrictHeaderMiddlewareFunction);
+app.use(unless("/:key/images", restrictHeaderMiddlewareFunction));
 app.use(router);
 
 const allSockets = [];
+
+const unless = (path, middleware) => {
+  return (req, res, next) => {
+    if (path === req.path) {
+      return next();
+    } else {
+      return middleware(req, res, next);
+    }
+  };
+};
 
 function restrictHeaderMiddlewareFunction(req, res, next) {
   if (req.headers["access-key"] === clientPassKey) {
