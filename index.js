@@ -65,7 +65,7 @@ app.use(
   })
 );
 require("./startup/cors")(app);
-app.use(restrictHeaderMiddlewareFunction);
+//app.use(restrictHeaderMiddlewareFunction);
 app.use(router);
 
 const allSockets = [];
