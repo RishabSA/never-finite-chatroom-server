@@ -65,20 +65,10 @@ app.use(
   })
 );
 require("./startup/cors")(app);
-app.use(unless("/:key/images", restrictHeaderMiddlewareFunction));
+//app.use(restrictHeaderMiddlewareFunction);
 app.use(router);
 
 const allSockets = [];
-
-const unless = (path, middleware) => {
-  return (req, res, next) => {
-    if (path === req.path) {
-      return next();
-    } else {
-      return middleware(req, res, next);
-    }
-  };
-};
 
 function restrictHeaderMiddlewareFunction(req, res, next) {
   if (req.headers["access-key"] === clientPassKey) {
@@ -88,11 +78,11 @@ function restrictHeaderMiddlewareFunction(req, res, next) {
   }
 }
 
-router.get("/", (req, res) => {
+router.get("/", restrictHeaderMiddlewareFunction, (req, res) => {
   res.send("Waiting for any connections...");
 });
 
-router.get("/:key/users", async (req, res) => {
+router.get("/:key/users", restrictHeaderMiddlewareFunction, async (req, res) => {
   try {
     if (req.params.key === clientPassKey) {
       const result = await findMultipleItemsByObject(UserModel, {});
@@ -108,7 +98,7 @@ router.get("/:key/users", async (req, res) => {
   }
 });
 
-router.get("/:key/users/:email", async (req, res) => {
+router.get("/:key/users/:email", restrictHeaderMiddlewareFunction, async (req, res) => {
   try {
     if (req.params.key === clientPassKey) {
       const result = await findOneItemByObject(UserModel, {
@@ -133,7 +123,7 @@ router.get("/:key/users/:email", async (req, res) => {
   }
 });
 
-router.get("/:key/rooms", async (req, res) => {
+router.get("/:key/rooms", restrictHeaderMiddlewareFunction, async (req, res) => {
   try {
     if (req.params.key === clientPassKey) {
       const result = await findMultipleItemsByObject(RoomModel, {});
@@ -149,7 +139,7 @@ router.get("/:key/rooms", async (req, res) => {
   }
 });
 
-router.get("/:key/rooms/:room", async (req, res) => {
+router.get("/:key/rooms/:room", restrictHeaderMiddlewareFunction, async (req, res) => {
   try {
     if (req.params.key === clientPassKey) {
       const result = await findOneItemByObject(RoomModel, {
@@ -172,7 +162,7 @@ router.get("/:key/rooms/:room", async (req, res) => {
   }
 });
 
-router.get("/:key/rooms/onlineUsers/:room", async (req, res) => {
+router.get("/:key/rooms/onlineUsers/:room", restrictHeaderMiddlewareFunction, async (req, res) => {
   try {
     if (req.params.key === clientPassKey) {
       res.send(getUsersInRoom(req.params.room));
@@ -184,7 +174,7 @@ router.get("/:key/rooms/onlineUsers/:room", async (req, res) => {
   }
 });
 
-router.get("/:key/messages", async (req, res) => {
+router.get("/:key/messages", restrictHeaderMiddlewareFunction, async (req, res) => {
   try {
     if (req.params.key === clientPassKey) {
       const result = await findMultipleItemsByObject(MessageModel, {});
@@ -200,7 +190,7 @@ router.get("/:key/messages", async (req, res) => {
   }
 });
 
-router.get("/:key/messages/:room", async (req, res) => {
+router.get("/:key/messages/:room", restrictHeaderMiddlewareFunction, async (req, res) => {
   try {
     if (req.params.key === clientPassKey) {
       const result = await findMultipleItemsByObject(MessageModel, {
@@ -218,7 +208,7 @@ router.get("/:key/messages/:room", async (req, res) => {
   }
 });
 
-router.get("/:clientPassKey/images/:key", (req, res) => {
+router.get("/:clientPassKey/images/:key", restrictHeaderMiddlewareFunction, (req, res) => {
   if (req.params.clientPassKey === clientPassKey) {
     const key = req.params.key;
     const readStream = getFileStream(key);
