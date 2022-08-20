@@ -83,7 +83,12 @@ app.use(
   })
 );
 require("./startup/cors")(app);
-app.use(unless("/:key/images", restrictHeaderMiddlewareFunction));
+app.use(
+  unless(
+    "/FTLd32Ld7X88CWdY01WIyIbwrdtJxxkmdO8h9l5RQRw6w9eZ4jhuqWCYUk5cV5FbPH8jW184LGsVFNA7OHUWLrGPprCkFY47tYYZ9PpfAp7W2uAza16uAPb2aWbna6tlAtyOGRwMVUjyZUI3KOj2S3dyaggyI23AolGDOhbN78n2qfO9qOVF6aY2QPmTAKUmDR6l9wzZ6snDgYJrJhepM9MohJtvvf0uYJaVQ6DJVALohPQhNHOi49RQqHJTp45IZjVfj3r8GSNqN5KbQzomhBrO6untjFjG3jRPIRPcEnCgoWOqFwaxvhBffWcao4SImTK02Aloc2KnTRlTuCp3SRCxUksPp89idvUXUfKXoqMkOdXidrAZkfn2wd5n2UqViHmaPVBGNxlDI3pqN4gpreCaXL8/images/9e8bb71642582113f159bb7118f1872d",
+    restrictHeaderMiddlewareFunction
+  )
+);
 app.use(router);
 
 const allSockets = [];
