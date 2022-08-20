@@ -58,15 +58,17 @@ const io = socketio(server, {
 });
 const { v4: uuidv4 } = require("uuid");
 
-const unless = (path, middleware) => {
-  return (req, res, next) => {
-    if (path === req.path) {
-      return next();
-    } else {
-      return middleware(req, res, next);
-    }
-  };
-};
+// Use helmet
+app.use(
+  helmet({
+    crossOriginResourcePolicy: false,
+  })
+);
+require("./startup/cors")(app);
+//app.use(restrictHeaderMiddlewareFunction);
+app.use(router);
+
+const allSockets = [];
 
 function restrictHeaderMiddlewareFunction(req, res, next) {
   if (req.headers["access-key"] === clientPassKey) {
@@ -76,28 +78,11 @@ function restrictHeaderMiddlewareFunction(req, res, next) {
   }
 }
 
-// Use helmet
-app.use(
-  helmet({
-    crossOriginResourcePolicy: false,
-  })
-);
-require("./startup/cors")(app);
-app.use(
-  unless(
-    "/FTLd32Ld7X88CWdY01WIyIbwrdtJxxkmdO8h9l5RQRw6w9eZ4jhuqWCYUk5cV5FbPH8jW184LGsVFNA7OHUWLrGPprCkFY47tYYZ9PpfAp7W2uAza16uAPb2aWbna6tlAtyOGRwMVUjyZUI3KOj2S3dyaggyI23AolGDOhbN78n2qfO9qOVF6aY2QPmTAKUmDR6l9wzZ6snDgYJrJhepM9MohJtvvf0uYJaVQ6DJVALohPQhNHOi49RQqHJTp45IZjVfj3r8GSNqN5KbQzomhBrO6untjFjG3jRPIRPcEnCgoWOqFwaxvhBffWcao4SImTK02Aloc2KnTRlTuCp3SRCxUksPp89idvUXUfKXoqMkOdXidrAZkfn2wd5n2UqViHmaPVBGNxlDI3pqN4gpreCaXL8/images/9e8bb71642582113f159bb7118f1872d",
-    restrictHeaderMiddlewareFunction
-  )
-);
-app.use(router);
-
-const allSockets = [];
-
 router.get("/", (req, res) => {
   res.send("Waiting for any connections...");
 });
 
-router.get("/:key/users", async (req, res) => {
+router.get("/:key/users", restrictHeaderMiddlewareFunction, async (req, res) => {
   try {
     if (req.params.key === clientPassKey) {
       const result = await findMultipleItemsByObject(UserModel, {});
@@ -113,7 +98,7 @@ router.get("/:key/users", async (req, res) => {
   }
 });
 
-router.get("/:key/users/:email", async (req, res) => {
+router.get("/:key/users/:email", restrictHeaderMiddlewareFunction, async (req, res) => {
   try {
     if (req.params.key === clientPassKey) {
       const result = await findOneItemByObject(UserModel, {
@@ -138,7 +123,7 @@ router.get("/:key/users/:email", async (req, res) => {
   }
 });
 
-router.get("/:key/rooms", async (req, res) => {
+router.get("/:key/rooms", restrictHeaderMiddlewareFunction, async (req, res) => {
   try {
     if (req.params.key === clientPassKey) {
       const result = await findMultipleItemsByObject(RoomModel, {});
@@ -154,7 +139,7 @@ router.get("/:key/rooms", async (req, res) => {
   }
 });
 
-router.get("/:key/rooms/:room", async (req, res) => {
+router.get("/:key/rooms/:room", restrictHeaderMiddlewareFunction, async (req, res) => {
   try {
     if (req.params.key === clientPassKey) {
       const result = await findOneItemByObject(RoomModel, {
@@ -177,7 +162,7 @@ router.get("/:key/rooms/:room", async (req, res) => {
   }
 });
 
-router.get("/:key/rooms/onlineUsers/:room", async (req, res) => {
+router.get("/:key/rooms/onlineUsers/:room", restrictHeaderMiddlewareFunction, async (req, res) => {
   try {
     if (req.params.key === clientPassKey) {
       res.send(getUsersInRoom(req.params.room));
@@ -189,7 +174,7 @@ router.get("/:key/rooms/onlineUsers/:room", async (req, res) => {
   }
 });
 
-router.get("/:key/messages", async (req, res) => {
+router.get("/:key/messages", restrictHeaderMiddlewareFunction, async (req, res) => {
   try {
     if (req.params.key === clientPassKey) {
       const result = await findMultipleItemsByObject(MessageModel, {});
@@ -205,7 +190,7 @@ router.get("/:key/messages", async (req, res) => {
   }
 });
 
-router.get("/:key/messages/:room", async (req, res) => {
+router.get("/:key/messages/:room", restrictHeaderMiddlewareFunction, async (req, res) => {
   try {
     if (req.params.key === clientPassKey) {
       const result = await findMultipleItemsByObject(MessageModel, {
@@ -234,7 +219,7 @@ router.get("/:clientPassKey/images/:key", (req, res) => {
   }
 });
 
-router.post("/:key/images", upload.single("image"), async (req, res) => {
+router.post("/:key/images", restrictHeaderMiddlewareFunction, upload.single("image"), async (req, res) => {
   if (req.params.key === clientPassKey) {
     const file = req.file;
     const result = await uploadFile(file);
