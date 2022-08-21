@@ -802,9 +802,11 @@ io.on("connection", (socket) => {
         uid,
       });
 
-      io.to(user.room).emit("delete", {
-        uid,
-      });
+      if (user && user.room) {
+        io.to(user.room).emit("delete", {
+          uid,
+        });
+      }
     } catch (e) {
       logger.log(e);
       console.log("Could not delete message!", e);
