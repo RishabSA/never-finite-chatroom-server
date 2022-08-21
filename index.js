@@ -82,131 +82,161 @@ router.get("/", (req, res) => {
   res.send("Waiting for any connections...");
 });
 
-router.get("/:key/users", restrictHeaderMiddlewareFunction, async (req, res) => {
-  try {
-    if (req.params.key === clientPassKey) {
-      const result = await findMultipleItemsByObject(UserModel, {});
+router.get(
+  "/:key/users",
+  restrictHeaderMiddlewareFunction,
+  async (req, res) => {
+    try {
+      if (req.params.key === clientPassKey) {
+        const result = await findMultipleItemsByObject(UserModel, {});
 
-      if (!result) return res.status(404).send("No users found");
+        if (!result) return res.status(404).send("No users found");
 
-      res.send(result);
-    } else {
-      return res.status(401);
+        res.send(result);
+      } else {
+        return res.status(401);
+      }
+    } catch (e) {
+      res.status(500).send({ message: e.message });
     }
-  } catch (e) {
-    res.status(500).send({ message: e.message });
   }
-});
+);
 
-router.get("/:key/users/:email", restrictHeaderMiddlewareFunction, async (req, res) => {
-  try {
-    if (req.params.key === clientPassKey) {
-      const result = await findOneItemByObject(UserModel, {
-        email: encrypt(req.params.email),
-      });
+router.get(
+  "/:key/users/:email",
+  restrictHeaderMiddlewareFunction,
+  async (req, res) => {
+    try {
+      if (req.params.key === clientPassKey) {
+        const result = await findOneItemByObject(UserModel, {
+          email: encrypt(req.params.email),
+        });
 
-      if (!result)
-        return res
-          .status(404)
-          .send(
-            `The user with the email '${encrypt(
-              req.params.email
-            )}' was not found`
-          );
+        if (!result)
+          return res
+            .status(404)
+            .send(
+              `The user with the email '${encrypt(
+                req.params.email
+              )}' was not found`
+            );
 
-      res.send(result);
-    } else {
-      return res.status(401);
+        res.send(result);
+      } else {
+        return res.status(401);
+      }
+    } catch (e) {
+      res.status(500).send({ message: e.message });
     }
-  } catch (e) {
-    res.status(500).send({ message: e.message });
   }
-});
+);
 
-router.get("/:key/rooms", restrictHeaderMiddlewareFunction, async (req, res) => {
-  try {
-    if (req.params.key === clientPassKey) {
-      const result = await findMultipleItemsByObject(RoomModel, {});
+router.get(
+  "/:key/rooms",
+  restrictHeaderMiddlewareFunction,
+  async (req, res) => {
+    try {
+      if (req.params.key === clientPassKey) {
+        const result = await findMultipleItemsByObject(RoomModel, {});
 
-      if (!result) return res.status(404).send("No rooms found");
+        if (!result) return res.status(404).send("No rooms found");
 
-      res.send(result);
-    } else {
-      return res.status(401);
+        res.send(result);
+      } else {
+        return res.status(401);
+      }
+    } catch (e) {
+      res.status(500).send({ message: e.message });
     }
-  } catch (e) {
-    res.status(500).send({ message: e.message });
   }
-});
+);
 
-router.get("/:key/rooms/:room", restrictHeaderMiddlewareFunction, async (req, res) => {
-  try {
-    if (req.params.key === clientPassKey) {
-      const result = await findOneItemByObject(RoomModel, {
-        room: encrypt(req.params.room),
-      });
+router.get(
+  "/:key/rooms/:room",
+  restrictHeaderMiddlewareFunction,
+  async (req, res) => {
+    try {
+      if (req.params.key === clientPassKey) {
+        const result = await findOneItemByObject(RoomModel, {
+          room: encrypt(req.params.room),
+        });
 
-      if (!result)
-        return res
-          .status(404)
-          .send(
-            `The room with the name '${encrypt(req.params.room)}' was not found`
-          );
+        if (!result)
+          return res
+            .status(404)
+            .send(
+              `The room with the name '${encrypt(
+                req.params.room
+              )}' was not found`
+            );
 
-      res.send(result);
-    } else {
-      return res.status(401);
+        res.send(result);
+      } else {
+        return res.status(401);
+      }
+    } catch (e) {
+      res.status(500).send({ message: e.message });
     }
-  } catch (e) {
-    res.status(500).send({ message: e.message });
   }
-});
+);
 
-router.get("/:key/rooms/onlineUsers/:room", restrictHeaderMiddlewareFunction, async (req, res) => {
-  try {
-    if (req.params.key === clientPassKey) {
-      res.send(getUsersInRoom(req.params.room));
-    } else {
-      return res.status(401);
+router.get(
+  "/:key/rooms/onlineUsers/:room",
+  restrictHeaderMiddlewareFunction,
+  async (req, res) => {
+    try {
+      if (req.params.key === clientPassKey) {
+        res.send(getUsersInRoom(req.params.room));
+      } else {
+        return res.status(401);
+      }
+    } catch (e) {
+      res.status(500).send({ message: e.message });
     }
-  } catch (e) {
-    res.status(500).send({ message: e.message });
   }
-});
+);
 
-router.get("/:key/messages", restrictHeaderMiddlewareFunction, async (req, res) => {
-  try {
-    if (req.params.key === clientPassKey) {
-      const result = await findMultipleItemsByObject(MessageModel, {});
+router.get(
+  "/:key/messages",
+  restrictHeaderMiddlewareFunction,
+  async (req, res) => {
+    try {
+      if (req.params.key === clientPassKey) {
+        const result = await findMultipleItemsByObject(MessageModel, {});
 
-      if (!result) return res.status(404).send("No messages found");
+        if (!result) return res.status(404).send("No messages found");
 
-      res.send(result);
-    } else {
-      return res.status(401);
+        res.send(result);
+      } else {
+        return res.status(401);
+      }
+    } catch (e) {
+      res.status(500).send({ message: e.message });
     }
-  } catch (e) {
-    res.status(500).send({ message: e.message });
   }
-});
+);
 
-router.get("/:key/messages/:room", restrictHeaderMiddlewareFunction, async (req, res) => {
-  try {
-    if (req.params.key === clientPassKey) {
-      const result = await findMultipleItemsByObject(MessageModel, {
-        room: encrypt(req.params.room),
-      });
+router.get(
+  "/:key/messages/:room",
+  restrictHeaderMiddlewareFunction,
+  async (req, res) => {
+    try {
+      if (req.params.key === clientPassKey) {
+        const result = await findMultipleItemsByObject(MessageModel, {
+          room: encrypt(req.params.room),
+        });
 
-      if (!result) return res.status(404);
+        if (!result) return res.status(404);
 
-      res.send(result);
-    } else {
-      return res.status(401);
+        res.send(result);
+      } else {
+        return res.status(401);
+      }
+    } catch (e) {
+      res.status(500).send({ message: e.message });
     }
-  } catch (e) {
-    res.status(500).send({ message: e.message });
   }
-});
+);
 
 router.get("/:clientPassKey/images/:key", (req, res) => {
   if (req.params.clientPassKey === clientPassKey) {
@@ -219,16 +249,21 @@ router.get("/:clientPassKey/images/:key", (req, res) => {
   }
 });
 
-router.post("/:key/images", restrictHeaderMiddlewareFunction, upload.single("image"), async (req, res) => {
-  if (req.params.key === clientPassKey) {
-    const file = req.file;
-    const result = await uploadFile(file);
-    await unlinkFile(file.path);
-    res.send({ imagePath: `/images/${result.key}` });
-  } else {
-    return res.status(401);
+router.post(
+  "/:key/images",
+  restrictHeaderMiddlewareFunction,
+  upload.single("image"),
+  async (req, res) => {
+    if (req.params.key === clientPassKey) {
+      const file = req.file;
+      const result = await uploadFile(file);
+      await unlinkFile(file.path);
+      res.send({ imagePath: `/images/${result.key}` });
+    } else {
+      return res.status(401);
+    }
   }
-});
+);
 
 io.on("connection", (socket) => {
   let userEmailSocketScope = "";
