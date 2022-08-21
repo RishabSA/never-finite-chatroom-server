@@ -937,9 +937,12 @@ io.on("connection", (socket) => {
             ),
           ];
           const user = removeUserByEmail(userEmailSocketScope);
-          io.to(user.room).emit("userLeft", {
-            leftUserEmail: userEmailSocketScope,
-          });
+
+          if (user && user.room) {
+            io.to(user.room).emit("userLeft", {
+              leftUserEmail: userEmailSocketScope,
+            });
+          }
 
           if (user) {
             if (usersInRoomFiltered.length <= 1) {
@@ -1023,6 +1026,11 @@ io.on("connection", (socket) => {
 
             if (
               lastTimeOnline &&
+              newRooms[
+                newRooms.findIndex(
+                  (newRoomLooped) => newRoomLooped.room === room
+                )
+              ] &&
               newRooms[
                 newRooms.findIndex(
                   (newRoomLooped) => newRoomLooped.room === room
