@@ -7,6 +7,7 @@ const UserSchema = new mongoose.Schema(
     email: { type: String, required: true },
     accountStatus: { type: String, required: true },
     rooms: { type: Array, default: [] },
+    invites: { type: Array, default: [] },
   },
   { collection: "users" }
 );

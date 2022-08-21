@@ -402,7 +402,7 @@ io.on("connection", (socket) => {
       selectedUsersToInvite.forEach(async (email) => {
         let shouldInvite = true;
 
-        const roomInDB = await findMultipleItemsByObject(RoomModel, { room });
+        const roomInDB = await findOneItemByObject(RoomModel, { room });
 
         if (roomInDB.invitedUsers && roomInDB.invitedUsers.includes(email))
           shouldInvite = false;
@@ -411,7 +411,6 @@ io.on("connection", (socket) => {
           const { invitedUsers } = await findOneItemByObject(RoomModel, {
             room,
           });
-
           const newInvitedUsers = invitedUsers
             ? [...invitedUsers, email]
             : [email];

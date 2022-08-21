@@ -5,6 +5,7 @@ const RoomSchema = new mongoose.Schema(
     room: { type: String, required: true },
     isPrivate: { type: Boolean, required: true },
     users: { type: Array, default: [] },
+    invitedUsers: { type: Array, default: [] },
   },
   { collection: "rooms" }
 );
