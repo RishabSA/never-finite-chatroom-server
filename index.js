@@ -299,10 +299,7 @@ io.on("connection", (socket) => {
 
   socket.on("deleteRoom", async ({ user, email, room }) => {
     try {
-      removeUserByEmail(email);
-      io.to(user.room).emit("userLeft", {
-        leftUserEmail: email,
-      });
+      const userInArr = removeUserByEmail(email);
 
       socket.leave(room);
 
@@ -350,21 +347,38 @@ io.on("connection", (socket) => {
 
           const formatted_date = getDate();
 
-          socket.broadcast.to(room).emit("message", {
+          await create(MessageModel, {
             user: encrypt("Admin"),
-            email: "",
-            text: encrypt(`${user} has left the room.`),
+            room,
             photoURL: encrypt(
               "https://neverfinite.com/wp-content/uploads/2022/08/NeverFiniteChatroomIcon.png"
             ),
-            createdAtDisplay: formatted_date,
-            uid,
-            room: encrypt(room),
+            email: encrypt("neverfinitetech@gmail.com"),
             createdAt: Date.now(),
+            createdAtDisplay: formatted_date,
+            text: encrypt(`${decrypt(user)} has left the room.`),
             media: "",
             mediaPath: "",
             imagePath: "",
             isEdited: false,
+            uid,
+          });
+
+          socket.broadcast.to(userInArr.room).emit("message", {
+            room,
+            user: encrypt("Admin"),
+            photoURL: encrypt(
+              "https://neverfinite.com/wp-content/uploads/2022/08/NeverFiniteChatroomIcon.png"
+            ),
+            email: encrypt("neverfinitetech@gmail.com"),
+            media: "",
+            createdAtDisplay: formatted_date,
+            mediaPath: "",
+            isEdited: false,
+            uid,
+            createdAt: Date.now(),
+            imagePath: "",
+            text: encrypt(`${decrypt(user)} has left the room.`),
           });
 
           const roomResult = await findOneItemByObject(RoomModel, {
@@ -666,6 +680,24 @@ io.on("connection", (socket) => {
               imagePath: "",
               text: encrypt("Welcome to the room!"),
             });
+
+            await create(MessageModel, {
+              user: encrypt("Admin"),
+              room,
+              photoURL: encrypt(
+                "https://neverfinite.com/wp-content/uploads/2022/08/NeverFiniteChatroomIcon.png"
+              ),
+              email: encrypt("neverfinitetech@gmail.com"),
+              createdAt: Date.now(),
+              createdAtDisplay: formatted_date,
+              text: encrypt(`${decrypt(user.user)} has joined the room`),
+              media: "",
+              mediaPath: "",
+              imagePath: "",
+              isEdited: false,
+              uid,
+            });
+
             socket.broadcast.to(user.room).emit("message", {
               room,
               user: encrypt("Admin"),
