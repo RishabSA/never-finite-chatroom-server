@@ -488,6 +488,39 @@ io.on("connection", (socket) => {
     }
   });
 
+  socket.on("declineRoomInvite", async ({ email, room }) => {
+    try {
+      const { invites } = await findOneItemByObject(UserModel, {
+        email,
+      });
+
+      const newRoomInvites = [...invites];
+      newRoomInvites.splice(invites.indexOf(room), 1);
+
+      await updateObjectByObject(
+        UserModel,
+        { email },
+        { invites: newRoomInvites }
+      );
+
+      const { invitedUsers } = await findOneItemByObject(RoomModel, {
+        room,
+      });
+
+      const newInvitedUsers = [...invitedUsers];
+      newInvitedUsers.splice(invitedUsers.indexOf(email), 1);
+
+      await updateObjectByObject(
+        RoomModel,
+        { room },
+        { invitedUsers: newInvitedUsers }
+      );
+    } catch (e) {
+      logger.log(e);
+      console.log("Could not ignore room invite!", e);
+    }
+  });
+
   socket.on(
     "joinRoom",
     async ({ name, room, photoURL, email, isPrivate, lastTimeOnline }) => {
