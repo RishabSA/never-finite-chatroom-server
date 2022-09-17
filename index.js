@@ -524,7 +524,6 @@ io.on("connection", (socket) => {
   socket.on(
     "joinRoom",
     async ({ name, room, photoURL, email, isPrivate, lastTimeOnline }) => {
-      throw new Error("this is a test");
       if (room) {
         try {
           let shouldAddRoomToUser = true;
