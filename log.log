@@ -1,0 +1,295 @@
+Listening on port 5000
+Listening on port 5000
+connection
+Error: testing
+    at Namespace.<anonymous> (C:\Coding\Electron Projects\never-finite-chatroom\server\index.js:274:9)
+    at Namespace.emit (node:events:390:28)
+    at Namespace.emit (node:domain:475:12)
+    at Namespace.emitReserved (C:\Coding\Electron Projects\never-finite-chatroom\server\node_modules\socket.io\dist\typed-events.js:56:22)
+    at C:\Coding\Electron Projects\never-finite-chatroom\server\node_modules\socket.io\dist\namespace.js:141:26
+    at processTicksAndRejections (node:internal/process/task_queues:78:11)
+Error: testing
+    at Namespace.<anonymous> (C:\Coding\Electron Projects\never-finite-chatroom\server\index.js:274:9)
+    at Namespace.emit (node:events:390:28)
+    at Namespace.emit (node:domain:475:12)
+    at Namespace.emitReserved (C:\Coding\Electron Projects\never-finite-chatroom\server\node_modules\socket.io\dist\typed-events.js:56:22)
+    at C:\Coding\Electron Projects\never-finite-chatroom\server\node_modules\socket.io\dist\namespace.js:141:26
+    at processTicksAndRejections (node:internal/process/task_queues:78:11)
+Listening on port 5000
+connection
+Error: testing
+    at Namespace.<anonymous> (C:\Coding\Electron Projects\never-finite-chatroom\server\index.js:274:9)
+    at Namespace.emit (node:events:390:28)
+    at Namespace.emit (node:domain:475:12)
+    at Namespace.emitReserved (C:\Coding\Electron Projects\never-finite-chatroom\server\node_modules\socket.io\dist\typed-events.js:56:22)
+    at C:\Coding\Electron Projects\never-finite-chatroom\server\node_modules\socket.io\dist\namespace.js:141:26
+    at processTicksAndRejections (node:internal/process/task_queues:78:11)
+Error: testing
+    at Namespace.<anonymous> (C:\Coding\Electron Projects\never-finite-chatroom\server\index.js:274:9)
+    at Namespace.emit (node:events:390:28)
+    at Namespace.emit (node:domain:475:12)
+    at Namespace.emitReserved (C:\Coding\Electron Projects\never-finite-chatroom\server\node_modules\socket.io\dist\typed-events.js:56:22)
+    at C:\Coding\Electron Projects\never-finite-chatroom\server\node_modules\socket.io\dist\namespace.js:141:26
+    at processTicksAndRejections (node:internal/process/task_queues:78:11)
+Listening on port 5000
+connection
+Error: testing
+    at Namespace.<anonymous> (C:\Coding\Electron Projects\never-finite-chatroom\server\index.js:274:9)
+    at Namespace.emit (node:events:390:28)
+    at Namespace.emit (node:domain:475:12)
+    at Namespace.emitReserved (C:\Coding\Electron Projects\never-finite-chatroom\server\node_modules\socket.io\dist\typed-events.js:56:22)
+    at C:\Coding\Electron Projects\never-finite-chatroom\server\node_modules\socket.io\dist\namespace.js:141:26
+    at processTicksAndRejections (node:internal/process/task_queues:78:11)
+Error: testing
+    at Namespace.<anonymous> (C:\Coding\Electron Projects\never-finite-chatroom\server\index.js:274:9)
+    at Namespace.emit (node:events:390:28)
+    at Namespace.emit (node:domain:475:12)
+    at Namespace.emitReserved (C:\Coding\Electron Projects\never-finite-chatroom\server\node_modules\socket.io\dist\typed-events.js:56:22)
+    at C:\Coding\Electron Projects\never-finite-chatroom\server\node_modules\socket.io\dist\namespace.js:141:26
+    at processTicksAndRejections (node:internal/process/task_queues:78:11)
+Listening on port 5000
+connection
+Error: testing
+    at Namespace.<anonymous> (C:\Coding\Electron Projects\never-finite-chatroom\server\index.js:274:9)
+    at Namespace.emit (node:events:390:28)
+    at Namespace.emit (node:domain:475:12)
+    at Namespace.emitReserved (C:\Coding\Electron Projects\never-finite-chatroom\server\node_modules\socket.io\dist\typed-events.js:56:22)
+    at C:\Coding\Electron Projects\never-finite-chatroom\server\node_modules\socket.io\dist\namespace.js:141:26
+    at processTicksAndRejections (node:internal/process/task_queues:78:11)
+Error: testing
+    at Namespace.<anonymous> (C:\Coding\Electron Projects\never-finite-chatroom\server\index.js:274:9)
+    at Namespace.emit (node:events:390:28)
+    at Namespace.emit (node:domain:475:12)
+    at Namespace.emitReserved (C:\Coding\Electron Projects\never-finite-chatroom\server\node_modules\socket.io\dist\typed-events.js:56:22)
+    at C:\Coding\Electron Projects\never-finite-chatroom\server\node_modules\socket.io\dist\namespace.js:141:26
+    at processTicksAndRejections (node:internal/process/task_queues:78:11)
+Listening on port 5000
+connection
+Error: testing
+    at Namespace.<anonymous> (C:\Coding\Electron Projects\never-finite-chatroom\server\index.js:274:9)
+    at Namespace.emit (node:events:390:28)
+    at Namespace.emit (node:domain:475:12)
+    at Namespace.emitReserved (C:\Coding\Electron Projects\never-finite-chatroom\server\node_modules\socket.io\dist\typed-events.js:56:22)
+    at C:\Coding\Electron Projects\never-finite-chatroom\server\node_modules\socket.io\dist\namespace.js:141:26
+    at processTicksAndRejections (node:internal/process/task_queues:78:11)
+Error: testing
+    at Namespace.<anonymous> (C:\Coding\Electron Projects\never-finite-chatroom\server\index.js:274:9)
+    at Namespace.emit (node:events:390:28)
+    at Namespace.emit (node:domain:475:12)
+    at Namespace.emitReserved (C:\Coding\Electron Projects\never-finite-chatroom\server\node_modules\socket.io\dist\typed-events.js:56:22)
+    at C:\Coding\Electron Projects\never-finite-chatroom\server\node_modules\socket.io\dist\namespace.js:141:26
+    at processTicksAndRejections (node:internal/process/task_queues:78:11)
+Listening on port 5000
+connection
+Error: testing
+    at Namespace.<anonymous> (C:\Coding\Electron Projects\never-finite-chatroom\server\index.js:274:9)
+    at Namespace.emit (node:events:390:28)
+    at Namespace.emit (node:domain:475:12)
+    at Namespace.emitReserved (C:\Coding\Electron Projects\never-finite-chatroom\server\node_modules\socket.io\dist\typed-events.js:56:22)
+    at C:\Coding\Electron Projects\never-finite-chatroom\server\node_modules\socket.io\dist\namespace.js:141:26
+    at processTicksAndRejections (node:internal/process/task_queues:78:11)
+Error: testing
+    at Namespace.<anonymous> (C:\Coding\Electron Projects\never-finite-chatroom\server\index.js:274:9)
+    at Namespace.emit (node:events:390:28)
+    at Namespace.emit (node:domain:475:12)
+    at Namespace.emitReserved (C:\Coding\Electron Projects\never-finite-chatroom\server\node_modules\socket.io\dist\typed-events.js:56:22)
+    at C:\Coding\Electron Projects\never-finite-chatroom\server\node_modules\socket.io\dist\namespace.js:141:26
+    at processTicksAndRejections (node:internal/process/task_queues:78:11)
+Listening on port 5000
+connection
+Error: testing
+    at Namespace.<anonymous> (C:\Coding\Electron Projects\never-finite-chatroom\server\index.js:274:9)
+    at Namespace.emit (node:events:390:28)
+    at Namespace.emit (node:domain:475:12)
+    at Namespace.emitReserved (C:\Coding\Electron Projects\never-finite-chatroom\server\node_modules\socket.io\dist\typed-events.js:56:22)
+    at C:\Coding\Electron Projects\never-finite-chatroom\server\node_modules\socket.io\dist\namespace.js:141:26
+    at processTicksAndRejections (node:internal/process/task_queues:78:11)
+Error: testing
+    at Namespace.<anonymous> (C:\Coding\Electron Projects\never-finite-chatroom\server\index.js:274:9)
+    at Namespace.emit (node:events:390:28)
+    at Namespace.emit (node:domain:475:12)
+    at Namespace.emitReserved (C:\Coding\Electron Projects\never-finite-chatroom\server\node_modules\socket.io\dist\typed-events.js:56:22)
+    at C:\Coding\Electron Projects\never-finite-chatroom\server\node_modules\socket.io\dist\namespace.js:141:26
+    at processTicksAndRejections (node:internal/process/task_queues:78:11)
+Listening on port 5000
+connection
+Error: testing
+    at Namespace.<anonymous> (C:\Coding\Electron Projects\never-finite-chatroom\server\index.js:274:9)
+    at Namespace.emit (node:events:390:28)
+    at Namespace.emit (node:domain:475:12)
+    at Namespace.emitReserved (C:\Coding\Electron Projects\never-finite-chatroom\server\node_modules\socket.io\dist\typed-events.js:56:22)
+    at C:\Coding\Electron Projects\never-finite-chatroom\server\node_modules\socket.io\dist\namespace.js:141:26
+    at processTicksAndRejections (node:internal/process/task_queues:78:11)
+Error: testing
+    at Namespace.<anonymous> (C:\Coding\Electron Projects\never-finite-chatroom\server\index.js:274:9)
+    at Namespace.emit (node:events:390:28)
+    at Namespace.emit (node:domain:475:12)
+    at Namespace.emitReserved (C:\Coding\Electron Projects\never-finite-chatroom\server\node_modules\socket.io\dist\typed-events.js:56:22)
+    at C:\Coding\Electron Projects\never-finite-chatroom\server\node_modules\socket.io\dist\namespace.js:141:26
+    at processTicksAndRejections (node:internal/process/task_queues:78:11)
+Listening on port 5000
+connection
+Error: testing
+    at Namespace.<anonymous> (C:\Coding\Electron Projects\never-finite-chatroom\server\index.js:274:9)
+    at Namespace.emit (node:events:390:28)
+    at Namespace.emit (node:domain:475:12)
+    at Namespace.emitReserved (C:\Coding\Electron Projects\never-finite-chatroom\server\node_modules\socket.io\dist\typed-events.js:56:22)
+    at C:\Coding\Electron Projects\never-finite-chatroom\server\node_modules\socket.io\dist\namespace.js:141:26
+    at processTicksAndRejections (node:internal/process/task_queues:78:11)
+Error: testing
+    at Namespace.<anonymous> (C:\Coding\Electron Projects\never-finite-chatroom\server\index.js:274:9)
+    at Namespace.emit (node:events:390:28)
+    at Namespace.emit (node:domain:475:12)
+    at Namespace.emitReserved (C:\Coding\Electron Projects\never-finite-chatroom\server\node_modules\socket.io\dist\typed-events.js:56:22)
+    at C:\Coding\Electron Projects\never-finite-chatroom\server\node_modules\socket.io\dist\namespace.js:141:26
+    at processTicksAndRejections (node:internal/process/task_queues:78:11)
+Listening on port 5000
+connection
+Error: testing
+    at Namespace.<anonymous> (C:\Coding\Electron Projects\never-finite-chatroom\server\index.js:274:9)
+    at Namespace.emit (node:events:390:28)
+    at Namespace.emit (node:domain:475:12)
+    at Namespace.emitReserved (C:\Coding\Electron Projects\never-finite-chatroom\server\node_modules\socket.io\dist\typed-events.js:56:22)
+    at C:\Coding\Electron Projects\never-finite-chatroom\server\node_modules\socket.io\dist\namespace.js:141:26
+    at processTicksAndRejections (node:internal/process/task_queues:78:11)
+Error: testing
+    at Namespace.<anonymous> (C:\Coding\Electron Projects\never-finite-chatroom\server\index.js:274:9)
+    at Namespace.emit (node:events:390:28)
+    at Namespace.emit (node:domain:475:12)
+    at Namespace.emitReserved (C:\Coding\Electron Projects\never-finite-chatroom\server\node_modules\socket.io\dist\typed-events.js:56:22)
+    at C:\Coding\Electron Projects\never-finite-chatroom\server\node_modules\socket.io\dist\namespace.js:141:26
+    at processTicksAndRejections (node:internal/process/task_queues:78:11)
+Listening on port 5000
+connection
+Error: testing
+    at Namespace.<anonymous> (C:\Coding\Electron Projects\never-finite-chatroom\server\index.js:274:9)
+    at Namespace.emit (node:events:390:28)
+    at Namespace.emit (node:domain:475:12)
+    at Namespace.emitReserved (C:\Coding\Electron Projects\never-finite-chatroom\server\node_modules\socket.io\dist\typed-events.js:56:22)
+    at C:\Coding\Electron Projects\never-finite-chatroom\server\node_modules\socket.io\dist\namespace.js:141:26
+    at processTicksAndRejections (node:internal/process/task_queues:78:11)
+Error: testing
+    at Namespace.<anonymous> (C:\Coding\Electron Projects\never-finite-chatroom\server\index.js:274:9)
+    at Namespace.emit (node:events:390:28)
+    at Namespace.emit (node:domain:475:12)
+    at Namespace.emitReserved (C:\Coding\Electron Projects\never-finite-chatroom\server\node_modules\socket.io\dist\typed-events.js:56:22)
+    at C:\Coding\Electron Projects\never-finite-chatroom\server\node_modules\socket.io\dist\namespace.js:141:26
+    at processTicksAndRejections (node:internal/process/task_queues:78:11)
+Listening on port 5000
+connection
+Error: testing
+    at Namespace.<anonymous> (C:\Coding\Electron Projects\never-finite-chatroom\server\index.js:274:9)
+    at Namespace.emit (node:events:390:28)
+    at Namespace.emit (node:domain:475:12)
+    at Namespace.emitReserved (C:\Coding\Electron Projects\never-finite-chatroom\server\node_modules\socket.io\dist\typed-events.js:56:22)
+    at C:\Coding\Electron Projects\never-finite-chatroom\server\node_modules\socket.io\dist\namespace.js:141:26
+    at processTicksAndRejections (node:internal/process/task_queues:78:11)
+Error: testing
+    at Namespace.<anonymous> (C:\Coding\Electron Projects\never-finite-chatroom\server\index.js:274:9)
+    at Namespace.emit (node:events:390:28)
+    at Namespace.emit (node:domain:475:12)
+    at Namespace.emitReserved (C:\Coding\Electron Projects\never-finite-chatroom\server\node_modules\socket.io\dist\typed-events.js:56:22)
+    at C:\Coding\Electron Projects\never-finite-chatroom\server\node_modules\socket.io\dist\namespace.js:141:26
+    at processTicksAndRejections (node:internal/process/task_queues:78:11)
+Listening on port 5000
+connection
+Error: testing
+    at Namespace.<anonymous> (C:\Coding\Electron Projects\never-finite-chatroom\server\index.js:274:9)
+    at Namespace.emit (node:events:390:28)
+    at Namespace.emit (node:domain:475:12)
+    at Namespace.emitReserved (C:\Coding\Electron Projects\never-finite-chatroom\server\node_modules\socket.io\dist\typed-events.js:56:22)
+    at C:\Coding\Electron Projects\never-finite-chatroom\server\node_modules\socket.io\dist\namespace.js:141:26
+    at processTicksAndRejections (node:internal/process/task_queues:78:11)
+Error: testing
+    at Namespace.<anonymous> (C:\Coding\Electron Projects\never-finite-chatroom\server\index.js:274:9)
+    at Namespace.emit (node:events:390:28)
+    at Namespace.emit (node:domain:475:12)
+    at Namespace.emitReserved (C:\Coding\Electron Projects\never-finite-chatroom\server\node_modules\socket.io\dist\typed-events.js:56:22)
+    at C:\Coding\Electron Projects\never-finite-chatroom\server\node_modules\socket.io\dist\namespace.js:141:26
+    at processTicksAndRejections (node:internal/process/task_queues:78:11)
+Listening on port 5000
+connection
+Error: testing
+    at Namespace.<anonymous> (C:\Coding\Electron Projects\never-finite-chatroom\server\index.js:274:9)
+    at Namespace.emit (node:events:390:28)
+    at Namespace.emit (node:domain:475:12)
+    at Namespace.emitReserved (C:\Coding\Electron Projects\never-finite-chatroom\server\node_modules\socket.io\dist\typed-events.js:56:22)
+    at C:\Coding\Electron Projects\never-finite-chatroom\server\node_modules\socket.io\dist\namespace.js:141:26
+    at processTicksAndRejections (node:internal/process/task_queues:78:11)
+Error: testing
+    at Namespace.<anonymous> (C:\Coding\Electron Projects\never-finite-chatroom\server\index.js:274:9)
+    at Namespace.emit (node:events:390:28)
+    at Namespace.emit (node:domain:475:12)
+    at Namespace.emitReserved (C:\Coding\Electron Projects\never-finite-chatroom\server\node_modules\socket.io\dist\typed-events.js:56:22)
+    at C:\Coding\Electron Projects\never-finite-chatroom\server\node_modules\socket.io\dist\namespace.js:141:26
+    at processTicksAndRejections (node:internal/process/task_queues:78:11)
+Listening on port 5000
+connection
+Error: testing
+    at Namespace.<anonymous> (C:\Coding\Electron Projects\never-finite-chatroom\server\index.js:274:9)
+    at Namespace.emit (node:events:390:28)
+    at Namespace.emit (node:domain:475:12)
+    at Namespace.emitReserved (C:\Coding\Electron Projects\never-finite-chatroom\server\node_modules\socket.io\dist\typed-events.js:56:22)
+    at C:\Coding\Electron Projects\never-finite-chatroom\server\node_modules\socket.io\dist\namespace.js:141:26
+    at processTicksAndRejections (node:internal/process/task_queues:78:11)
+Error: testing
+    at Namespace.<anonymous> (C:\Coding\Electron Projects\never-finite-chatroom\server\index.js:274:9)
+    at Namespace.emit (node:events:390:28)
+    at Namespace.emit (node:domain:475:12)
+    at Namespace.emitReserved (C:\Coding\Electron Projects\never-finite-chatroom\server\node_modules\socket.io\dist\typed-events.js:56:22)
+    at C:\Coding\Electron Projects\never-finite-chatroom\server\node_modules\socket.io\dist\namespace.js:141:26
+    at processTicksAndRejections (node:internal/process/task_queues:78:11)
+Listening on port 5000
+Listening on port 5000
+connection
+Could not join the room! Error: testing
+    at Socket.<anonymous> (C:\Coding\Electron Projects\never-finite-chatroom\server\index.js:531:17)
+    at Socket.emit (node:events:390:28)
+    at Socket.emit (node:domain:475:12)
+    at Socket.emitUntyped (C:\Coding\Electron Projects\never-finite-chatroom\server\node_modules\socket.io\dist\typed-events.js:69:22)
+    at C:\Coding\Electron Projects\never-finite-chatroom\server\node_modules\socket.io\dist\socket.js:428:39
+    at processTicksAndRejections (node:internal/process/task_queues:78:11)
+connection
+Could not join the room! Error: testing
+    at Socket.<anonymous> (C:\Coding\Electron Projects\never-finite-chatroom\server\index.js:531:17)
+    at Socket.emit (node:events:390:28)
+    at Socket.emit (node:domain:475:12)
+    at Socket.emitUntyped (C:\Coding\Electron Projects\never-finite-chatroom\server\node_modules\socket.io\dist\typed-events.js:69:22)
+    at C:\Coding\Electron Projects\never-finite-chatroom\server\node_modules\socket.io\dist\socket.js:428:39
+    at processTicksAndRejections (node:internal/process/task_queues:78:11)
+connection
+Could not join the room! Error: testing
+    at Socket.<anonymous> (C:\Coding\Electron Projects\never-finite-chatroom\server\index.js:531:17)
+    at Socket.emit (node:events:390:28)
+    at Socket.emit (node:domain:475:12)
+    at Socket.emitUntyped (C:\Coding\Electron Projects\never-finite-chatroom\server\node_modules\socket.io\dist\typed-events.js:69:22)
+    at C:\Coding\Electron Projects\never-finite-chatroom\server\node_modules\socket.io\dist\socket.js:428:39
+    at processTicksAndRejections (node:internal/process/task_queues:78:11)
+Listening on port 5000
+connection
+Could not delete room! Error: testing
+    at Socket.<anonymous> (C:\Coding\Electron Projects\never-finite-chatroom\server\index.js:304:13)
+    at Socket.emit (node:events:390:28)
+    at Socket.emit (node:domain:475:12)
+    at Socket.emitUntyped (C:\Coding\Electron Projects\never-finite-chatroom\server\node_modules\socket.io\dist\typed-events.js:69:22)
+    at C:\Coding\Electron Projects\never-finite-chatroom\server\node_modules\socket.io\dist\socket.js:428:39
+    at processTicksAndRejections (node:internal/process/task_queues:78:11)
+connection
+Could not delete room! Error: testing
+    at Socket.<anonymous> (C:\Coding\Electron Projects\never-finite-chatroom\server\index.js:304:13)
+    at Socket.emit (node:events:390:28)
+    at Socket.emit (node:domain:475:12)
+    at Socket.emitUntyped (C:\Coding\Electron Projects\never-finite-chatroom\server\node_modules\socket.io\dist\typed-events.js:69:22)
+    at C:\Coding\Electron Projects\never-finite-chatroom\server\node_modules\socket.io\dist\socket.js:428:39
+    at processTicksAndRejections (node:internal/process/task_queues:78:11)
+connection
+connection
+Could not delete room! Error: testing
+    at Socket.<anonymous> (C:\Coding\Electron Projects\never-finite-chatroom\server\index.js:304:13)
+    at Socket.emit (node:events:390:28)
+    at Socket.emit (node:domain:475:12)
+    at Socket.emitUntyped (C:\Coding\Electron Projects\never-finite-chatroom\server\node_modules\socket.io\dist\typed-events.js:69:22)
+    at C:\Coding\Electron Projects\never-finite-chatroom\server\node_modules\socket.io\dist\socket.js:428:39
+    at processTicksAndRejections (node:internal/process/task_queues:78:11)
+connection
+Listening on port 5000

@@ -269,6 +269,8 @@ io.on("connection", (socket) => {
   let userEmailSocketScope = "";
   let userActiveRoomSocketScope = "";
 
+  console.log("connection");
+
   socket.on("userOnline", async ({ name, photoURL, email }) => {
     try {
       const result = await findOneItemByObject(UserModel, {
@@ -299,6 +301,7 @@ io.on("connection", (socket) => {
 
   socket.on("deleteRoom", async ({ user, email, room }) => {
     try {
+      throw new Error("testing");
       const userInArr = removeUserByEmail(email);
 
       socket.leave(room);
