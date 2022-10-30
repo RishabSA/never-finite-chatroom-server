@@ -8,7 +8,8 @@
     "node": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "pm2": "pm2 start index.js --name never-finite-chatroom-server --log log.log",
-    "nodemon": "nodemon index.js"
+    "nodemon": "nodemon index.js",
+    "heroku-postbuild": "npm run pm2"
   },
   "keywords": [],
   "author": "",
