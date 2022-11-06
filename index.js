@@ -269,8 +269,6 @@ io.on("connection", (socket) => {
   let userEmailSocketScope = "";
   let userActiveRoomSocketScope = "";
 
-  console.log("connection");
-
   socket.on("userOnline", async ({ name, photoURL, email }) => {
     try {
       const result = await findOneItemByObject(UserModel, {
