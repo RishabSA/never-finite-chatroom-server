@@ -270,8 +270,6 @@ io.on("connection", (socket) => {
   let userActiveRoomSocketScope = "";
 
   socket.on("userOnline", async ({ name, photoURL, email }) => {
-    throw new Error("testing");
-
     try {
       const result = await findOneItemByObject(UserModel, {
         email,
