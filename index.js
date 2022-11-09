@@ -271,6 +271,8 @@ io.on("connection", (socket) => {
 
   socket.on("userOnline", async ({ name, photoURL, email }) => {
     try {
+      throw new Error("testing");
+
       const result = await findOneItemByObject(UserModel, {
         email,
       });
