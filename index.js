@@ -97,6 +97,7 @@ router.get(
         return res.status(401);
       }
     } catch (e) {
+      console.log(e);
       res.status(500).send({ message: e.message });
     }
   }
@@ -126,6 +127,7 @@ router.get(
         return res.status(401);
       }
     } catch (e) {
+      console.log(e);
       res.status(500).send({ message: e.message });
     }
   }
@@ -146,6 +148,7 @@ router.get(
         return res.status(401);
       }
     } catch (e) {
+      console.log(e);
       res.status(500).send({ message: e.message });
     }
   }
@@ -175,6 +178,7 @@ router.get(
         return res.status(401);
       }
     } catch (e) {
+      console.log(e);
       res.status(500).send({ message: e.message });
     }
   }
@@ -191,6 +195,7 @@ router.get(
         return res.status(401);
       }
     } catch (e) {
+      console.log(e);
       res.status(500).send({ message: e.message });
     }
   }
@@ -211,6 +216,7 @@ router.get(
         return res.status(401);
       }
     } catch (e) {
+      console.log(e);
       res.status(500).send({ message: e.message });
     }
   }
@@ -233,6 +239,7 @@ router.get(
         return res.status(401);
       }
     } catch (e) {
+      console.log(e);
       res.status(500).send({ message: e.message });
     }
   }
@@ -808,10 +815,10 @@ io.on("connection", (socket) => {
       uid,
       callback
     ) => {
+      throw Error("send message");
+
       try {
         const createdAt = Date.now();
-
-        throw new Error("send message");
 
         await create(MessageModel, {
           user,
