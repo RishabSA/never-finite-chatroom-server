@@ -956,9 +956,8 @@ io.on("connection", (socket) => {
   });
 
   socket.on("startTypingMessage", ({ room, email, user }) => {
+    throw Error("type message");
     try {
-      throw Error("type message");
-
       if (room && email && user && decrypt(user) !== "admin") {
         addTypingUser({
           room,
