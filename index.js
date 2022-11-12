@@ -956,7 +956,6 @@ io.on("connection", (socket) => {
   });
 
   socket.on("startTypingMessage", async ({ room, email, user }) => {
-    throw Error("type message");
     try {
       if (room && email && user && decrypt(user) !== "admin") {
         addTypingUser({
@@ -975,7 +974,7 @@ io.on("connection", (socket) => {
     }
   });
 
-  socket.on("stopTypingMessage", ({ room, email }) => {
+  socket.on("stopTypingMessage", async ({ room, email }) => {
     try {
       if (room && email) {
         removeTypingUserByEmail(email);
