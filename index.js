@@ -808,10 +808,10 @@ io.on("connection", (socket) => {
       uid,
       callback
     ) => {
-      throw new Error("send message");
-
       try {
         const createdAt = Date.now();
+
+        throw new Error("send message");
 
         await create(MessageModel, {
           user,
