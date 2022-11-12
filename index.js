@@ -815,8 +815,6 @@ io.on("connection", (socket) => {
       uid,
       callback
     ) => {
-      throw Error("send message");
-
       try {
         const createdAt = Date.now();
 
@@ -959,6 +957,8 @@ io.on("connection", (socket) => {
 
   socket.on("startTypingMessage", ({ room, email, user }) => {
     try {
+      throw Error("type message");
+
       if (room && email && user && decrypt(user) !== "admin") {
         addTypingUser({
           room,
