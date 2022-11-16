@@ -108,15 +108,12 @@ router.get(
   restrictHeaderMiddlewareFunction,
   async (req, res) => {
     try {
-      console.log("inside try");
       if (req.params.key === clientPassKey) {
-        console.log("inside if");
         const result = await findOneItemByObject(UserModel, {
           email: encrypt(req.params.email),
         });
 
-        if (!result) {
-          console.log("inside result");
+        if (!result)
           return res
             .status(404)
             .send(
@@ -124,7 +121,6 @@ router.get(
                 req.params.email
               )}' was not found`
             );
-        }
 
         res.send(result);
       } else {
