@@ -860,6 +860,8 @@ io.on("connection", (socket) => {
 
   socket.on("deleteMessage", async (uid, email) => {
     try {
+      throw new Error("Delete Message");
+
       const user = getUserByEmail(email);
 
       const messageInDB = await findOneItemByObject(MessageModel, {
