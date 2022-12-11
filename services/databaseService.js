@@ -17,32 +17,32 @@ async function findMultipleItemsByObject(schema, object) {
 }
 
 async function create(schema, newObject) {
-  const result = await schema.create(newObject).lean();
+  const result = await schema.create(newObject);
   return result;
 }
 
 async function createMultiple(schema, newObjects) {
-  const result = await schema.insertMany(newObjects).lean();
+  const result = await schema.insertMany(newObjects);
   return result;
 }
 
 async function updateObjectByObject(schema, object, updatedObject) {
-  const result = await schema.updateOne(object, updatedObject).lean();
+  const result = await schema.updateOne(object, updatedObject);
   return result;
 }
 
 async function updateManyObjectsByObject(schema, object, updatedObject) {
-  const result = await schema.update(object, updatedObject).lean();
+  const result = await schema.update(object, updatedObject);
   return result;
 }
 
 async function deleteByObject(schema, object) {
-  const result = await schema.deleteOne(object).lean();
+  const result = await schema.deleteOne(object);
   return result;
 }
 
 async function deleteManyByObject(schema, object) {
-  const result = await schema.deleteMany(object).lean();
+  const result = await schema.deleteMany(object);
   return result;
 }
 
