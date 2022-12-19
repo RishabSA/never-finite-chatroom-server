@@ -78,7 +78,7 @@ function restrictHeaderMiddlewareFunction(req, res, next) {
   }
 }
 
-router.get("/", (req, res) => {
+router.get("/", async (req, res) => {
   res.send("Waiting for any connections...");
 });
 
@@ -245,7 +245,7 @@ router.get(
   }
 );
 
-router.get("/:clientPassKey/images/:key", (req, res) => {
+router.get("/:clientPassKey/images/:key", async (req, res) => {
   if (req.params.clientPassKey === clientPassKey) {
     const key = req.params.key;
     const readStream = getFileStream(key);
