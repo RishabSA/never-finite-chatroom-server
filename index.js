@@ -38,7 +38,7 @@ const { clientPassKey } = require("./startup/config.json");
 
 const { getDate } = require("./utils/getDate");
 
-const appCache = new NodeCached({ stdTTL: 15 });
+const appCache = new NodeCached({ stdTTL: 90 });
 
 const uri =
   "mongodb+srv://never-finite-chatroom-admin:4RjGzhTbbcepwPGe@never-finite-chatroom.mpem8.mongodb.net/chatroom?retryWrites=true&w=majority";
