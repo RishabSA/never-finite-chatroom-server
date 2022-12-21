@@ -12,6 +12,7 @@ const { uploadFile, deleteFile, getFileStream } = require("./s3");
 const socketio = require("socket.io");
 const http = require("http");
 const logger = require("./services/logService");
+const NodeCached = require("node-cache");
 const helmet = require("helmet");
 const { encrypt, decrypt } = require("./utils/Cryptography");
 const {
@@ -37,6 +38,8 @@ const { clientPassKey } = require("./startup/config.json");
 
 const { getDate } = require("./utils/getDate");
 
+const appCache = new NodeCached({ stdTTL: 15 });
+
 const uri =
   "mongodb+srv://never-finite-chatroom-admin:4RjGzhTbbcepwPGe@never-finite-chatroom.mpem8.mongodb.net/chatroom?retryWrites=true&w=majority";
 
@@ -57,6 +60,7 @@ const io = socketio(server, {
   maxHttpBufferSize: 5e6,
 });
 const { v4: uuidv4 } = require("uuid");
+const NodeCache = require("node-cache");
 
 // Use helmet
 app.use(
@@ -88,11 +92,15 @@ router.get(
   async (req, res) => {
     try {
       if (req.params.key === clientPassKey) {
-        const result = await findMultipleItemsByObject(UserModel, {});
+        if (appCache.has("users")) {
+          res.send(appCache.get("users"));
+        } else {
+          const result = await findMultipleItemsByObject(UserModel, {});
 
-        if (!result) return res.status(404).send("No users found");
-
-        res.send(result);
+          if (!result) return res.status(404).send("No users found");
+          appCache.set("users", result);
+          res.send(result);
+        }
       } else {
         return res.status(401);
       }
@@ -139,11 +147,15 @@ router.get(
   async (req, res) => {
     try {
       if (req.params.key === clientPassKey) {
-        const result = await findMultipleItemsByObject(RoomModel, {});
+        if (appCache.has("rooms")) {
+          res.send(appCache.get("rooms"));
+        } else {
+          const result = await findMultipleItemsByObject(RoomModel, {});
 
-        if (!result) return res.status(404).send("No rooms found");
-
-        res.send(result);
+          if (!result) return res.status(404).send("No rooms found");
+          appCache.set("rooms", result);
+          res.send(result);
+        }
       } else {
         return res.status(401);
       }
@@ -207,11 +219,15 @@ router.get(
   async (req, res) => {
     try {
       if (req.params.key === clientPassKey) {
-        const result = await findMultipleItemsByObject(MessageModel, {});
+        if (appCache.has("messages")) {
+          res.send(appCache.get("messages"));
+        } else {
+          const result = await findMultipleItemsByObject(MessageModel, {});
 
-        if (!result) return res.status(404).send("No messages found");
-
-        res.send(result);
+          if (!result) return res.status(404).send("No messages found");
+          appCache.set("messages", result);
+          res.send(result);
+        }
       } else {
         return res.status(401);
       }
@@ -291,6 +307,8 @@ io.on("connection", (socket) => {
 
       if (!result) {
         await create(UserModel, user);
+
+        appCache.set("users", await findMultipleItemsByObject(UserModel, {}));
       }
 
       allSockets.push({ socket, ...user });
@@ -331,6 +349,8 @@ io.on("connection", (socket) => {
             rooms: newRooms,
           }
         );
+
+        appCache.set("users", await findMultipleItemsByObject(UserModel, {}));
 
         const result = await findOneItemByObject(RoomModel, {
           room,
@@ -410,6 +430,7 @@ io.on("connection", (socket) => {
               users: newUsers,
             }
           );
+          appCache.set("rooms", await findMultipleItemsByObject(RoomModel, {}));
         }
       }
     } catch (e) {
@@ -441,6 +462,7 @@ io.on("connection", (socket) => {
             { room },
             { invitedUsers: newInvitedUsers }
           );
+          appCache.set("rooms", await findMultipleItemsByObject(RoomModel, {}));
 
           const userInDB = await findOneItemByObject(UserModel, {
             email,
@@ -455,6 +477,11 @@ io.on("connection", (socket) => {
               UserModel,
               { email },
               { invites: newInvites }
+            );
+
+            appCache.set(
+              "users",
+              await findMultipleItemsByObject(UserModel, {})
             );
 
             const userSocketInArray = allSockets.find(
@@ -489,6 +516,8 @@ io.on("connection", (socket) => {
         { email },
         { invites: newRoomInvites }
       );
+
+      appCache.set("users", await findMultipleItemsByObject(UserModel, {}));
     } catch (e) {
       logger.log(e);
       console.log("Could not ignore room invite!", e);
@@ -510,6 +539,8 @@ io.on("connection", (socket) => {
         { invites: newRoomInvites }
       );
 
+      appCache.set("users", await findMultipleItemsByObject(UserModel, {}));
+
       const { invitedUsers } = await findOneItemByObject(RoomModel, {
         room,
       });
@@ -522,6 +553,7 @@ io.on("connection", (socket) => {
         { room },
         { invitedUsers: newInvitedUsers }
       );
+      appCache.set("rooms", await findMultipleItemsByObject(RoomModel, {}));
     } catch (e) {
       logger.log(e);
       console.log("Could not ignore room invite!", e);
@@ -585,6 +617,11 @@ io.on("connection", (socket) => {
               { email },
               { rooms: newRoomsInUser }
             );
+
+            appCache.set(
+              "users",
+              await findMultipleItemsByObject(UserModel, {})
+            );
           }
 
           if (shouldAddRoom) {
@@ -593,6 +630,11 @@ io.on("connection", (socket) => {
               isPrivate,
               users: [],
             });
+
+            appCache.set(
+              "rooms",
+              await findMultipleItemsByObject(RoomModel, {})
+            );
           }
 
           if (shouldAddUserToRoom) {
@@ -634,6 +676,10 @@ io.on("connection", (socket) => {
               { room },
               { users: newUsersInRoom }
             );
+            appCache.set(
+              "rooms",
+              await findMultipleItemsByObject(RoomModel, {})
+            );
           }
 
           // Invite the user to the room if they haven't already been invited
@@ -665,6 +711,10 @@ io.on("connection", (socket) => {
                 RoomModel,
                 { room },
                 { invitedUsers: newInvitedUsers }
+              );
+              appCache.set(
+                "rooms",
+                await findMultipleItemsByObject(RoomModel, {})
               );
             }
           }
@@ -778,6 +828,11 @@ io.on("connection", (socket) => {
                 email,
               },
               { rooms: newRooms }
+            );
+
+            appCache.set(
+              "users",
+              await findMultipleItemsByObject(UserModel, {})
             );
           }
 
@@ -901,6 +956,10 @@ io.on("connection", (socket) => {
             isEdited: true,
           }
         );
+        appCache.set(
+          "messages",
+          await findMultipleItemsByObject(MessageModel, {})
+        );
 
         io.to(user.room).emit("edit", {
           uid,
@@ -924,6 +983,8 @@ io.on("connection", (socket) => {
         { accountStatus }
       );
 
+      appCache.set("users", await findMultipleItemsByObject(UserModel, {}));
+
       const rooms = await findMultipleItemsByObject(RoomModel, {});
 
       rooms.forEach((room) => {
@@ -944,6 +1005,10 @@ io.on("connection", (socket) => {
                   room: room.room,
                 },
                 { users: newUsers }
+              );
+              appCache.set(
+                "rooms",
+                await findMultipleItemsByObject(RoomModel, {})
               );
             }
           });
@@ -1037,6 +1102,11 @@ io.on("connection", (socket) => {
                   },
                   { rooms: newRooms }
                 );
+
+                appCache.set(
+                  "users",
+                  await findMultipleItemsByObject(UserModel, {})
+                );
               }
             }
           }
@@ -1111,6 +1181,11 @@ io.on("connection", (socket) => {
                 email,
               },
               { rooms: newRooms }
+            );
+
+            appCache.set(
+              "users",
+              await findMultipleItemsByObject(UserModel, {})
             );
           }
         }
