@@ -292,6 +292,8 @@ io.on("connection", (socket) => {
   let userEmailSocketScope = "";
   let userActiveRoomSocketScope = "";
 
+  let userCanSendMessageTimeout = true;
+
   socket.on("userOnline", async ({ name, photoURL, email }) => {
     try {
       const result = await findOneItemByObject(UserModel, {
@@ -871,39 +873,46 @@ io.on("connection", (socket) => {
       callback
     ) => {
       try {
-        const createdAt = Date.now();
+        if (userCanSendMessageTimeout) {
+          const createdAt = Date.now();
 
-        await create(MessageModel, {
-          user,
-          room,
-          photoURL,
-          email,
-          createdAt,
-          createdAtDisplay,
-          text: isMedia ? "" : message,
-          media: isMedia ? message : "",
-          mediaPath: mediaPath,
-          imagePath: imagePath ? imagePath : "",
-          isEdited: false,
-          uid,
-        });
+          await create(MessageModel, {
+            user,
+            room,
+            photoURL,
+            email,
+            createdAt,
+            createdAtDisplay,
+            text: isMedia ? "" : message,
+            media: isMedia ? message : "",
+            mediaPath: mediaPath,
+            imagePath: imagePath ? imagePath : "",
+            isEdited: false,
+            uid,
+          });
 
-        io.to(room).emit("message", {
-          user,
-          room,
-          photoURL,
-          email,
-          createdAt,
-          createdAtDisplay,
-          text: isMedia ? "" : message,
-          media: isMedia ? message : "",
-          mediaPath: mediaPath,
-          imagePath: imagePath ? imagePath : "",
-          isEdited: false,
-          uid,
-        });
+          io.to(room).emit("message", {
+            user,
+            room,
+            photoURL,
+            email,
+            createdAt,
+            createdAtDisplay,
+            text: isMedia ? "" : message,
+            media: isMedia ? message : "",
+            mediaPath: mediaPath,
+            imagePath: imagePath ? imagePath : "",
+            isEdited: false,
+            uid,
+          });
 
-        callback();
+          callback();
+
+          userCanSendMessageTimeout = false;
+          setTimeout(() => {
+            userCanSendMessageTimeout = true;
+          }, 1000);
+        }
       } catch (e) {
         logger.log(e);
         console.log("Could not send message!", e);
