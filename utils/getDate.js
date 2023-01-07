@@ -28,7 +28,7 @@ function getDate() {
   hours = hours % 12 || 12;
   return (
     shortDaysOfWeek[today.getDay()] +
-    ", " +
+    " " +
     shortMonths[today.getMonth()] +
     " " +
     appendLeadingZeroes(today.getDate()) +
