@@ -40,8 +40,7 @@ const { getDate } = require("./utils/getDate");
 
 const appCache = new NodeCached({ stdTTL: 90 });
 
-const uri =
-  "mongodb+srv://never-finite-chatroom-admin:4RjGzhTbbcepwPGe@never-finite-chatroom.mpem8.mongodb.net/chatroom?retryWrites=true&w=majority";
+const uri = "";
 
 mongoose.connect(uri);
 
